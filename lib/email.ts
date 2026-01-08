@@ -1,10 +1,13 @@
 import { Resend } from "resend";
 
-if (!process.env.RESEND_API_KEY) {
-  throw new Error("RESEND_API_KEY is not defined");
+// Allow build without RESEND_API_KEY for development/preview
+const API_KEY = process.env.RESEND_API_KEY || "dummy_key_for_build";
+
+if (!process.env.RESEND_API_KEY && process.env.NODE_ENV === "production") {
+  console.warn("Warning: RESEND_API_KEY is not defined. Email functionality will not work.");
 }
 
-export const resend = new Resend(process.env.RESEND_API_KEY);
+export const resend = new Resend(API_KEY);
 
 export const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "office@takiev.bg";
 
