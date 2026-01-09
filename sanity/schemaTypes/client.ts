@@ -2,7 +2,7 @@ import { defineType, defineField } from "sanity";
 
 export default defineType({
   name: "client",
-  title: "Клиенти и Партньори",
+  title: "Партньори",
   type: "document",
   fields: [
     defineField({
@@ -40,6 +40,11 @@ export default defineType({
           { title: "Лечебни заведения", value: "healthcare" },
           { title: "Творчески индустрии", value: "creative" },
           { title: "Финансови инструменти", value: "finance" },
+          { title: "Бизнес платформи", value: "platform" },
+          { title: "Одит", value: "audit" },
+          { title: "Образование", value: "education" },
+          { title: "Производство и търговия", value: "manufacturing" },
+          { title: "Хранителен бизнес", value: "food" },
           { title: "Друго", value: "other" },
         ],
       },
