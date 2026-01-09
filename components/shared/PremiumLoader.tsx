@@ -311,7 +311,7 @@ export function PremiumLoader() {
                 transition={{ delay: 2.8, duration: 0.8 }}
                 className="text-primary/60 text-sm tracking-widest uppercase"
               >
-                Professional Excellence
+                Избери своя доверен бизнес партньор
               </motion.p>
 
               {/* Loading indicator */}
