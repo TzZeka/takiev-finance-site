@@ -23,11 +23,10 @@ export default async function VideoPage() {
         {/* Hero Section */}
         <div className="max-w-4xl mx-auto text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-dark mb-6">
-            Видео
+            Takiev Finance в YouTube
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
-            Образователни видеа по счетоводство, данъци и бизнес. Следете ни за
-            полезни съвети и актуална информация.
+            Обучения по данъци и счетоводство
           </p>
         </div>
 
