@@ -74,6 +74,7 @@ export function TestimonialsSection({
                       src={getImageUrl(currentTestimonial.avatar)}
                       alt={currentTestimonial.clientName}
                       fill
+                      sizes="64px"
                       className="object-cover"
                     />
                   </div>

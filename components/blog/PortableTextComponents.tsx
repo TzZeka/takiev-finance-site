@@ -4,23 +4,23 @@ import { getImageUrl } from "@/lib/sanity/client";
 
 export const portableTextComponents = {
   block: {
-    h1: ({ children }: any) => (
-      <h1 id={slugify(children)} className="text-4xl font-bold text-dark mt-12 mb-6 scroll-mt-20">
+    h1: ({ children, value }: any) => (
+      <h1 id={slugify(children, value._key)} className="text-4xl font-bold text-dark mt-12 mb-6 scroll-mt-20">
         {children}
       </h1>
     ),
-    h2: ({ children }: any) => (
-      <h2 id={slugify(children)} className="text-3xl font-bold text-dark mt-10 mb-5 scroll-mt-20">
+    h2: ({ children, value }: any) => (
+      <h2 id={slugify(children, value._key)} className="text-3xl font-bold text-dark mt-10 mb-5 scroll-mt-20">
         {children}
       </h2>
     ),
-    h3: ({ children }: any) => (
-      <h3 id={slugify(children)} className="text-2xl font-bold text-dark mt-8 mb-4 scroll-mt-20">
+    h3: ({ children, value }: any) => (
+      <h3 id={slugify(children, value._key)} className="text-2xl font-bold text-dark mt-8 mb-4 scroll-mt-20">
         {children}
       </h3>
     ),
-    h4: ({ children }: any) => (
-      <h4 id={slugify(children)} className="text-xl font-bold text-dark mt-6 mb-3 scroll-mt-20">
+    h4: ({ children, value }: any) => (
+      <h4 id={slugify(children, value._key)} className="text-xl font-bold text-dark mt-6 mb-3 scroll-mt-20">
         {children}
       </h4>
     ),
@@ -124,8 +124,6 @@ function slugify(children: any, fallback: string = "heading"): string {
 export function extractHeadings(blocks: any[]): Array<{ id: string; text: string; level: number }> {
   if (!blocks) return [];
 
-  const seenIds = new Map<string, number>();
-
   return blocks
     .filter((block) => block._type === "block" && /^h[1-4]$/.test(block.style))
     .map((block, index) => {
@@ -133,19 +131,11 @@ export function extractHeadings(blocks: any[]): Array<{ id: string; text: string
         ?.map((child: any) => child.text)
         .join("") || "";
 
-      let baseId = slugify([{ text }], `heading-${index}`);
-
-      // Handle duplicates by appending a counter
-      if (seenIds.has(baseId)) {
-        const count = seenIds.get(baseId)! + 1;
-        seenIds.set(baseId, count);
-        baseId = `${baseId}-${count}`;
-      } else {
-        seenIds.set(baseId, 1);
-      }
+      // Use the same ID generation as the heading components
+      const id = slugify([{ text }], block._key);
 
       return {
-        id: baseId,
+        id,
         text: text || `Заглавие ${index + 1}`,
         level: parseInt(block.style.replace("h", "")),
       };

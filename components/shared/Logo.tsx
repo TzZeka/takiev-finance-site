@@ -9,6 +9,7 @@ export function Logo() {
           src="/firm-logo/logo.png"
           alt="Takiev Finance Logo"
           fill
+          sizes="40px"
           className="object-contain"
           priority
         />

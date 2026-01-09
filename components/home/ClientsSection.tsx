@@ -32,6 +32,7 @@ export function ClientsSection({ clients }: ClientsSectionProps) {
                   src={getImageUrl(client.logo)}
                   alt={client.name}
                   fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                   className="object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
                 />
               </div>
