@@ -100,7 +100,6 @@ export default function ContactPage() {
                 </h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>✓ Бърз отговор на запитвания</li>
-                  <li>✓ Безплатна първоначална консултация</li>
                   <li>✓ Професионален екип от експерти</li>
                   <li>✓ Индивидуален подход към всеки клиент</li>
                 </ul>
