@@ -107,13 +107,29 @@ export const portableTextComponents = {
 // Helper function to create slugs from headings
 function slugify(children: any, fallback: string = "heading"): string {
   if (!children) return fallback;
-  const text = children
-    .map((child: any) => (typeof child === "string" ? child : child?.text || ""))
-    .join("");
+
+  let text = "";
+
+  // Handle both React children and plain text arrays
+  if (Array.isArray(children)) {
+    text = children
+      .map((child: any) => {
+        if (typeof child === "string") return child;
+        if (typeof child === "object" && child?.text) return child.text;
+        if (typeof child === "object" && child?.props?.children) {
+          return typeof child.props.children === "string" ? child.props.children : "";
+        }
+        return "";
+      })
+      .join("");
+  } else if (typeof children === "string") {
+    text = children;
+  }
 
   const slug = text
     .toLowerCase()
-    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/[^\w\s\u0400-\u04FF-]/g, "") // Support Cyrillic characters
     .replace(/\s+/g, "-")
     .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
 
@@ -122,22 +138,33 @@ function slugify(children: any, fallback: string = "heading"): string {
 
 // Extract headings for Table of Contents
 export function extractHeadings(blocks: any[]): Array<{ id: string; text: string; level: number }> {
-  if (!blocks) return [];
+  if (!blocks || !Array.isArray(blocks)) {
+    return [];
+  }
 
-  return blocks
-    .filter((block) => block._type === "block" && /^h[1-4]$/.test(block.style))
+  const headings = blocks
+    .filter((block) => {
+      return block && block._type === "block" && block.style && /^h[1-4]$/.test(block.style);
+    })
     .map((block, index) => {
-      const text = block.children
-        ?.map((child: any) => child.text)
-        .join("") || "";
+      // Extract text from children (same format as Sanity block)
+      const textContent = block.children
+        ?.filter((child: any) => child && child.text)
+        .map((child: any) => child.text)
+        .join("")
+        .trim() || "";
 
-      // Use the same ID generation as the heading components
-      const id = slugify([{ text }], block._key);
+      // Generate ID using the same slugify function as the components
+      // Pass text as a string (slugify handles strings and arrays)
+      const id = slugify(textContent, block._key || `heading-${index}`);
 
       return {
         id,
-        text: text || `Заглавие ${index + 1}`,
+        text: textContent || `Заглавие ${index + 1}`,
         level: parseInt(block.style.replace("h", "")),
       };
-    });
+    })
+    .filter((heading) => heading.text && heading.id); // Remove empty headings
+
+  return headings;
 }
