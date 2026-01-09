@@ -53,7 +53,7 @@ export default defineType({
       title: "Кратко описание",
       type: "text",
       rows: 3,
-      validation: (Rule) => Rule.required().max(200),
+      validation: (Rule) => Rule.required().max(1000),
     }),
     defineField({
       name: "body",

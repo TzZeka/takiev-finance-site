@@ -3,11 +3,12 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { PremiumLoader } from "@/components/shared/PremiumLoader";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
 
 export const metadata: Metadata = {
-  title: "Takiev Finance - Професионални Счетоводни Услуги",
+  title: "Takiev Finance - Счетоводна Кантора",
   description:
     "Избери своя доверен бизнес партньор. Счетоводството е движеща сила за всеки успешен бизнес. Нашият екип ще осигури сигурност, защита и експертно счетоводно обслужване на Вашия бизнес.",
   keywords: [
@@ -45,6 +46,7 @@ export default function RootLayout({
   return (
     <html lang="bg">
       <body className={inter.className}>
+        <PremiumLoader />
         <Header />
         <main className="min-h-screen">{children}</main>
         <Footer />
