@@ -17,7 +17,7 @@ export function ClientsSection({ clients }: ClientsSectionProps) {
             Нашите клиенти и партньори
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Доверили са ни своя бизнес
+             Партньорствата, на които се доверяваме за успеха на Вашия бизнес.
           </p>
         </div>
 
