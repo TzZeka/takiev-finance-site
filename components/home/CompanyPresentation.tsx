@@ -85,8 +85,14 @@ export function CompanyPresentation() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section className="py-20 md:py-32 bg-gradient-to-b from-background via-primary/5 to-background overflow-hidden">
-      <div className="container mx-auto px-4">
+    <section className="relative py-20 md:py-32 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#19BFB7] rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#40514E] rounded-full blur-[120px]"></div>
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         {/* Header */}
         <motion.div
           ref={ref}
@@ -101,16 +107,16 @@ export function CompanyPresentation() {
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="inline-block mb-4"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-semibold">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#19BFB7]/20 text-[#19BFB7] text-sm font-semibold border border-[#19BFB7]/30">
               <Sparkles className="w-4 h-4" />
               За нас
             </span>
           </motion.div>
-          <h2 className="text-4xl md:text-5xl font-bold text-dark mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Вашият доверен{" "}
-            <span className="text-primary">финансов партньор</span>
+            <span className="text-[#19BFB7]">финансов партньор</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-xl text-white/70 max-w-3xl mx-auto">
             Повече от 15 години опит в предоставянето на професионални счетоводни услуги
           </p>
         </motion.div>
@@ -125,13 +131,13 @@ export function CompanyPresentation() {
               transition={{ delay: 0.4 + index * 0.1, duration: 0.6 }}
               className="relative group"
             >
-              <div className="relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-primary/10 hover:border-primary/30">
+              <div className="relative bg-white/5 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-white/10 hover:border-[#19BFB7]/30">
                 {/* Decorative corner */}
                 <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full" />
 
                 <div className="relative">
                   <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                  <div className="text-sm text-muted-foreground mt-2 font-medium">
+                  <div className="text-sm text-white/70 mt-2 font-medium">
                     {stat.label}
                   </div>
                 </div>
@@ -150,7 +156,7 @@ export function CompanyPresentation() {
           transition={{ delay: 0.8, duration: 0.6 }}
           className="mb-20"
         >
-          <h3 className="text-3xl font-bold text-dark text-center mb-12">
+          <h3 className="text-3xl font-bold text-white text-center mb-12">
             Нашата история
           </h3>
           <div className="relative max-w-5xl mx-auto">
@@ -173,19 +179,19 @@ export function CompanyPresentation() {
                   <div className={`flex-1 ${index % 2 === 0 ? "text-right" : "text-left"}`}>
                     <motion.div
                       whileHover={{ scale: 1.05 }}
-                      className={`inline-block bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 ${
-                        item.highlight ? "border-2 border-primary" : "border-2 border-gray-100"
+                      className={`inline-block bg-white/5 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 ${
+                        item.highlight ? "border-2 border-[#19BFB7]" : "border-2 border-white/10"
                       }`}
                     >
-                      <div className={`text-2xl font-bold ${item.highlight ? "text-primary" : "text-dark"} mb-2`}>
+                      <div className={`text-2xl font-bold ${item.highlight ? "text-[#19BFB7]" : "text-white"} mb-2`}>
                         {item.year}
                       </div>
-                      <div className="text-muted-foreground">
+                      <div className="text-white/70">
                         {item.event}
                       </div>
                       {item.highlight && (
                         <div className="mt-2">
-                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary">
+                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#19BFB7]">
                             <CheckCircle className="w-3 h-3" />
                             Важна стъпка
                           </span>
@@ -227,7 +233,7 @@ export function CompanyPresentation() {
                 whileHover={{ y: -8, transition: { duration: 0.3 } }}
                 className="group relative"
               >
-                <div className="relative h-full bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-primary/30 overflow-hidden">
+                <div className="relative h-full bg-white/5 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-white/10 hover:border-[#19BFB7]/30 overflow-hidden">
                   {/* Gradient background */}
                   <div className={`absolute inset-0 bg-gradient-to-br ${value.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
 
@@ -238,10 +244,10 @@ export function CompanyPresentation() {
                         <Icon className="w-7 h-7 text-primary" />
                       </div>
                     </div>
-                    <h4 className="text-lg font-bold text-dark mb-2 group-hover:text-primary transition-colors">
+                    <h4 className="text-lg font-bold text-white mb-2 group-hover:text-[#19BFB7] transition-colors">
                       {value.title}
                     </h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-sm text-white/70 leading-relaxed">
                       {value.description}
                     </p>
                   </div>
@@ -262,20 +268,19 @@ export function CompanyPresentation() {
           className="mt-16 text-center"
         >
           <div className="inline-block relative">
-            <div className="absolute inset-0 bg-primary/20 blur-3xl" />
-            <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-transparent rounded-3xl p-8 md:p-12 border-2 border-primary/20">
-              <Users className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="text-2xl md:text-3xl font-bold text-dark mb-4">
+            <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border-2 border-white/10 hover:border-[#19BFB7]/30 transition-all duration-300">
+              <Users className="w-12 h-12 text-[#19BFB7] mx-auto mb-4" />
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
                 Готови ли сте да станете част от успеха?
               </h3>
-              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+              <p className="text-white/70 mb-6 max-w-2xl mx-auto">
                 Присъединете се към стотиците компании, които вече се доверяват на нашата експертиза
               </p>
               <motion.a
                 href="/kontakti"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-white rounded-xl font-semibold shadow-lg hover:shadow-2xl transition-all duration-300"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-[#19BFB7] text-white rounded-xl font-semibold shadow-lg hover:shadow-2xl transition-all duration-300 hover:bg-[#19BFB7]/90"
               >
                 Свържете се с нас
                 <CheckCircle className="w-5 h-5" />

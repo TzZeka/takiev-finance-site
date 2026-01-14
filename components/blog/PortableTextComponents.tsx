@@ -5,22 +5,22 @@ import { getImageUrl } from "@/lib/sanity/client";
 export const portableTextComponents = {
   block: {
     h1: ({ children, value }: any) => (
-      <h1 id={slugify(children, value._key)} className="text-4xl font-bold text-dark mt-12 mb-6 scroll-mt-20">
+      <h1 id={slugify(children, value._key)} className="text-4xl font-bold text-foreground mt-12 mb-6 scroll-mt-20">
         {children}
       </h1>
     ),
     h2: ({ children, value }: any) => (
-      <h2 id={slugify(children, value._key)} className="text-3xl font-bold text-dark mt-10 mb-5 scroll-mt-20">
+      <h2 id={slugify(children, value._key)} className="text-3xl font-bold text-foreground mt-10 mb-5 scroll-mt-20">
         {children}
       </h2>
     ),
     h3: ({ children, value }: any) => (
-      <h3 id={slugify(children, value._key)} className="text-2xl font-bold text-dark mt-8 mb-4 scroll-mt-20">
+      <h3 id={slugify(children, value._key)} className="text-2xl font-bold text-foreground mt-8 mb-4 scroll-mt-20">
         {children}
       </h3>
     ),
     h4: ({ children, value }: any) => (
-      <h4 id={slugify(children, value._key)} className="text-xl font-bold text-dark mt-6 mb-3 scroll-mt-20">
+      <h4 id={slugify(children, value._key)} className="text-xl font-bold text-foreground mt-6 mb-3 scroll-mt-20">
         {children}
       </h4>
     ),
@@ -33,6 +33,21 @@ export const portableTextComponents = {
       <blockquote className="border-l-4 border-primary pl-6 py-2 my-6 italic text-muted-foreground bg-primary/5 rounded-r-lg">
         {children}
       </blockquote>
+    ),
+    center: ({ children }: any) => (
+      <p className="text-lg text-muted-foreground leading-relaxed mb-6 text-center">
+        {children}
+      </p>
+    ),
+    right: ({ children }: any) => (
+      <p className="text-lg text-muted-foreground leading-relaxed mb-6 text-right">
+        {children}
+      </p>
+    ),
+    justify: ({ children }: any) => (
+      <p className="text-lg text-muted-foreground leading-relaxed mb-6 text-justify">
+        {children}
+      </p>
     ),
   },
   list: {
@@ -57,7 +72,7 @@ export const portableTextComponents = {
   },
   marks: {
     strong: ({ children }: any) => (
-      <strong className="font-bold text-dark">{children}</strong>
+      <strong className="font-bold text-foreground">{children}</strong>
     ),
     em: ({ children }: any) => (
       <em className="italic">{children}</em>

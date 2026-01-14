@@ -66,17 +66,16 @@ export default function AboutPage() {
   return (
     <div className="relative">
       {/* Hero Header Section */}
-      <section className="relative h-[250px] overflow-hidden">
+      <section className="relative h-[250px] overflow-hidden bg-background/95 backdrop-blur-sm border-b border-white/10">
         <div className="absolute inset-0">
           <Image
             src="/firm-logo/with-padding.png"
             alt="Takiev Finance"
             fill
             sizes="100vw"
-            className="object-cover"
+            className="object-cover opacity-10"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-dark/85 via-dark/60 to-dark/40" />
         </div>
         <div className="relative container mx-auto px-4 h-full flex items-center justify-center">
           <motion.div
@@ -85,10 +84,10 @@ export default function AboutPage() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
+            <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4">
               За нас
             </h1>
-            <p className="text-xl text-white/90">
+            <p className="text-xl text-foreground/80">
               Вашият доверен партньор в света на финансите от 2009 година
             </p>
           </motion.div>
@@ -107,16 +106,16 @@ export default function AboutPage() {
           transition={{ duration: 0.6 }}
           className="max-w-4xl mx-auto text-center mb-20"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-dark mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
             Мисия и визия
           </h2>
-          <p className="text-lg text-dark/80 leading-relaxed mb-4">
+          <p className="text-lg text-foreground/80 leading-relaxed mb-4">
             Такиев Финанс предлага професионални счетоводни услуги и данъчни
             консултации за различни бизнеси и физически лица. В нашата практика
             обслужваме широка гама от клиенти, които успешно изграждат своя бизнес
             в различни сектори на икономиката.
           </p>
-          <p className="text-lg text-dark/80 leading-relaxed">
+          <p className="text-lg text-foreground/80 leading-relaxed">
             Компанията работи в партньорски взаимоотношения с високо квалифицирани
             юристи в областта на гражданското, търговското и трудовото право.
           </p>
@@ -130,7 +129,7 @@ export default function AboutPage() {
           transition={{ duration: 0.6 }}
           className="mb-20"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-dark text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center mb-12">
             Нашите ценности
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -144,12 +143,12 @@ export default function AboutPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   whileHover={{ y: -8, scale: 1.02 }}
-                  className="bg-white rounded-xl p-6 text-center shadow-lg border-2 border-primary/10 hover:border-primary/30 transition-all duration-300"
+                  className="bg-card rounded-xl p-6 text-center shadow-lg border-2 border-primary/10 hover:border-primary/30 transition-all duration-300"
                 >
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
                     <Icon className="w-8 h-8 text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold text-dark mb-2">{value.title}</h3>
+                  <h3 className="text-xl font-bold text-foreground mb-2">{value.title}</h3>
                   <p className="text-muted-foreground">{value.description}</p>
                 </motion.div>
               );
@@ -166,7 +165,7 @@ export default function AboutPage() {
           className="mb-20"
         >
           <div className="max-w-7xl mx-auto">
-            <div className="relative bg-gradient-to-br from-white via-primary/5 to-white rounded-3xl overflow-hidden shadow-2xl border-4 border-primary/20">
+            <div className="relative bg-gradient-to-br from-card via-primary/5 to-card rounded-3xl overflow-hidden shadow-2xl border-4 border-primary/20">
               {/* Decorative elements */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -translate-y-32 translate-x-32 blur-3xl" />
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full translate-y-32 -translate-x-32 blur-3xl" />
@@ -189,7 +188,7 @@ export default function AboutPage() {
                     <div className="absolute inset-0 -m-4 rounded-full bg-gradient-to-r from-primary/30 via-primary/20 to-primary/30 blur-2xl" />
 
                     {/* Profile image */}
-                    <div className="relative w-80 h-80 rounded-full overflow-hidden ring-8 ring-white shadow-2xl">
+                    <div className="relative w-80 h-80 rounded-full overflow-hidden ring-8 ring-foreground shadow-2xl">
                       <Image
                         src="/firm-logo/nikolay-takiev.jpg"
                         alt="Николай Такиев"
@@ -220,14 +219,14 @@ export default function AboutPage() {
                       Основател и Собственик
                     </div>
 
-                    <h2 className="text-4xl md:text-5xl font-bold text-dark mb-3">
+                    <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
                       Николай Такиев
                     </h2>
                     <p className="text-xl text-primary font-semibold mb-6">
                       Магистър по счетоводство, финанси и бизнес анализ
                     </p>
 
-                    <div className="space-y-4 text-dark/80 leading-relaxed mb-6">
+                    <div className="space-y-4 text-foreground/80 leading-relaxed mb-6">
                       <p>
                         Експерт в данъчното консултиране със специализация в международно данъчно облагане и корпоративно счетоводство.
                       </p>
@@ -256,7 +255,7 @@ export default function AboutPage() {
                       {["Данъчни консултации", "Бизнес анализ", "Финансово планиране", "Обучения"].map((skill) => (
                         <span
                           key={skill}
-                          className="inline-flex items-center gap-1 bg-white text-dark px-4 py-2 rounded-full text-sm font-semibold shadow-md border border-primary/20"
+                          className="inline-flex items-center gap-1 bg-card text-foreground px-4 py-2 rounded-full text-sm font-semibold shadow-md border border-primary/20"
                         >
                           <CheckCircle className="w-4 h-4 text-primary" />
                           {skill}
@@ -285,7 +284,7 @@ export default function AboutPage() {
           className="mb-20"
         >
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Нашият екип
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -303,7 +302,7 @@ export default function AboutPage() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="relative group"
               >
-                <div className="bg-white rounded-2xl overflow-hidden shadow-xl border-2 border-primary/10 hover:border-primary/30 transition-all duration-300 hover:shadow-2xl">
+                <div className="bg-card rounded-2xl overflow-hidden shadow-xl border-2 border-primary/10 hover:border-primary/30 transition-all duration-300 hover:shadow-2xl">
                   {/* Decorative corner ornaments */}
                   <div className="absolute top-0 left-0 w-20 h-20 border-t-4 border-l-4 border-primary/20 rounded-tl-2xl" />
                   <div className="absolute bottom-0 right-0 w-20 h-20 border-b-4 border-r-4 border-primary/20 rounded-br-2xl" />
@@ -325,7 +324,7 @@ export default function AboutPage() {
                         <div className="absolute inset-0 -m-2 rounded-full bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 blur-md" />
 
                         {/* Profile picture */}
-                        <div className="relative w-40 h-40 rounded-full overflow-hidden ring-4 ring-white shadow-xl">
+                        <div className="relative w-40 h-40 rounded-full overflow-hidden ring-4 ring-foreground shadow-xl">
                           {member.image ? (
                             <Image
                               src={member.image}
@@ -348,14 +347,14 @@ export default function AboutPage() {
                         <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-primary/60 rounded-full" />
                       </div>
 
-                      <h3 className="text-2xl font-bold text-dark mb-1">{member.name}</h3>
+                      <h3 className="text-2xl font-bold text-foreground mb-1">{member.name}</h3>
                       <p className="text-primary font-semibold mb-2">{member.role}</p>
                       <p className="text-sm text-muted-foreground italic mb-4">
                         {member.education}
                       </p>
                     </div>
 
-                    <p className="text-dark/80 leading-relaxed mb-6 text-center">
+                    <p className="text-foreground/80 leading-relaxed mb-6 text-center">
                       {member.bio}
                     </p>
 
@@ -390,7 +389,7 @@ export default function AboutPage() {
           className="max-w-5xl mx-auto"
         >
           <div className="bg-gradient-to-br from-primary/5 via-background to-primary/5 rounded-2xl p-8 md:p-12 shadow-xl border-2 border-primary/10">
-            <h2 className="text-2xl md:text-3xl font-bold text-dark mb-6 text-center">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6 text-center">
               Експертиза в разнообразни бизнес сектори
             </h2>
             <p className="text-center text-muted-foreground mb-8">
@@ -405,10 +404,10 @@ export default function AboutPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.05 }}
                   whileHover={{ x: 8 }}
-                  className="flex items-start space-x-3 bg-white p-4 rounded-lg hover:shadow-md transition-all duration-300"
+                  className="flex items-start space-x-3 bg-card p-4 rounded-lg hover:shadow-md transition-all duration-300"
                 >
                   <CheckCircle className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-dark/90">{sector}</span>
+                  <span className="text-foreground/90">{sector}</span>
                 </motion.div>
               ))}
             </div>

@@ -59,7 +59,44 @@ export default defineType({
       name: "body",
       title: "Съдържание",
       type: "array",
-      of: [{ type: "block" }],
+      of: [
+        {
+          type: "block",
+          styles: [
+            { title: "Обикновен", value: "normal" },
+            { title: "Заглавие 1", value: "h1" },
+            { title: "Заглавие 2", value: "h2" },
+            { title: "Заглавие 3", value: "h3" },
+            { title: "Заглавие 4", value: "h4" },
+            { title: "Цитат", value: "blockquote" },
+          ],
+          lists: [
+            { title: "Списък", value: "bullet" },
+            { title: "Номериран", value: "number" },
+          ],
+          marks: {
+            decorators: [
+              { title: "Удебелен", value: "strong" },
+              { title: "Курсив", value: "em" },
+              { title: "Код", value: "code" },
+            ],
+            annotations: [
+              {
+                name: "link",
+                type: "object",
+                title: "Връзка",
+                fields: [
+                  {
+                    name: "href",
+                    type: "url",
+                    title: "URL",
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
     }),
     defineField({
       name: "nulaBgUrl",

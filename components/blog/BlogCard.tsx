@@ -44,7 +44,7 @@ export function BlogCard({ post }: BlogCardProps) {
             )}
           </div>
 
-          <h3 className="text-xl font-semibold text-dark mb-3 group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
             {post.title}
           </h3>
 

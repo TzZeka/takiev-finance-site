@@ -16,7 +16,7 @@ export default async function BlogPage() {
       <div className="container mx-auto px-4">
         {/* Hero Section */}
         <div className="max-w-4xl mx-auto text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-dark mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             Блог
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed">

@@ -72,7 +72,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
               <div className="text-sm text-primary font-semibold mb-2">
                 {service.category}
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-dark">
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground">
                 {service.title}
               </h1>
             </div>
@@ -94,7 +94,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           {/* Packages */}
           {service.packages && service.packages.length > 0 && (
             <div className="mb-12">
-              <h2 className="text-3xl font-bold text-dark mb-8">
+              <h2 className="text-3xl font-bold text-foreground mb-8">
                 Налични пакети
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -131,7 +131,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
           {/* CTA */}
           <div className="bg-gradient-to-br from-primary/5 to-background rounded-lg p-8 text-center">
-            <h3 className="text-2xl font-bold text-dark mb-4">
+            <h3 className="text-2xl font-bold text-foreground mb-4">
               Заинтересовани ли сте?
             </h3>
             <p className="text-lg text-muted-foreground mb-6">

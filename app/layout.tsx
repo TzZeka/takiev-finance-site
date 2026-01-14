@@ -44,11 +44,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="bg">
-      <body className={inter.className}>
+    <html lang="bg" className="overflow-x-hidden">
+      <body className={`${inter.className} overflow-x-hidden`}>
         <PremiumLoader />
         <Header />
-        <main className="min-h-screen">{children}</main>
+        <main className="min-h-screen overflow-x-hidden w-full">{children}</main>
         <Footer />
       </body>
     </html>

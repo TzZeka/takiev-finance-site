@@ -60,3 +60,5 @@ __pycache__/
 *.class
 *.exe
 *.dll
+
+nul

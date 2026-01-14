@@ -76,7 +76,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
 
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 xl:grid-cols-[1fr_280px] gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12">
             {/* Main Content */}
             <div>
               {/* Article Header */}
@@ -89,8 +89,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <div className="absolute -top-4 -left-4 w-16 h-16 border-t-4 border-l-4 border-primary/20 rounded-tl-3xl" />
                 <div className="absolute -bottom-4 -right-4 w-16 h-16 border-b-4 border-r-4 border-primary/20 rounded-br-3xl" />
 
-                <div className="relative bg-gradient-to-br from-white via-primary/5 to-white p-8 rounded-2xl border-2 border-primary/10">
-                  <h1 className="text-4xl md:text-5xl font-bold text-dark mb-6 leading-tight">
+                <div className="relative bg-gradient-to-br from-card via-primary/5 to-card p-8 rounded-2xl border-2 border-primary/10">
+                  <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
                     {post.title}
                   </h1>
 
@@ -159,7 +159,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   <div className="absolute -top-12 -left-12 w-48 h-48 bg-primary/10 rounded-full blur-3xl" />
                   <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-primary/10 rounded-full blur-3xl" />
 
-                  <div className="relative bg-gradient-to-br from-white via-primary/5 to-white rounded-2xl p-8 md:p-10 shadow-xl border-2 border-primary/20 overflow-hidden">
+                  <div className="relative bg-gradient-to-br from-card via-primary/5 to-card rounded-2xl p-8 md:p-10 shadow-xl border-2 border-primary/20 overflow-hidden">
                     {/* Decorative corner ornaments */}
                     <div className="absolute top-0 left-0 w-24 h-24 border-t-4 border-l-4 border-primary/30 rounded-tl-2xl" />
                     <div className="absolute bottom-0 right-0 w-24 h-24 border-b-4 border-r-4 border-primary/30 rounded-br-2xl" />
@@ -183,7 +183,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
                         {/* Avatar */}
                         {post.author.image ? (
-                          <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden ring-4 ring-white shadow-2xl">
+                          <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden ring-4 ring-foreground shadow-2xl">
                             <Image
                               src={getImageUrl(post.author.image)}
                               alt={post.author.name}
@@ -193,7 +193,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                             />
                           </div>
                         ) : (
-                          <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden ring-4 ring-white shadow-2xl bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center">
+                          <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden ring-4 ring-foreground shadow-2xl bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center">
                             <span className="text-5xl font-bold text-white">
                               {post.author.name.charAt(0)}
                             </span>
@@ -210,7 +210,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         <p className="text-sm text-primary font-semibold mb-2 uppercase tracking-wide">
                           Автор
                         </p>
-                        <h3 className="text-2xl md:text-3xl font-bold text-dark mb-3">
+                        <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
                           {post.author.name}
                         </h3>
                         {post.author.bio && post.author.bio.length > 0 && (
@@ -229,7 +229,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
               {/* CTA */}
               <div className="bg-gradient-to-br from-primary/5 to-background rounded-xl p-8 text-center border-2 border-primary/10">
-                <h3 className="text-2xl font-bold text-dark mb-4">
+                <h3 className="text-2xl font-bold text-foreground mb-4">
                   Имате въпроси?
                 </h3>
                 <p className="text-lg text-muted-foreground mb-6">
@@ -242,7 +242,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
 
             {/* Table of Contents Sidebar */}
-            <aside className="hidden xl:block">
+            <aside className="hidden lg:block">
               <TableOfContents headings={headings} />
             </aside>
           </div>

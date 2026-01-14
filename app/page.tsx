@@ -1,5 +1,6 @@
 import { HeroSection } from "@/components/home/HeroSection";
 import { MessagesSection } from "@/components/home/MessagesSection";
+import { CompanyPresentation } from "@/components/home/CompanyPresentation";
 import { ServicesPreview } from "@/components/home/ServicesPreview";
 import { BlogPreview } from "@/components/home/BlogPreview";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
@@ -56,6 +57,7 @@ export default async function HomePage() {
     <>
       <HeroSection motto={motto} videoUrl={homeContent?.heroVideoUrl} />
       <MessagesSection messages={messages} />
+      <CompanyPresentation />
       <ServicesPreview services={services} />
       <BlogPreview posts={blogPosts} />
       <TestimonialsSection testimonials={testimonials} />

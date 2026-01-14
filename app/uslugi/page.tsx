@@ -24,7 +24,7 @@ export default async function ServicesPage() {
       <div className="container mx-auto px-4">
         {/* Hero Section */}
         <div className="max-w-4xl mx-auto text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-dark mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             Нашите услуги
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
@@ -44,7 +44,7 @@ export default async function ServicesPage() {
 
             return (
               <section key={category.key}>
-                <h2 className="text-3xl font-bold text-dark mb-8">
+                <h2 className="text-3xl font-bold text-foreground mb-8">
                   {category.title}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

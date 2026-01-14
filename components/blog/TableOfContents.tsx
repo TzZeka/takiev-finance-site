@@ -105,11 +105,11 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.3, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-      className="sticky top-24 h-[calc(100vh-7rem)] hidden xl:block"
+      className="sticky top-24 h-[calc(100vh-7rem)]"
     >
-      <div className="h-full bg-white rounded-xl border-2 border-primary/10 shadow-lg overflow-hidden flex flex-col relative min-h-0">
+      <div className="h-full bg-card rounded-xl border-2 border-primary/10 shadow-lg overflow-hidden flex flex-col relative min-h-0">
         {/* Header with progress indicator */}
-        <div className="relative p-6 pb-4 border-b border-primary/10 bg-white z-10 flex-shrink-0">
+        <div className="relative p-6 pb-4 border-b border-primary/10 bg-card z-10 flex-shrink-0">
           <div className="flex items-center gap-2 mb-3">
             <motion.div
               animate={{
@@ -124,7 +124,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
             >
               <List className="w-5 h-5 text-primary" />
             </motion.div>
-            <h3 className="font-bold text-dark">Съдържание</h3>
+            <h3 className="font-bold text-foreground">Съдържание</h3>
           </div>
 
           {/* Progress bar */}
@@ -196,7 +196,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
                         } ${
                           isActive
                             ? "text-white font-semibold shadow-lg shadow-primary/20"
-                            : "text-dark hover:text-primary"
+                            : "text-foreground hover:text-primary"
                         }`}
                       >
                         {/* Animated background for active state */}
@@ -273,7 +273,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
                                       <motion.span
                                         initial={{ scale: 0 }}
                                         animate={{ scale: 1 }}
-                                        className="w-1.5 h-1.5 bg-white rounded-full"
+                                        className="w-1.5 h-1.5 bg-card rounded-full"
                                       />
                                     )}
                                     {child.text}

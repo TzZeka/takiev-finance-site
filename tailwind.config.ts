@@ -18,14 +18,14 @@ const config: Config = {
           DEFAULT: "#40514E",
           foreground: "#FFFFFF",
         },
-        background: "#FFFFFF",
-        foreground: "#40514E",
-        border: "#E5E7EB",
-        input: "#E5E7EB",
+        background: "#40514E",
+        foreground: "#F5F5F5",
+        border: "#5A6A67",
+        input: "#5A6A67",
         ring: "#19BFB7",
         muted: {
-          DEFAULT: "#F3F4F6",
-          foreground: "#6B7280",
+          DEFAULT: "#4A5C59",
+          foreground: "#D1D5DB",
         },
         accent: {
           DEFAULT: "#19BFB7",
@@ -36,12 +36,12 @@ const config: Config = {
           foreground: "#FFFFFF",
         },
         card: {
-          DEFAULT: "#FFFFFF",
-          foreground: "#40514E",
+          DEFAULT: "#40514E",
+          foreground: "#F5F5F5",
         },
         popover: {
-          DEFAULT: "#FFFFFF",
-          foreground: "#40514E",
+          DEFAULT: "#40514E",
+          foreground: "#F5F5F5",
         },
       },
       borderRadius: {

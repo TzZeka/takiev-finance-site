@@ -22,7 +22,7 @@ export default async function VideoPage() {
       <div className="container mx-auto px-4">
         {/* Hero Section */}
         <div className="max-w-4xl mx-auto text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-dark mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             Takiev Finance в YouTube
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
@@ -35,7 +35,7 @@ export default async function VideoPage() {
           <section className="mb-16">
             <div className="flex items-center mb-8">
               <Youtube className="h-8 w-8 text-red-600 mr-3" />
-              <h2 className="text-3xl font-bold text-dark">YouTube</h2>
+              <h2 className="text-3xl font-bold text-foreground">YouTube</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {youtubeVideos.map((video) => (
@@ -62,7 +62,7 @@ export default async function VideoPage() {
           <section>
             <div className="flex items-center mb-8">
               <Music className="h-8 w-8 text-black mr-3" />
-              <h2 className="text-3xl font-bold text-dark">TikTok</h2>
+              <h2 className="text-3xl font-bold text-foreground">TikTok</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {tiktokVideos.map((video) => (
