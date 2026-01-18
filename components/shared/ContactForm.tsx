@@ -22,7 +22,9 @@ const contactFormSchema = z.object({
   email: z.string().email("Невалиден email адрес"),
   phone: z.string().optional(),
   company: z.string().optional(),
+  subject: z.string().min(2, "Темата трябва да е поне 2 символа"),
   message: z.string().min(10, "Съобщението трябва да е поне 10 символа"),
+  honeypot: z.string().max(0, "Spam detected").optional(),
 });
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
@@ -39,7 +41,9 @@ export function ContactForm() {
       email: "",
       phone: "",
       company: "",
+      subject: "",
       message: "",
+      honeypot: "",
     },
   });
 
@@ -161,6 +165,20 @@ export function ContactForm() {
 
         <FormField
           control={form.control}
+          name="subject"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Тема *</FormLabel>
+              <FormControl>
+                <Input placeholder="Тема на запитването" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="message"
           render={({ field }) => (
             <FormItem>
@@ -173,6 +191,20 @@ export function ContactForm() {
                 />
               </FormControl>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Honeypot field - hidden from users, visible to bots */}
+        <FormField
+          control={form.control}
+          name="honeypot"
+          render={({ field }) => (
+            <FormItem className="absolute -left-[9999px] opacity-0 h-0 w-0 overflow-hidden" aria-hidden="true">
+              <FormLabel>Leave this empty</FormLabel>
+              <FormControl>
+                <Input tabIndex={-1} autoComplete="off" {...field} />
+              </FormControl>
             </FormItem>
           )}
         />

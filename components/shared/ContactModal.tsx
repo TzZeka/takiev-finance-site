@@ -20,8 +20,10 @@ const contactFormSchema = z.object({
   name: z.string().min(2, "Името трябва да е поне 2 символа"),
   email: z.string().email("Невалиден email адрес"),
   phone: z.string().optional(),
+  company: z.string().optional(),
   subject: z.string().min(2, "Темата трябва да е поне 2 символа"),
   message: z.string().min(10, "Съобщението трябва да е поне 10 символа"),
+  honeypot: z.string().max(0, "Spam detected").optional(),
 });
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
@@ -43,8 +45,10 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
       name: "",
       email: "",
       phone: "",
+      company: "",
       subject: defaultSubject,
       message: "",
+      honeypot: "",
     },
   });
 
@@ -258,6 +262,24 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
 
                     <FormField
                       control={form.control}
+                      name="company"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-white">Фирма</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Име на фирмата"
+                              className="bg-white/10 border-white/20 text-white placeholder:text-white/40"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
                       name="subject"
                       render={({ field }) => (
                         <FormItem>
@@ -289,6 +311,20 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                             />
                           </FormControl>
                           <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Honeypot field - hidden from users, visible to bots */}
+                    <FormField
+                      control={form.control}
+                      name="honeypot"
+                      render={({ field }) => (
+                        <FormItem className="absolute -left-[9999px] opacity-0 h-0 w-0 overflow-hidden" aria-hidden="true">
+                          <FormLabel>Leave this empty</FormLabel>
+                          <FormControl>
+                            <Input tabIndex={-1} autoComplete="off" {...field} />
+                          </FormControl>
                         </FormItem>
                       )}
                     />

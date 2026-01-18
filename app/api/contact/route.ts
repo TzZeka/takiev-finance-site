@@ -7,7 +7,9 @@ const contactSchema = z.object({
   email: z.string().email(),
   phone: z.string().optional(),
   company: z.string().optional(),
+  subject: z.string().min(2),
   message: z.string().min(10),
+  honeypot: z.string().max(0).optional(),
 });
 
 export async function POST(request: Request) {
@@ -17,8 +19,20 @@ export async function POST(request: Request) {
     // Validate request body
     const validatedData = contactSchema.parse(body);
 
+    // Check honeypot - if filled, it's likely a bot
+    if (validatedData.honeypot) {
+      // Silently reject but return success to not alert the bot
+      return NextResponse.json(
+        { message: "Запитването е изпратено успешно" },
+        { status: 200 }
+      );
+    }
+
+    // Remove honeypot from data before sending email
+    const { honeypot, ...emailData } = validatedData;
+
     // Send email
-    const result = await sendContactEmail(validatedData);
+    const result = await sendContactEmail(emailData);
 
     if (!result.success) {
       return NextResponse.json(
