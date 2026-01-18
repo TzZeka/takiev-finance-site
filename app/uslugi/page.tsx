@@ -1,71 +1,64 @@
-import type { Metadata } from "next";
-import { getAllServices } from "@/lib/sanity/queries";
-import { ServiceCard } from "@/components/services/ServiceCard";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Услуги - Takiev Finance",
-  description:
-    "Професионални счетоводни услуги, данъчни консултации, правни услуги и регистрация на фирми. Цялостни решения за Вашия бизнес.",
-};
+import { useState, Suspense } from "react";
+import { ServiceTabs } from "@/components/services/ServiceTabs";
+import { AccountingServicesTab } from "@/components/services/tabs/AccountingServicesTab";
+import { TaxConsultationTab } from "@/components/services/tabs/TaxConsultationTab";
+import { LegalServicesTab } from "@/components/services/tabs/LegalServicesTab";
+import { CompanyRegistrationTab } from "@/components/services/tabs/CompanyRegistrationTab";
+import { ContactModal } from "@/components/shared/ContactModal";
+import { motion } from "framer-motion";
 
-export default async function ServicesPage() {
-  const services = await getAllServices();
+export default function ServicesPage() {
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [contactSubject, setContactSubject] = useState("");
 
-  // Group services by category
-  const categories = [
-    { key: "Счетоводни", title: "Счетоводни услуги" },
-    { key: "Данъчни", title: "Данъчни консултации" },
-    { key: "Правни", title: "Правни услуги" },
-    { key: "Регистрация", title: "Регистрация на фирми" },
-  ] as const;
+  const handleContact = (packageName?: string) => {
+    if (packageName) {
+      setContactSubject(`Заявка за пакет „${packageName}"`);
+    } else {
+      setContactSubject("");
+    }
+    setContactModalOpen(true);
+  };
 
   return (
-    <div className="py-16 md:py-24">
-      <div className="container mx-auto px-4">
+    <>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
         {/* Hero Section */}
-        <div className="max-w-4xl mx-auto text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Нашите услуги
-          </h1>
-          <p className="text-xl text-muted-foreground leading-relaxed">
-            Предлагаме цялостни решения за управление на счетоводството, данъците
-            и правните аспекти на Вашия бизнес
-          </p>
-        </div>
-
-        {/* Services by Category */}
-        <div className="space-y-16">
-          {categories.map((category) => {
-            const categoryServices = services.filter(
-              (s) => s.category === category.key
-            );
-
-            if (categoryServices.length === 0) return null;
-
-            return (
-              <section key={category.key}>
-                <h2 className="text-3xl font-bold text-foreground mb-8">
-                  {category.title}
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {categoryServices.map((service) => (
-                    <ServiceCard key={service._id} service={service} />
-                  ))}
-                </div>
-              </section>
-            );
-          })}
-        </div>
-
-        {/* Empty State */}
-        {services.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-lg text-muted-foreground">
-              Услугите ще бъдат добавени скоро.
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="container mx-auto px-4 md:px-6 lg:px-8 pt-16 md:pt-24 pb-8"
+        >
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+              Нашите услуги
+            </h1>
+            <p className="text-lg md:text-xl text-white/70 leading-relaxed">
+              Професионални счетоводни и данъчни решения за вашия бизнес
             </p>
           </div>
-        )}
+        </motion.div>
+
+        {/* Service Tabs */}
+        <Suspense fallback={<div className="container mx-auto px-4 py-16 text-center text-white/50">Зареждане...</div>}>
+          <ServiceTabs>
+            <AccountingServicesTab onContact={handleContact} />
+            <TaxConsultationTab onContact={handleContact} />
+            <LegalServicesTab onContact={handleContact} />
+            <CompanyRegistrationTab onContact={handleContact} />
+          </ServiceTabs>
+        </Suspense>
       </div>
-    </div>
+
+      {/* Contact Modal */}
+      <ContactModal
+        isOpen={contactModalOpen}
+        onClose={() => setContactModalOpen(false)}
+        defaultSubject={contactSubject}
+      />
+    </>
   );
 }

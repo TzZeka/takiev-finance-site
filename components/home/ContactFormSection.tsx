@@ -188,7 +188,7 @@ export function ContactFormSection({ ctaText }: ContactFormSectionProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <span>Безплатна консултация</span>
+              <span>Консултация</span>
             </div>
           </div>
         </div>

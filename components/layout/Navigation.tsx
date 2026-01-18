@@ -4,15 +4,24 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { ChevronDown, Calculator, Receipt, Scale, Building2 } from "lucide-react";
+import { serviceTabs } from "@/components/services/ServiceTabs";
 
 const navItems = [
   { href: "/", label: "Начало" },
   { href: "/za-nas", label: "За нас" },
-  { href: "/uslugi", label: "Услуги" },
+  { href: "/uslugi", label: "Услуги", hasDropdown: true },
   { href: "/blog", label: "Блог" },
   { href: "/video", label: "Видео" },
   { href: "/kontakti", label: "Контакти" },
 ];
+
+const serviceIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  schetovodstvo: Calculator,
+  danaci: Receipt,
+  pravni: Scale,
+  registraciq: Building2,
+};
 
 export function Navigation() {
   const pathname = usePathname();
@@ -20,8 +29,10 @@ export function Navigation() {
   const [ballPosition, setBallPosition] = useState({ left: 0 });
   const [isAnimating, setIsAnimating] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
-  const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const itemRefs = useRef<(HTMLAnchorElement | HTMLDivElement | null)[]>([]);
+  const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,12 +61,36 @@ export function Navigation() {
     }
   }, [hoveredIndex]);
 
-  const handleMouseEnter = (index: number) => {
+  const handleMouseEnter = (index: number, hasDropdown?: boolean) => {
     setHoveredIndex(index);
+    if (hasDropdown) {
+      if (dropdownTimeoutRef.current) {
+        clearTimeout(dropdownTimeoutRef.current);
+      }
+      setDropdownOpen(true);
+    }
   };
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = (hasDropdown?: boolean) => {
     setHoveredIndex(null);
+    if (hasDropdown) {
+      dropdownTimeoutRef.current = setTimeout(() => {
+        setDropdownOpen(false);
+      }, 150);
+    }
+  };
+
+  const handleDropdownEnter = () => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+    }
+    setDropdownOpen(true);
+  };
+
+  const handleDropdownLeave = () => {
+    dropdownTimeoutRef.current = setTimeout(() => {
+      setDropdownOpen(false);
+    }, 150);
   };
 
   return (
@@ -78,7 +113,71 @@ export function Navigation() {
       </div>
 
       {navItems.map((item, index) => {
-        const isActive = pathname === item.href;
+        const isActive = pathname === item.href || (item.href === "/uslugi" && pathname.startsWith("/uslugi"));
+
+        if (item.hasDropdown) {
+          return (
+            <div
+              key={item.href}
+              className="relative"
+              ref={(el) => {
+                itemRefs.current[index] = el;
+              }}
+              onMouseEnter={() => handleMouseEnter(index, true)}
+              onMouseLeave={() => handleMouseLeave(true)}
+            >
+              <Link
+                href={item.href}
+                className={cn(
+                  "relative font-medium transition-all duration-300 rounded-lg group whitespace-nowrap flex items-center gap-1",
+                  scrolled
+                    ? "px-2.5 py-1.5 md:px-3 lg:px-3.5 text-sm md:text-base lg:text-lg"
+                    : "px-2 py-1.5 md:px-3 lg:px-4 md:py-1.5 lg:py-2 text-xs md:text-xs lg:text-sm",
+                  isActive
+                    ? "text-[#19BFB7]"
+                    : "text-white/70 hover:text-white hover:bg-white/5"
+                )}
+              >
+                {item.label}
+                <ChevronDown className={cn(
+                  "w-3 h-3 transition-transform duration-200",
+                  dropdownOpen && "rotate-180"
+                )} />
+                {/* Active indicator */}
+                {isActive && (
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-[#19BFB7] to-transparent"></span>
+                )}
+              </Link>
+
+              {/* Dropdown Menu */}
+              {dropdownOpen && (
+                <div
+                  className="absolute top-full left-0 mt-2 w-64 bg-slate-900/95 backdrop-blur-md border border-white/10 rounded-xl shadow-xl overflow-hidden z-50"
+                  onMouseEnter={handleDropdownEnter}
+                  onMouseLeave={handleDropdownLeave}
+                >
+                  <div className="py-2">
+                    {serviceTabs.map((service) => {
+                      const Icon = serviceIcons[service.id] || Calculator;
+                      return (
+                        <Link
+                          key={service.id}
+                          href={`/uslugi?tab=${service.id}`}
+                          className="flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                          onClick={() => setDropdownOpen(false)}
+                        >
+                          <Icon className="w-4 h-4 text-primary" />
+                          <span className="text-sm">{service.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        }
+
         return (
           <Link
             key={item.href}
@@ -87,7 +186,7 @@ export function Navigation() {
               itemRefs.current[index] = el;
             }}
             onMouseEnter={() => handleMouseEnter(index)}
-            onMouseLeave={handleMouseLeave}
+            onMouseLeave={() => handleMouseLeave()}
             className={cn(
               "relative font-medium transition-all duration-300 rounded-lg group whitespace-nowrap",
               scrolled

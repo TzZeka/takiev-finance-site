@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -29,9 +29,10 @@ type ContactFormValues = z.infer<typeof contactFormSchema>;
 interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
+  defaultSubject?: string;
 }
 
-export function ContactModal({ isOpen, onClose }: ContactModalProps) {
+export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,10 +43,17 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
       name: "",
       email: "",
       phone: "",
-      subject: "",
+      subject: defaultSubject,
       message: "",
     },
   });
+
+  // Update subject when defaultSubject changes
+  React.useEffect(() => {
+    if (defaultSubject) {
+      form.setValue("subject", defaultSubject);
+    }
+  }, [defaultSubject, form]);
 
   async function onSubmit(data: ContactFormValues) {
     setIsSubmitting(true);

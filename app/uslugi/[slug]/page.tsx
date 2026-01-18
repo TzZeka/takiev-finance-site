@@ -135,7 +135,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
               Заинтересовани ли сте?
             </h3>
             <p className="text-lg text-muted-foreground mb-6">
-              Свържете се с нас за безплатна консултация и оферта
+              Свържете се с нас за консултация и оферта
             </p>
             <Button asChild size="lg">
               <Link href="/kontakti">Изпрати запитване</Link>

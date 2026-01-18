@@ -112,7 +112,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/uslugi"
+                  href="/uslugi?tab=schetovodstvo"
                   className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
                 >
                   <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
@@ -121,7 +121,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/uslugi"
+                  href="/uslugi?tab=danaci"
                   className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
                 >
                   <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
@@ -130,7 +130,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/uslugi"
+                  href="/uslugi?tab=pravni"
                   className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
                 >
                   <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
@@ -139,7 +139,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/uslugi"
+                  href="/uslugi?tab=registraciq"
                   className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
                 >
                   <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>

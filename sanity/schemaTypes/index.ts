@@ -6,9 +6,20 @@ import testimonial from './testimonial'
 import client from './client'
 import video from './video'
 import homeContent from './homeContent'
+import accountingServicesContent from './accountingServicesContent'
+import taxConsultationContent from './taxConsultationContent'
+import legalServicesContent from './legalServicesContent'
+import companyRegistrationContent from './companyRegistrationContent'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
+    // Services Page Content
+    accountingServicesContent,
+    taxConsultationContent,
+    legalServicesContent,
+    companyRegistrationContent,
+
+    // Other Content Types
     service,
     blogPost,
     author,
