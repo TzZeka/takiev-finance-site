@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { sendContactEmail } from "@/lib/email";
+import { sendContactEmail, sendAutoReplyEmail } from "@/lib/email";
 
 const contactSchema = z.object({
   name: z.string().min(2),
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     // Remove honeypot from data before sending email
     const { honeypot, ...emailData } = validatedData;
 
-    // Send email
+    // Send email to office
     const result = await sendContactEmail(emailData);
 
     if (!result.success) {
@@ -40,6 +40,11 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
+
+    // Send auto-reply to the user (non-blocking)
+    sendAutoReplyEmail(emailData).catch((err) => {
+      console.error("Failed to send auto-reply:", err);
+    });
 
     return NextResponse.json(
       { message: "Запитването е изпратено успешно" },

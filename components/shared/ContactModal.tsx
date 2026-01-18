@@ -106,7 +106,7 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 rounded-2xl shadow-2xl border border-white/10 animate-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 rounded-2xl shadow-2xl border border-white/10 animate-in zoom-in-95 duration-200">
         {/* Close Button */}
         <button
           onClick={onClose}
