@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "bg_BG",
     url: baseUrl,
-    title: "Takiev Finance - Професионални Счетоводни Услуги | Такиев Финанс",
+    title: "Takiev Finance - Счетоводна Кантора",
     description:
       "Избери своя доверен бизнес партньор. Счетоводството е движеща сила за всеки успешен бизнес.",
     siteName: "Takiev Finance",
@@ -90,7 +90,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Takiev Finance - Професионални Счетоводни Услуги",
+    title: "Takiev Finance - Счетоводна Кантора",
     description:
       "Избери своя доверен бизнес партньор. Счетоводството е движеща сила за всеки успешен бизнес.",
     images: ["/opengraph-image"],
