@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/shared/Logo";
-import { Mail, Phone, MapPin, Facebook, Linkedin, Youtube } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Linkedin, Youtube, ExternalLink } from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -14,11 +14,15 @@ export function Footer() {
       </div>
 
       <div className="container mx-auto px-4 py-16 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           {/* Company Info */}
           <div className="space-y-6">
-            <div>
+            <div className="flex items-center gap-4">
               <Logo />
+              <div className="flex flex-col">
+                <span className="text-sm text-white/50">ЕИК: 206666484</span>
+                <div className="h-px w-full bg-gradient-to-r from-[#19BFB7] to-transparent mt-1" />
+              </div>
             </div>
             <p className="text-sm text-white/70 leading-relaxed">
               Избери своя доверен бизнес партньор. Експертно счетоводно
@@ -28,7 +32,7 @@ export function Footer() {
             {/* Social Media */}
             <div className="flex space-x-3">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/n.takiev"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group p-3 bg-white/5 hover:bg-[#19BFB7] rounded-lg transition-all duration-300 backdrop-blur-sm border border-white/10 hover:border-[#19BFB7]"
@@ -37,7 +41,7 @@ export function Footer() {
                 <Facebook className="h-5 w-5 text-white/60 group-hover:text-white transition-colors" />
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/company/takiev-finance/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group p-3 bg-white/5 hover:bg-[#19BFB7] rounded-lg transition-all duration-300 backdrop-blur-sm border border-white/10 hover:border-[#19BFB7]"
@@ -46,13 +50,24 @@ export function Footer() {
                 <Linkedin className="h-5 w-5 text-white/60 group-hover:text-white transition-colors" />
               </a>
               <a
-                href="https://youtube.com"
+                href="https://www.youtube.com/@nikolaytakiev6221"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group p-3 bg-white/5 hover:bg-[#19BFB7] rounded-lg transition-all duration-300 backdrop-blur-sm border border-white/10 hover:border-[#19BFB7]"
                 aria-label="YouTube"
               >
                 <Youtube className="h-5 w-5 text-white/60 group-hover:text-white transition-colors" />
+              </a>
+              <a
+                href="https://www.tiktok.com/@n.takiev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group p-3 bg-white/5 hover:bg-[#19BFB7] rounded-lg transition-all duration-300 backdrop-blur-sm border border-white/10 hover:border-[#19BFB7]"
+                aria-label="TikTok"
+              >
+                <svg className="h-5 w-5 text-white/60 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                </svg>
               </a>
             </div>
           </div>
@@ -112,7 +127,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/uslugi?tab=schetovodstvo"
+                  href="/uslugi/schetovodni-uslugi"
                   className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
                 >
                   <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
@@ -121,7 +136,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/uslugi?tab=danaci"
+                  href="/uslugi/danachni-konsultacii"
                   className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
                 >
                   <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
@@ -130,7 +145,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/uslugi?tab=pravni"
+                  href="/uslugi/pravni-uslugi"
                   className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
                 >
                   <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
@@ -139,12 +154,58 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/uslugi?tab=registraciq"
+                  href="/uslugi/registraciq-na-firmi"
                   className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
                 >
                   <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
                   Регистрация на фирми
                 </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Useful Sites */}
+          <div>
+            <h3 className="text-lg font-bold mb-6 flex items-center">
+              <span className="text-[#19BFB7]">—</span>
+              <span className="ml-2">Полезни сайтове</span>
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <a
+                  href="https://nula.bg"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
+                >
+                  <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
+                  Nula.bg
+                  <ExternalLink className="w-3 h-3 ml-1.5 opacity-50" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.portalschetovodstvo.bg/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
+                >
+                  <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
+                  Портал Счетоводство
+                  <ExternalLink className="w-3 h-3 ml-1.5 opacity-50" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://nap.bg"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
+                >
+                  <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
+                  НАП
+                  <ExternalLink className="w-3 h-3 ml-1.5 opacity-50" />
+                </a>
               </li>
             </ul>
           </div>
@@ -194,7 +255,7 @@ export function Footer() {
         <div className="border-t border-white/10 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-sm text-white/50">
-              &copy; {currentYear} Takiev Finance. Всички права запазени.
+              &copy; 2021-{currentYear} Takiev Finance. Всички права запазени.
             </p>
             <div className="flex items-center space-x-6 text-xs text-white/50">
               <Link href="/privacy" className="hover:text-[#19BFB7] transition-colors">

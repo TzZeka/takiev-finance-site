@@ -16,27 +16,38 @@ body:has(.loader-active) {
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
-    overflow-x: hidden;
-    width: 100%;
-    max-width: 100vw;
-    position: relative;
   }
 
-  /* Prevent horizontal scrolling and overscroll on mobile */
-  @media (max-width: 1024px) {
-    html,
-    body {
-      overscroll-behavior-x: none;
-      touch-action: pan-y pinch-zoom;
-    }
+  /* Mobile scrolling - simple and reliable */
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    /* Use clip instead of hidden to prevent horizontal scroll without breaking sticky */
+    overflow-x: clip;
+  }
 
-    body {
-      -webkit-overflow-scrolling: touch;
-    }
+  body {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: clip;
+  }
 
-    /* Prevent pull-to-refresh on Chrome mobile */
-    body {
-      overscroll-behavior-y: contain;
+  /* Scroll margin for sections - accounts for sticky header + service navigation */
+  section[id],
+  div[id] {
+    scroll-margin-top: 120px;
+  }
+
+  @media (min-width: 768px) {
+    section[id],
+    div[id] {
+      scroll-margin-top: 136px;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    section[id],
+    div[id] {
+      scroll-margin-top: 152px;
     }
   }
 }
@@ -44,6 +55,15 @@ body:has(.loader-active) {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Hide scrollbar but keep scroll functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 
   @keyframes spin-slow {
@@ -57,6 +77,22 @@ body:has(.loader-active) {
 
   .animate-spin-slow {
     animation: spin-slow 20s linear infinite;
+  }
+
+  /* Subtle pulse animation for mobile menu arrow */
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 0.5;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(2px);
+    }
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
   }
 
   /* Custom scrollbar for Table of Contents */
@@ -81,5 +117,32 @@ body:has(.loader-active) {
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, #14b8a6 0%, #0f766e 100%);
+  }
+
+  /* Infinite scroll animations for carousel */
+  @keyframes scroll-left {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes scroll-right {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  .animate-scroll-left {
+    animation: scroll-left linear infinite;
+  }
+
+  .animate-scroll-right {
+    animation: scroll-right linear infinite;
   }
 }

@@ -49,9 +49,10 @@ export function LocalBusinessJsonLd() {
       'Годишно приключване',
     ],
     sameAs: [
-      // Добави линкове към социални мрежи
-      // 'https://www.facebook.com/takievfinance',
-      // 'https://www.linkedin.com/company/takievfinance',
+      'https://www.facebook.com/n.takiev',
+      'https://www.linkedin.com/company/takiev-finance/',
+      'https://www.youtube.com/@nikolaytakiev6221',
+      'https://www.tiktok.com/@n.takiev',
     ],
   }
 
@@ -75,7 +76,7 @@ export function OrganizationJsonLd() {
       '@type': 'Person',
       name: 'Nikolay Takiev',
     },
-    foundingDate: '2020', // Смени с реалната година
+    foundingDate: '2021',
     contactPoint: {
       '@type': 'ContactPoint',
       telephone: '+359899080016',

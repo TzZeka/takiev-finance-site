@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { QuickPanel } from "@/components/layout/QuickPanel";
 import { PremiumLoader } from "@/components/shared/PremiumLoader";
 import { LocalBusinessJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 
@@ -103,16 +104,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="bg" className="overflow-x-hidden">
+    <html lang="bg">
       <head>
         <LocalBusinessJsonLd />
         <OrganizationJsonLd />
         <WebSiteJsonLd />
       </head>
-      <body className={`${inter.className} overflow-x-hidden`}>
+      <body className={inter.className}>
         <PremiumLoader />
         <Header />
-        <main className="min-h-screen overflow-x-hidden w-full">{children}</main>
+        <QuickPanel />
+        <main className="min-h-screen w-full">{children}</main>
         <Footer />
       </body>
     </html>

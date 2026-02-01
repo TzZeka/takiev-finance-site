@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Building,
@@ -14,15 +15,16 @@ import {
   HelpCircle
 } from "lucide-react";
 import { ContentTableOfContents } from "../ContentTableOfContents";
+import { cn } from "@/lib/utils";
 
 interface CompanyRegistrationTabProps {
   onContact?: (packageName?: string) => void;
 }
 
 export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProps) {
-  // Table of contents items
+  const [tocCollapsed, setTocCollapsed] = useState(false);
+  // Table of contents items - starts from business-forms, not introduction
   const tocItems = [
-    { id: "introduction", title: "Въведение", level: 1 },
     { id: "business-forms", title: "Форми на търговска дейност", level: 1 },
     { id: "company-registration", title: "Регистрация на търговско дружество", level: 1 },
     { id: "company-types", title: "Видове търговски дружества", level: 2 },
@@ -96,66 +98,46 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
   );
 
   return (
-    <div className="relative">
-      {/* TOC Component - renders fixed on left side of screen when scrolling */}
-      <div className="hidden lg:block">
-        <ContentTableOfContents items={tocItems} onContact={onContact} />
-      </div>
-
-      {/* Hero Section */}
-      <div className="text-center mb-12 md:mb-16">
-        <motion.h2
+    <div>
+      {/* Introduction Section - Full Width (outside TOC layout) */}
+      <section id="introduction" className="mb-16 md:mb-20">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4"
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="bg-gradient-to-br from-primary/10 via-white/5 to-primary/5 border-2 border-primary/20 rounded-2xl p-6 md:p-8 max-w-5xl mx-auto"
         >
-          Регистрация на фирми
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="text-lg md:text-xl text-white/70 max-w-3xl mx-auto"
-        >
-          Професионална помощ при регистрация на търговско дружество или едноличен търговец
-        </motion.p>
-      </div>
+          <div className="flex items-start gap-4 mb-6">
+            <div className="p-3 bg-primary/20 rounded-xl">
+              <HelpCircle className="w-7 h-7 text-primary" />
+            </div>
+            <h3 className="text-2xl md:text-3xl font-bold text-white">
+              Трудно ли е да регистрираш собствена фирма?
+            </h3>
+          </div>
 
-      {/* Main Content - with left padding on large screens to make space for TOC */}
-      <div className="lg:pl-72 xl:pl-80">
-        <div className="max-w-4xl mx-auto">
+          <div className="space-y-4 text-white/80 leading-relaxed text-justify">
+            <p>
+              Стартирането на собствен бизнес, особено когато е за първи път, несъмнено е един вълнуващ и важен момент за Вас, който обаче доста често е свързан с много неизвестни.
+            </p>
+            <p>
+              Много често хората смятат, че да си регистрираш собствена фирма е нещо трудно, сложно и скъпо и поради тази причина често се страхуват да направят тази така важна крачка в своето бизнес развитие.
+            </p>
+            <p className="text-white font-medium">
+              Истината обаче е, че регистрацията на фирма нито е нещо трудно, нито е нещо сложно, когато ползваме услугите на професионалисти.
+            </p>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Two Column Layout: Content + TOC Sidebar */}
+      <div className={cn(
+        "lg:grid lg:gap-8 transition-all duration-500",
+        tocCollapsed ? "lg:grid-cols-[1fr_56px]" : "lg:grid-cols-[1fr_280px]"
+      )}>
+        {/* Main Content - expands when TOC is collapsed */}
+        <div className="min-w-0">
           <div className="space-y-16 md:space-y-20">
-            {/* Section: Introduction */}
-            <section id="introduction">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="bg-gradient-to-br from-primary/10 via-white/5 to-primary/5 border-2 border-primary/20 rounded-2xl p-6 md:p-8"
-              >
-                <div className="flex items-start gap-4 mb-6">
-                  <div className="p-3 bg-primary/20 rounded-xl">
-                    <HelpCircle className="w-7 h-7 text-primary" />
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-bold text-white">
-                    Трудно ли е да регистрираш собствена фирма?
-                  </h3>
-                </div>
-
-                <div className="space-y-4 text-white/80 leading-relaxed">
-                  <p>
-                    Стартирането на собствен бизнес, особено когато е за първи път, несъмнено е един вълнуващ и важен момент за Вас, който обаче доста често е свързан с много неизвестни.
-                  </p>
-                  <p>
-                    Много често хората смятат, че да си регистрираш собствена фирма е нещо трудно, сложно и скъпо и поради тази причина често се страхуват да направят тази така важна крачка в своето бизнес развитие.
-                  </p>
-                  <p className="text-white font-medium">
-                    Истината обаче е, че регистрацията на фирма нито е нещо трудно, нито е нещо сложно, когато ползваме услугите на професионалисти.
-                  </p>
-                </div>
-              </motion.div>
-            </section>
-
             {/* Section: Business Forms */}
             <section id="business-forms">
               <motion.div
@@ -173,13 +155,13 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                 </div>
 
                 <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6 md:p-8 space-y-4">
-                  <p className="text-white/80 leading-relaxed">
+                  <p className="text-white/80 leading-relaxed text-justify">
                     Вие можете да упражнявате търговска дейност по два начина – като <strong className="text-white">физическо лице</strong> или чрез <strong className="text-white">регистрация на търговско дружество</strong> (юридическо лице).
                   </p>
-                  <p className="text-white/80 leading-relaxed">
+                  <p className="text-white/80 leading-relaxed text-justify">
                     Нашият екип работи съвместно с високо квалифицирани юристи, които могат да Ви съдействат за регистрация на търговско дружество или регистрация на едноличен търговец.
                   </p>
-                  <p className="text-white/80 leading-relaxed">
+                  <p className="text-white/80 leading-relaxed text-justify">
                     За повече информация може да ни потърсите на посочения телефон за връзка или да ни пишете чрез <ContactLink>контактната форма</ContactLink> на нашия сайт.
                   </p>
 
@@ -228,7 +210,7 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                   </h4>
 
                   <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6 md:p-8">
-                    <p className="text-white/80 leading-relaxed mb-6">
+                    <p className="text-white/80 leading-relaxed text-justify mb-6">
                       Според действащия у нас Търговски закон са възможни няколко правни форми на търговски дружества:
                     </p>
 
@@ -253,7 +235,7 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                       ))}
                     </div>
 
-                    <div className="space-y-4 text-white/80 leading-relaxed">
+                    <div className="space-y-4 text-white/80 leading-relaxed text-justify">
                       <p>
                         <strong className="text-white">Най-често използваната форма</strong> на търговско дружество е дружеството с ограничена отговорност – ООД/ЕООД.
                       </p>
@@ -270,7 +252,7 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                     <h4 className="text-lg font-semibold text-white mb-3">
                       Разлика между ООД и ЕООД
                     </h4>
-                    <p className="text-white/80 leading-relaxed mb-4">
+                    <p className="text-white/80 leading-relaxed text-justify mb-4">
                       Разликата между ООД и ЕООД е единствено и само в броя на собствениците – при ООД са налице <strong className="text-white">двама или повече съдружници</strong>, докато при ЕООД е налице <strong className="text-white">един единствен собственик</strong>.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 mt-4">
@@ -302,7 +284,7 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                   </h4>
 
                   <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6 md:p-8">
-                    <p className="text-white/80 leading-relaxed mb-6">
+                    <p className="text-white/80 leading-relaxed text-justify mb-6">
                       Регистрацията на търговско дружество може да се извърши от управителя на дружеството или от лице, което е адвокат и е вписан в адвокатска колегия.
                     </p>
 
@@ -361,10 +343,10 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                   </h4>
 
                   <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6 md:p-8">
-                    <p className="text-white/80 leading-relaxed">
+                    <p className="text-white/80 leading-relaxed text-justify">
                       Нашият екип работи съвместно с висококвалифицирани юристи, които могат да Ви съдействат с всичко необходимо за регистрация на Вашия бизнес.
                     </p>
-                    <p className="text-white/80 leading-relaxed mt-4">
+                    <p className="text-white/80 leading-relaxed text-justify mt-4">
                       За повече информация можете да се свържете с нас на посочения телефон или чрез <ContactLink>контактната форма</ContactLink> на нашия сайт.
                     </p>
                   </div>
@@ -396,13 +378,13 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                   </h4>
 
                   <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6 md:p-8 space-y-4">
-                    <p className="text-white/80 leading-relaxed">
+                    <p className="text-white/80 leading-relaxed text-justify">
                       За да упражнявате търговска дейност като физическо лице е необходимо да се регистрирате като едноличен търговец в Търговския регистър. По този начин вие ще придобиете търговско качество и ще можете законно да упражнявате своята дейност.
                     </p>
-                    <p className="text-white/80 leading-relaxed">
+                    <p className="text-white/80 leading-relaxed text-justify">
                       След като бъдете регистрирани като едноличен търговец (ЕТ), ще можете да издавате фактури към контрагенти, да бъдете работодател по трудови договори и др.
                     </p>
-                    <p className="text-white/80 leading-relaxed">
+                    <p className="text-white/80 leading-relaxed text-justify">
                       Упражняването на търговска дейност от едноличния търговец поражда задължение за социално и здравно осигуряване и поради тази причина следва да се регистрирате като самоосигуряващо се лице.
                     </p>
 
@@ -427,7 +409,7 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                       <div className="p-3 bg-primary/20 rounded-xl">
                         <BookOpen className="w-5 h-5 text-primary" />
                       </div>
-                      <p className="text-white/80 leading-relaxed">
+                      <p className="text-white/80 leading-relaxed text-justify">
                         Едноличните търговци са <strong className="text-white">длъжни да водят счетоводна отчетност</strong> за своята дейност според Закона за счетоводството.
                       </p>
                     </div>
@@ -442,7 +424,7 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                   </h4>
 
                   <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6 md:p-8">
-                    <p className="text-white/80 leading-relaxed mb-4">
+                    <p className="text-white/80 leading-relaxed text-justify mb-4">
                       Макар много често физическите лица да упражняват търговска дейност без да са регистрирани официално като еднолични търговци, трябва да знаете, че за данъчни цели тези лица се приравняват на еднолични търговци.
                     </p>
                     <div className="flex items-center gap-3 p-4 bg-primary/10 border border-primary/20 rounded-xl">
@@ -462,10 +444,10 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                   </h4>
 
                   <div className="bg-gradient-to-br from-primary/10 via-white/5 to-primary/5 border-2 border-primary/20 rounded-2xl p-6 md:p-8">
-                    <p className="text-white/80 leading-relaxed mb-4">
+                    <p className="text-white/80 leading-relaxed text-justify mb-4">
                       Нашият екип работи съвместно с висококвалифицирани юристи, които могат да Ви съдействат с всичко необходимо за регистрация на едноличен търговец.
                     </p>
-                    <p className="text-white/80 leading-relaxed">
+                    <p className="text-white/80 leading-relaxed text-justify">
                       За повече информация можете да се свържете с нас на посочения телефон или чрез <ContactLink>контактната форма</ContactLink> на нашия сайт.
                     </p>
                   </div>
@@ -474,8 +456,19 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
             </section>
           </div>
         </div>
-      </div>
 
+        {/* TOC Sidebar - visible on large screens */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-[140px]">
+            <ContentTableOfContents
+              items={tocItems}
+              onContact={onContact}
+              isCollapsed={tocCollapsed}
+              onToggleCollapse={() => setTocCollapsed(!tocCollapsed)}
+            />
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }

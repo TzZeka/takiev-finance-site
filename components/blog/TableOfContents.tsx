@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { List, ChevronRight } from "lucide-react";
 
@@ -17,6 +17,8 @@ interface TableOfContentsProps {
 export function TableOfContents({ headings }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>("");
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [isStuck, setIsStuck] = useState(false);
+  const tocRef = useRef<HTMLDivElement>(null);
 
   // Group headings by parent H2 using useMemo to avoid recalculation
   const groupedHeadings = useMemo(() => {
@@ -77,12 +79,31 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
 
   useEffect(() => {
     const handleScroll = () => {
+      // Calculate scroll progress
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = (window.scrollY / totalHeight) * 100;
       setScrollProgress(Math.min(progress, 100));
+
+      // Check if TOC should stop before footer
+      const footer = document.querySelector("footer");
+      const tocElement = tocRef.current;
+
+      if (footer && tocElement) {
+        const footerRect = footer.getBoundingClientRect();
+        const tocRect = tocElement.getBoundingClientRect();
+        const headerOffset = 96; // top-24 = 6rem = 96px
+
+        // If footer is about to collide with TOC, stop sticky behavior
+        if (footerRect.top < tocRect.bottom + 20) {
+          setIsStuck(true);
+        } else {
+          setIsStuck(false);
+        }
+      }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -102,12 +123,14 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
 
   return (
     <motion.div
+      ref={tocRef}
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.3, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-      className="sticky top-24 h-[calc(100vh-7rem)]"
+      className={isStuck ? "relative" : "sticky top-24"}
+      style={{ maxHeight: isStuck ? "auto" : "calc(100vh - 7rem)" }}
     >
-      <div className="h-full bg-card rounded-xl border-2 border-primary/10 shadow-lg overflow-hidden flex flex-col relative min-h-0">
+      <div className="bg-card rounded-xl border-2 border-primary/10 shadow-lg overflow-hidden flex flex-col relative">
         {/* Header with progress indicator */}
         <div className="relative p-6 pb-4 border-b border-primary/10 bg-card z-10 flex-shrink-0">
           <div className="flex items-center gap-2 mb-3">
@@ -138,7 +161,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
         </div>
 
         {/* Scrollable content with custom scrollbar */}
-        <nav className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-6 py-4 custom-scrollbar">
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden px-6 py-4 custom-scrollbar" style={{ maxHeight: "calc(100vh - 14rem)" }}>
           <ul className="space-y-2 pb-4">
             {groupedHeadings.map((group, groupIndex) => {
               const isActive = activeId === group.heading.id;

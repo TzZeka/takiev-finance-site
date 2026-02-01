@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { BookOpen, GraduationCap, Briefcase, Code } from "lucide-react";
 
@@ -19,7 +19,7 @@ const journeyItems: JourneyItem[] = [
     icon: BookOpen,
     title: "Статии и публикации по данъци и счетоводство",
     description:
-      "Николай Такиев е част от екипа на един от най-големите сайтове за счетоводство и данъци в България – PortalSchetovodstvo.bg където е автор на редица книги, статии и публикации в областта на счетоводството и данъците.",
+      "<strong>Николай Такиев</strong> е част от екипа на един от най-големите сайтове за счетоводство и данъци в България – <strong>PortalSchetovodstvo.bg</strong> където е автор на редица книги, статии и публикации в областта на счетоводството и данъците.",
     logo: "/firm-logo/partners/PortalSchetovodstvo.png",
     logoAlt: "Portal Schetovodstvo",
   },
@@ -54,6 +54,7 @@ const journeyItems: JourneyItem[] = [
 export function ProfessionalJourney() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentCard, setCurrentCard] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -62,247 +63,221 @@ export function ProfessionalJourney() {
 
   useEffect(() => {
     return scrollYProgress.on("change", (latest) => {
-      const cardIndex = Math.min(
-        Math.floor(latest * journeyItems.length),
-        journeyItems.length - 1
-      );
-      setCurrentCard(cardIndex);
+      const totalCards = journeyItems.length;
+      const progressPerCard = 1 / (totalCards + 1);
+
+      if (latest >= progressPerCard * totalCards) {
+        setIsComplete(true);
+        setCurrentCard(totalCards - 1);
+      } else {
+        setIsComplete(false);
+        const cardIndex = Math.floor(latest / progressPerCard);
+        setCurrentCard(Math.min(cardIndex, totalCards - 1));
+      }
     });
   }, [scrollYProgress]);
 
   return (
-    <section ref={containerRef} className="relative" style={{ height: `${journeyItems.length * 100}vh` }}>
+    <section ref={containerRef} className="relative" style={{ height: `${(journeyItems.length + 1) * 100}vh` }}>
       {/* Sticky container */}
-      <div className="sticky top-0 h-screen overflow-hidden">
-        {/* Parallax Background Layers */}
-        <div className="absolute inset-0">
-          {/* Layer 1 - Furthest back (slowest) */}
-          <motion.div
-            style={{
-              y: useTransform(scrollYProgress, [0, 1], [0, -150]),
-            }}
-            className="absolute inset-0 bg-gradient-to-br from-primary/5 via-card to-teal-500/5"
-          />
+      <div className="sticky top-0 h-screen overflow-hidden will-change-transform">
+        {/* Optimized Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-white to-primary/10">
+          {/* Static grid - no animation for better performance */}
+          <div className="absolute inset-0 opacity-10">
+            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-primary" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+            </svg>
+          </div>
 
-          {/* Layer 2 - Diagonal stripes */}
-          <motion.div
-            style={{
-              y: useTransform(scrollYProgress, [0, 1], [0, -300]),
-            }}
-            className="absolute inset-0 opacity-5"
-          >
-            {[...Array(12)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute h-px bg-gradient-to-r from-transparent via-primary to-transparent"
-                style={{
-                  top: `${i * 10}%`,
-                  left: "-20%",
-                  right: "-20%",
-                  transform: `rotate(-12deg)`,
-                }}
-              />
-            ))}
-          </motion.div>
-
-          {/* Layer 3 - Floating shapes */}
-          <motion.div
-            style={{
-              y: useTransform(scrollYProgress, [0, 1], [0, -200]),
-              x: useTransform(scrollYProgress, [0, 1], [0, -100]),
-            }}
-            className="absolute top-20 left-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl"
-          />
-          <motion.div
-            style={{
-              y: useTransform(scrollYProgress, [0, 1], [0, -250]),
-              x: useTransform(scrollYProgress, [0, 1], [0, 100]),
-            }}
-            className="absolute bottom-20 right-20 w-80 h-80 bg-teal-500/5 rounded-full blur-3xl"
-          />
+          {/* Simplified gradient orbs - fewer animations */}
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl" />
         </div>
 
         {/* Content */}
-        <div className="relative z-10 h-full flex items-center justify-center px-4">
-          <div className="w-full max-w-6xl">
-            {/* Header - moves with parallax */}
-            <motion.div
-              style={{
-                opacity: useTransform(scrollYProgress, [0, 0.1], [1, 0]),
-                y: useTransform(scrollYProgress, [0, 0.2], [0, -100]),
-              }}
-              className="absolute top-12 left-0 right-0 text-center"
-            >
-              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
-                Професионално развитие
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                Партньорства и сътрудничество с водещи организации
-              </p>
-            </motion.div>
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 py-8">
+          {/* Header */}
+          <div className="text-center mb-8 flex-shrink-0">
+            <h2 className="text-3xl md:text-4xl font-bold text-dark mb-3">
+              Професионално развитие
+            </h2>
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+              Партньорства и сътрудничество с водещи организации
+            </p>
+          </div>
 
-            {/* Cards with diagonal/slanted design */}
-            <div className="relative h-full flex items-center">
-              {journeyItems.map((item, index) => {
-                const Icon = item.icon;
-                const progress = (currentCard - index) / journeyItems.length;
-                const isActive = currentCard === index;
-                const isPast = currentCard > index;
-                const isFuture = currentCard < index;
+          {/* Cards container - optimized */}
+          <div className="w-full max-w-5xl flex-1 flex items-center justify-center">
+            <div className="w-full">
+              <AnimatePresence mode="wait">
+                {!isComplete ? (
+                  // Single card view (stacked) - optimized
+                  <div key="single-view" className="relative" style={{ minHeight: "400px", maxHeight: "500px" }}>
+                    {journeyItems.map((item, index) => {
+                      const Icon = item.icon;
+                      const isVisible = index <= currentCard;
+                      const isCurrent = index === currentCard;
+                      const offset = currentCard - index;
 
-                return (
-                  <motion.div
-                    key={index}
-                    className="absolute inset-0 flex items-center justify-center"
-                    style={{
-                      opacity: isActive ? 1 : 0,
-                      pointerEvents: isActive ? "auto" : "none",
-                    }}
-                  >
-                    {/* Diagonal card container */}
-                    <motion.div
-                      initial={false}
-                      animate={{
-                        rotateY: isFuture ? 45 : isPast ? -45 : 0,
-                        rotateZ: isFuture ? 5 : isPast ? -5 : 0,
-                        x: isFuture ? 200 : isPast ? -200 : 0,
-                        opacity: isActive ? 1 : 0,
-                        scale: isActive ? 1 : 0.85,
-                      }}
-                      transition={{
-                        duration: 0.5,
-                        ease: [0.23, 1, 0.32, 1],
-                      }}
-                      className="w-full max-w-4xl"
-                      style={{
-                        transformStyle: "preserve-3d",
-                        perspective: "1000px",
-                      }}
-                    >
-                      {/* Main card with slanted design */}
-                      <div className="relative">
-                        {/* Diagonal accent bar - top left */}
-                        <div className="absolute -top-2 -left-2 w-32 h-1 bg-gradient-to-r from-primary to-teal-500 transform -rotate-12 rounded-full" />
+                      return (
+                        <motion.div
+                          key={index}
+                          initial={false}
+                          animate={{
+                            opacity: isVisible ? 1 : 0,
+                            scale: isVisible ? 1 - offset * 0.05 : 0.8,
+                            y: isVisible ? -offset * 20 : 100,
+                            zIndex: isCurrent ? 10 : index,
+                          }}
+                          transition={{
+                            duration: 0.4,
+                            ease: "easeOut",
+                          }}
+                          className="absolute inset-0 will-change-transform"
+                        >
+                          <div className="bg-white rounded-2xl shadow-2xl border-2 border-primary/10 overflow-hidden">
+                            <div className="h-2 bg-gradient-to-r from-primary via-teal-500 to-primary" />
 
-                        {/* Diagonal accent bar - bottom right */}
-                        <div className="absolute -bottom-2 -right-2 w-32 h-1 bg-gradient-to-r from-teal-500 to-primary transform -rotate-12 rounded-full" />
-
-                        {/* Card content */}
-                        <div className="relative bg-card rounded-xl shadow-2xl overflow-hidden border border-primary/20">
-                          {/* Diagonal gradient overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5"
-                               style={{ transform: "skewY(-2deg)", transformOrigin: "top left" }} />
-
-                          <div className="relative p-8 md:p-12">
-                            <div className="grid md:grid-cols-[auto_1fr_auto] gap-8 items-center">
-                              {/* Icon with parallax */}
-                              <motion.div
-                                style={{
-                                  y: useTransform(scrollYProgress, [index / journeyItems.length, (index + 1) / journeyItems.length], [30, -30]),
-                                }}
-                                className="flex justify-center md:justify-start"
-                              >
-                                <div className="relative">
-                                  {/* Diagonal line behind icon */}
-                                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-teal-500/20 rounded-2xl transform rotate-6 scale-110" />
-
-                                  <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-primary to-teal-500 flex items-center justify-center transform -rotate-6 shadow-xl">
-                                    <Icon className="w-12 h-12 text-white" />
+                            <div className="p-6 md:p-8">
+                              <div className="flex flex-col md:flex-row gap-6 items-center">
+                                {/* Icon */}
+                                <div className="flex-shrink-0">
+                                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center bg-gradient-to-br from-primary to-teal-500 shadow-lg">
+                                    <Icon className="w-8 h-8 md:w-10 md:h-10 text-white" />
                                   </div>
                                 </div>
-                              </motion.div>
 
-                              {/* Text content */}
-                              <div className="space-y-4 text-center md:text-left">
-                                {item.year && (
-                                  <motion.div
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: isActive ? 1 : 0, x: isActive ? 0 : -20 }}
-                                    transition={{ delay: 0.2 }}
-                                    className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold"
-                                  >
-                                    <div className="w-2 h-2 bg-primary rounded-full" />
-                                    {item.year}
-                                  </motion.div>
-                                )}
+                                {/* Text content */}
+                                <div className="flex-1 space-y-3 text-center md:text-left">
+                                  {item.year && (
+                                    <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-xs md:text-sm font-bold">
+                                      <div className="w-2 h-2 bg-primary rounded-full" />
+                                      {item.year}
+                                    </div>
+                                  )}
 
-                                <motion.h3
-                                  initial={{ opacity: 0, y: 20 }}
-                                  animate={{ opacity: isActive ? 1 : 0, y: isActive ? 0 : 20 }}
-                                  transition={{ delay: 0.3 }}
-                                  className="text-2xl md:text-3xl font-bold text-foreground"
-                                >
-                                  {item.title}
-                                </motion.h3>
+                                  <h3 className="text-xl md:text-2xl font-bold text-dark">
+                                    {item.title}
+                                  </h3>
 
-                                <motion.p
-                                  initial={{ opacity: 0, y: 20 }}
-                                  animate={{ opacity: isActive ? 1 : 0, y: isActive ? 0 : 20 }}
-                                  transition={{ delay: 0.4 }}
-                                  className="text-base text-foreground/70 leading-relaxed"
-                                >
-                                  {item.description}
-                                </motion.p>
+                                  <p className="text-sm md:text-base text-dark/80 leading-relaxed">
+                                    {item.description}
+                                  </p>
+                                </div>
+
+                                {/* Logo */}
+                                <div className="flex-shrink-0 w-40 h-24 md:w-48 md:h-28 relative bg-white rounded-xl border-2 border-primary/20 p-3 flex items-center justify-center shadow-lg">
+                                  <Image
+                                    src={item.logo}
+                                    alt={item.logoAlt}
+                                    fill
+                                    className="object-contain p-3"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Corner decorations */}
+                            <div className="absolute top-3 right-3 w-10 h-10 border-t-2 border-r-2 border-primary/20 rounded-tr-xl" />
+                            <div className="absolute bottom-3 left-3 w-10 h-10 border-b-2 border-l-2 border-primary/20 rounded-bl-xl" />
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  // All cards view (grid) - optimized with proper spacing
+                  <motion.div
+                    key="grid-view"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-h-[80vh] overflow-y-auto custom-scrollbar pb-8"
+                  >
+                    {journeyItems.map((item, index) => {
+                      const Icon = item.icon;
+
+                      return (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{
+                            duration: 0.3,
+                            delay: index * 0.08,
+                            ease: "easeOut",
+                          }}
+                          className="bg-white rounded-xl shadow-xl border-2 border-primary/10 overflow-hidden hover:border-primary/30 transition-colors duration-300 will-change-transform"
+                        >
+                          <div className="h-1.5 bg-gradient-to-r from-primary via-teal-500 to-primary" />
+
+                          <div className="p-5">
+                            <div className="flex items-start gap-3 mb-3">
+                              <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-teal-500/20 flex-shrink-0">
+                                <Icon className="w-6 h-6 text-primary" />
                               </div>
 
-                              {/* Logo with parallax */}
-                              <motion.div
-                                style={{
-                                  y: useTransform(scrollYProgress, [index / journeyItems.length, (index + 1) / journeyItems.length], [-30, 30]),
-                                }}
-                                className="flex justify-center md:justify-end"
-                              >
-                                <div className="relative w-48 h-32">
-                                  {/* Diagonal background */}
-                                  <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-card rounded-xl border border-primary/10 transform rotate-3" />
-
-                                  <div className="relative w-full h-full flex items-center justify-center p-4">
-                                    <Image
-                                      src={item.logo}
-                                      alt={item.logoAlt}
-                                      fill
-                                      className="object-contain p-4"
-                                    />
+                              <div className="flex-1 min-w-0">
+                                {item.year && (
+                                  <div className="inline-flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded-full text-xs font-bold mb-1">
+                                    <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                                    {item.year}
                                   </div>
-                                </div>
-                              </motion.div>
+                                )}
+                                <h3 className="text-base md:text-lg font-bold text-dark mb-1 line-clamp-2">
+                                  {item.title}
+                                </h3>
+                              </div>
+                            </div>
+
+                            <p className="text-xs md:text-sm text-dark/70 leading-relaxed mb-3 line-clamp-4">
+                              {item.description}
+                            </p>
+
+                            <div className="w-full h-16 relative bg-gray-50 rounded-lg border border-primary/10 p-2 flex items-center justify-center">
+                              <Image
+                                src={item.logo}
+                                alt={item.logoAlt}
+                                fill
+                                className="object-contain p-2"
+                              />
                             </div>
                           </div>
-
-                          {/* Diagonal line accent */}
-                          <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-primary via-teal-500 to-primary transform skew-x-12 origin-top-right opacity-20" />
-                        </div>
-                      </div>
-                    </motion.div>
+                        </motion.div>
+                      );
+                    })}
                   </motion.div>
-                );
-              })}
-            </div>
-
-            {/* Progress indicator - minimalist */}
-            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-3">
-              {journeyItems.map((_, index) => (
-                <motion.div
-                  key={index}
-                  className="h-1 bg-primary/20 rounded-full overflow-hidden"
-                  style={{ width: currentCard === index ? "48px" : "24px" }}
-                  animate={{
-                    width: currentCard === index ? "48px" : "24px",
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-primary to-teal-500"
-                    initial={{ x: "-100%" }}
-                    animate={{
-                      x: currentCard === index ? "0%" : currentCard > index ? "0%" : "-100%",
-                    }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </motion.div>
-              ))}
+                )}
+              </AnimatePresence>
             </div>
           </div>
+
+          {/* Scroll hint */}
+          {!isComplete && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.6 }}
+              className="flex-shrink-0 mt-6"
+            >
+              <motion.div
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="text-primary/60 text-xs md:text-sm font-medium flex flex-col items-center gap-1"
+              >
+                <span>Скролирай</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </motion.div>
+            </motion.div>
+          )}
+          
         </div>
       </div>
     </section>

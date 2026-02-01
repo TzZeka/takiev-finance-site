@@ -1,148 +1,87 @@
-import type { Metadata } from "next";
+"use client";
+
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import * as Icons from "lucide-react";
-import { PortableText } from "@portabletext/react";
-import { getAllServices, getServiceBySlug } from "@/lib/sanity/queries";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, ArrowLeft } from "lucide-react";
+import { use, useState } from "react";
+import { servicesConfig, getServiceBySlug } from "@/lib/services-config";
+import { AccountingServicesTab } from "@/components/services/tabs/AccountingServicesTab";
+import { TaxConsultationTab } from "@/components/services/tabs/TaxConsultationTab";
+import { LegalServicesTab } from "@/components/services/tabs/LegalServicesTab";
+import { CompanyRegistrationTab } from "@/components/services/tabs/CompanyRegistrationTab";
+import { ContactModal } from "@/components/shared/ContactModal";
+import { ServiceNavigation } from "@/components/services/ServiceNavigation";
+import { motion } from "framer-motion";
 
 interface ServicePageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  const services = await getAllServices();
-  return services.map((service) => ({
-    slug: service.slug.current,
-  }));
-}
+// Map service IDs to their components
+const serviceComponents: Record<string, React.ComponentType<{ onContact?: (packageName?: string) => void }>> = {
+  schetovodstvo: AccountingServicesTab,
+  danaci: TaxConsultationTab,
+  pravni: LegalServicesTab,
+  registraciq: CompanyRegistrationTab,
+};
 
-export async function generateMetadata({
-  params,
-}: ServicePageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const service = await getServiceBySlug(slug);
-
-  if (!service) {
-    return {
-      title: "Услуга не е намерена - Takiev Finance",
-    };
-  }
-
-  return {
-    title: `${service.title} - Takiev Finance`,
-    description: service.excerpt,
-  };
-}
-
-export default async function ServicePage({ params }: ServicePageProps) {
-  const { slug } = await params;
-  const service = await getServiceBySlug(slug);
+export default function ServicePage({ params }: ServicePageProps) {
+  const { slug } = use(params);
+  const service = getServiceBySlug(slug);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [contactSubject, setContactSubject] = useState("");
 
   if (!service) {
     notFound();
   }
 
-  const IconComponent =
-    Icons[service.icon as keyof typeof Icons] || Icons.Briefcase;
+  const ServiceComponent = serviceComponents[service.id];
+
+  if (!ServiceComponent) {
+    notFound();
+  }
+
+  const handleContact = (packageName?: string) => {
+    if (packageName) {
+      setContactSubject(`Заявка за пакет "${packageName}"`);
+    } else {
+      setContactSubject(`Запитване за ${service.title}`);
+    }
+    setContactModalOpen(true);
+  };
 
   return (
-    <div className="py-16 md:py-24">
-      <div className="container mx-auto px-4">
-        {/* Back Button */}
-        <div className="mb-8">
-          <Button asChild variant="ghost">
-            <Link href="/uslugi">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Към всички услуги
-            </Link>
-          </Button>
-        </div>
-
-        {/* Header */}
-        <div className="max-w-4xl mx-auto mb-12">
-          <div className="flex items-center mb-6">
-            <div className="w-20 h-20 bg-primary/10 rounded-lg flex items-center justify-center mr-6">
-              {/* @ts-ignore */}
-              <IconComponent className="h-10 w-10 text-primary" />
-            </div>
-            <div>
-              <div className="text-sm text-primary font-semibold mb-2">
-                {service.category}
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-                {service.title}
-              </h1>
-            </div>
-          </div>
-          <p className="text-xl text-muted-foreground leading-relaxed">
-            {service.excerpt}
-          </p>
-        </div>
-
-        {/* Content */}
-        <div className="max-w-4xl mx-auto">
-          {/* Description */}
-          {service.description && service.description.length > 0 && (
-            <div className="prose prose-lg max-w-none mb-12">
-              <PortableText value={service.description} />
-            </div>
-          )}
-
-          {/* Packages */}
-          {service.packages && service.packages.length > 0 && (
-            <div className="mb-12">
-              <h2 className="text-3xl font-bold text-foreground mb-8">
-                Налични пакети
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {service.packages.map((pkg) => (
-                  <Card key={pkg._key} className="border-2 hover:border-primary transition-colors">
-                    <CardHeader>
-                      <CardTitle className="text-2xl">{pkg.name}</CardTitle>
-                      {pkg.price && (
-                        <p className="text-2xl font-bold text-primary">
-                          {pkg.price}
-                        </p>
-                      )}
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {pkg.description && (
-                        <p className="text-muted-foreground">{pkg.description}</p>
-                      )}
-                      {pkg.features && pkg.features.length > 0 && (
-                        <ul className="space-y-2">
-                          {pkg.features.map((feature, index) => (
-                            <li key={index} className="flex items-start">
-                              <CheckCircle className="h-5 w-5 text-primary mr-2 flex-shrink-0 mt-0.5" />
-                              <span className="text-sm">{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* CTA */}
-          <div className="bg-gradient-to-br from-primary/5 to-background rounded-lg p-8 text-center">
-            <h3 className="text-2xl font-bold text-foreground mb-4">
-              Заинтересовани ли сте?
-            </h3>
-            <p className="text-lg text-muted-foreground mb-6">
-              Свържете се с нас за консултация и оферта
+    <>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        {/* Hero Section - Title of the current service */}
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 pt-8 md:pt-12 pb-6 md:pb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
+          >
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+              {service.title}
+            </h1>
+            <p className="text-lg md:text-xl text-white/70 max-w-3xl mx-auto">
+              {service.description}
             </p>
-            <Button asChild size="lg">
-              <Link href="/kontakti">Изпрати запитване</Link>
-            </Button>
-          </div>
+          </motion.div>
+        </div>
+
+        {/* Service Navigation - Sticky below header */}
+        <ServiceNavigation currentSlug={slug} />
+
+        {/* Service Content */}
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12">
+          <ServiceComponent onContact={handleContact} />
         </div>
       </div>
-    </div>
+
+      {/* Contact Modal */}
+      <ContactModal
+        isOpen={contactModalOpen}
+        onClose={() => setContactModalOpen(false)}
+        defaultSubject={contactSubject}
+      />
+    </>
   );
 }

@@ -64,25 +64,6 @@ export function TaxConsultationTab({ onContact }: TaxConsultationTabProps) {
 
   return (
     <div>
-      {/* Hero Section */}
-      <div className="text-center mb-12 md:mb-16">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4"
-        >
-          Данъчни консултации
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="text-lg md:text-xl text-white/70 max-w-3xl mx-auto"
-        >
-          Експертни данъчни консултации за фирми и физически лица
-        </motion.p>
-      </div>
-
       {/* Intro Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

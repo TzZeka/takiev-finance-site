@@ -3,9 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Calculator, Receipt, Scale, Building2 } from "lucide-react";
-import { serviceTabs } from "@/components/services/ServiceTabs";
+import { ChevronDown } from "lucide-react";
+import { servicesConfig } from "@/lib/services-config";
 
 const navItems = [
   { href: "/", label: "Начало" },
@@ -16,35 +17,22 @@ const navItems = [
   { href: "/kontakti", label: "Контакти" },
 ];
 
-const serviceIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  schetovodstvo: Calculator,
-  danaci: Receipt,
-  pravni: Scale,
-  registraciq: Building2,
-};
+interface NavigationProps {
+  scrolled?: boolean;
+}
 
-export function Navigation() {
+export function Navigation({ scrolled = false }: NavigationProps) {
   const pathname = usePathname();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [ballPosition, setBallPosition] = useState({ left: 0 });
   const [isAnimating, setIsAnimating] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
   const itemRefs = useRef<(HTMLAnchorElement | HTMLDivElement | null)[]>([]);
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    handleScroll();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (hoveredIndex !== null && itemRefs.current[hoveredIndex]) {
+    if (hoveredIndex !== null && itemRefs.current[hoveredIndex] && !scrolled) {
       const item = itemRefs.current[hoveredIndex];
       const nav = navRef.current;
       if (item && nav) {
@@ -59,10 +47,12 @@ export function Navigation() {
         setTimeout(() => setIsAnimating(false), 600);
       }
     }
-  }, [hoveredIndex]);
+  }, [hoveredIndex, scrolled]);
 
   const handleMouseEnter = (index: number, hasDropdown?: boolean) => {
-    setHoveredIndex(index);
+    if (!scrolled) {
+      setHoveredIndex(index);
+    }
     if (hasDropdown) {
       if (dropdownTimeoutRef.current) {
         clearTimeout(dropdownTimeoutRef.current);
@@ -94,23 +84,25 @@ export function Navigation() {
   };
 
   return (
-    <nav ref={navRef} className="hidden md:flex items-center gap-1 lg:gap-2 relative">
-      {/* Container for the ball - prevents layout shift */}
-      <div className="absolute -top-2 md:-top-2.5 lg:-top-3 left-0 right-0 h-2 md:h-2.5 lg:h-3 pointer-events-none">
-        {/* Animated bouncing ball */}
-        {hoveredIndex !== null && (
-          <div
-            className={cn(
-              "absolute top-0 h-1.5 w-1.5 md:h-2 md:w-2 lg:h-2.5 lg:w-2.5 bg-primary rounded-full shadow-md lg:shadow-lg shadow-primary/60 z-10 transition-all duration-300 ease-out",
-              isAnimating && "animate-bounce-jump"
-            )}
-            style={{
-              left: `${ballPosition.left}px`,
-              transform: "translateX(-50%)",
-            }}
-          />
-        )}
-      </div>
+    <nav ref={navRef} className="flex items-center justify-center gap-1 lg:gap-2 relative">
+      {/* Container for the ball - prevents layout shift - only show when NOT scrolled */}
+      {!scrolled && (
+        <div className="absolute -top-2 md:-top-2.5 lg:-top-3 left-0 right-0 h-2 md:h-2.5 lg:h-3 pointer-events-none">
+          {/* Animated bouncing ball */}
+          {hoveredIndex !== null && (
+            <div
+              className={cn(
+                "absolute top-0 h-1.5 w-1.5 md:h-2 md:w-2 lg:h-2.5 lg:w-2.5 bg-primary rounded-full shadow-md lg:shadow-lg shadow-primary/60 z-10 transition-all duration-300 ease-out",
+                isAnimating && "animate-bounce-jump"
+              )}
+              style={{
+                left: `${ballPosition.left}px`,
+                transform: "translateX(-50%)",
+              }}
+            />
+          )}
+        </div>
+      )}
 
       {navItems.map((item, index) => {
         const isActive = pathname === item.href || (item.href === "/uslugi" && pathname.startsWith("/uslugi"));
@@ -129,12 +121,9 @@ export function Navigation() {
               <Link
                 href={item.href}
                 className={cn(
-                  "relative font-medium transition-all duration-300 rounded-lg group whitespace-nowrap flex items-center gap-1",
-                  scrolled
-                    ? "px-2.5 py-1.5 md:px-3 lg:px-3.5 text-sm md:text-base lg:text-lg"
-                    : "px-2 py-1.5 md:px-3 lg:px-4 md:py-1.5 lg:py-2 text-xs md:text-xs lg:text-sm",
+                  "relative font-medium transition-all duration-300 rounded-lg group whitespace-nowrap flex items-center gap-1 px-3 lg:px-4 py-2 text-sm",
                   isActive
-                    ? "text-[#19BFB7]"
+                    ? "text-primary"
                     : "text-white/70 hover:text-white hover:bg-white/5"
                 )}
               >
@@ -143,9 +132,17 @@ export function Navigation() {
                   "w-3 h-3 transition-transform duration-200",
                   dropdownOpen && "rotate-180"
                 )} />
-                {/* Active indicator */}
+                {/* Active underline indicator */}
                 {isActive && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-[#19BFB7] to-transparent"></span>
+                  <motion.span
+                    layoutId="activeNavIndicator"
+                    className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full"
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 30,
+                    }}
+                  />
                 )}
               </Link>
 
@@ -157,12 +154,12 @@ export function Navigation() {
                   onMouseLeave={handleDropdownLeave}
                 >
                   <div className="py-2">
-                    {serviceTabs.map((service) => {
-                      const Icon = serviceIcons[service.id] || Calculator;
+                    {servicesConfig.map((service) => {
+                      const Icon = service.icon;
                       return (
                         <Link
                           key={service.id}
-                          href={`/uslugi?tab=${service.id}`}
+                          href={`/uslugi/${service.slug}`}
                           className="flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 transition-colors"
                           onClick={() => setDropdownOpen(false)}
                         >
@@ -188,19 +185,24 @@ export function Navigation() {
             onMouseEnter={() => handleMouseEnter(index)}
             onMouseLeave={() => handleMouseLeave()}
             className={cn(
-              "relative font-medium transition-all duration-300 rounded-lg group whitespace-nowrap",
-              scrolled
-                ? "px-2.5 py-1.5 md:px-3 lg:px-3.5 text-sm md:text-base lg:text-lg"
-                : "px-2 py-1.5 md:px-3 lg:px-4 md:py-1.5 lg:py-2 text-xs md:text-xs lg:text-sm",
+              "relative font-medium transition-all duration-300 rounded-lg group whitespace-nowrap px-3 lg:px-4 py-2 text-sm",
               isActive
-                ? "text-[#19BFB7]"
+                ? "text-primary"
                 : "text-white/70 hover:text-white hover:bg-white/5"
             )}
           >
             {item.label}
-            {/* Active indicator */}
+            {/* Active underline indicator */}
             {isActive && (
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-[#19BFB7] to-transparent"></span>
+              <motion.span
+                layoutId="activeNavIndicator"
+                className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full"
+                transition={{
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 30,
+                }}
+              />
             )}
           </Link>
         );
