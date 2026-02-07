@@ -169,25 +169,25 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
 
                   {/* Contact Info - visible on all screens */}
                   <div className="flex flex-wrap lg:flex-col gap-4">
-                    <a href="tel:+359123456789" className="flex items-center gap-3 text-white/80 hover:text-primary transition-colors">
-                      <div className="p-2 bg-primary/20 rounded-lg">
+                    <a href="tel:+359899080016" className="flex items-center gap-3 text-white/80 hover:text-primary transition-colors">
+                      <div className="p-2 bg-primary/20 rounded-lg flex-shrink-0">
                         <Phone className="h-4 w-4 text-primary" />
                       </div>
-                      <span className="text-sm">+359 123 456 789</span>
+                      <span className="text-sm">+359 89 908 0016</span>
                     </a>
 
                     <a href="mailto:office@takiev.bg" className="flex items-center gap-3 text-white/80 hover:text-primary transition-colors">
-                      <div className="p-2 bg-primary/20 rounded-lg">
+                      <div className="p-2 bg-primary/20 rounded-lg flex-shrink-0">
                         <Mail className="h-4 w-4 text-primary" />
                       </div>
                       <span className="text-sm">office@takiev.bg</span>
                     </a>
 
-                    <div className="flex items-center gap-3 text-white/80">
-                      <div className="p-2 bg-primary/20 rounded-lg">
+                    <div className="flex items-start gap-3 text-white/80">
+                      <div className="p-2 bg-primary/20 rounded-lg flex-shrink-0">
                         <MapPin className="h-4 w-4 text-primary" />
                       </div>
-                      <span className="text-sm">София, България</span>
+                      <span className="text-sm leading-relaxed">бул. „Александър Стамболийски" 30Б, 1000 София</span>
                     </div>
                   </div>
 

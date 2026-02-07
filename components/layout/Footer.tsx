@@ -233,18 +233,18 @@ export function Footer() {
                   <Phone className="h-4 w-4 text-[#19BFB7] flex-shrink-0" />
                 </div>
                 <a
-                  href="tel:+359123456789"
+                  href="tel:+359899080016"
                   className="text-sm text-white/70 hover:text-[#19BFB7] transition-colors pt-1"
                 >
-                  +359 123 456 789
+                  +359 89 908 0016
                 </a>
               </li>
               <li className="group flex items-start space-x-3">
-                <div className="p-2 bg-white/5 rounded-lg border border-white/10 group-hover:border-[#19BFB7] transition-all duration-300">
+                <div className="p-2 bg-white/5 rounded-lg border border-white/10 group-hover:border-[#19BFB7] transition-all duration-300 flex-shrink-0">
                   <MapPin className="h-4 w-4 text-[#19BFB7] flex-shrink-0" />
                 </div>
-                <span className="text-sm text-white/70 pt-1">
-                  София, България
+                <span className="text-sm text-white/70 pt-1 leading-relaxed">
+                  бул. „Александър Стамболийски" 30Б, 1000 София
                 </span>
               </li>
             </ul>

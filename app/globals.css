@@ -145,4 +145,15 @@ body:has(.loader-active) {
   .animate-scroll-right {
     animation: scroll-right linear infinite;
   }
+
+  /* Checkmark draw animation for sector cards */
+  .checkmark-path {
+    stroke-dasharray: 24;
+    stroke-dashoffset: 24;
+    transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .group:hover .checkmark-path {
+    stroke-dashoffset: 0;
+  }
 }

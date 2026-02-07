@@ -23,13 +23,13 @@ const contactInfo = [
   {
     icon: Phone,
     title: "Телефон",
-    content: "+359 123 456 789",
-    link: "tel:+359123456789",
+    content: "+359 89 908 0016",
+    link: "tel:+359899080016",
   },
   {
     icon: MapPin,
     title: "Адрес",
-    content: "София, България",
+    content: `бул. „Александър Стамболийски" 30Б, 1000 София`,
     link: null,
   },
   {

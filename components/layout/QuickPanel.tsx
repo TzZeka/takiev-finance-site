@@ -176,46 +176,38 @@ export function QuickPanel() {
           {/* Top edge glow */}
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
-          <div className="container mx-auto px-6 lg:px-8 xl:px-12 py-8">
+          <div className="container mx-auto px-6 lg:pl-24 lg:pr-8 xl:pl-28 xl:pr-12 py-8">
             <div
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8 lg:gap-10"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 sm:gap-8 lg:gap-10"
               style={{
                 opacity: isOpen ? 1 : 0,
                 transform: isOpen ? "translateY(0)" : "translateY(-10px)",
                 transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.1s",
               }}
             >
-              {/* Services */}
+              {/* Google Maps */}
               <div
+                className="sm:col-span-2 lg:col-span-1"
                 style={{
                   opacity: isOpen ? 1 : 0,
                   transform: isOpen ? "translateY(0)" : "translateY(-15px)",
                   transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.05s",
                 }}
               >
-                <h3 className="text-sm font-bold mb-4 flex items-center text-white">
-                  <span className="text-primary">—</span>
-                  <span className="ml-2">Услуги</span>
-                </h3>
-                <ul className="space-y-2.5">
-                  {[
-                    { href: "/uslugi/schetovodni-uslugi", label: "Счетоводни услуги" },
-                    { href: "/uslugi/danachni-konsultacii", label: "Данъчни консултации" },
-                    { href: "/uslugi/pravni-uslugi", label: "Правни услуги" },
-                    { href: "/uslugi/registraciq-na-firmi", label: "Регистрация на фирми" },
-                  ].map((link) => (
-                    <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        onClick={() => setIsOpen(false)}
-                        className="group text-sm text-white/70 hover:text-primary transition-colors flex items-center py-0.5"
-                      >
-                        <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2" />
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                {/* Using padding-bottom trick for consistent aspect ratio across browsers */}
+                <div className="relative w-full min-h-[180px] rounded-lg overflow-hidden border border-white/10" style={{ paddingBottom: '75%' }}>
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2932.283956399353!2d23.319877890847863!3d42.697707877149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40aa855eff40e335%3A0xa7cffc05e42a4e56!2sTakiev%20Finance%20EOOD!5e0!3m2!1sbg!2sbg!4v1768080298879!5m2!1sbg!2sbg"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Takiev Finance Location"
+                    className="grayscale hover:grayscale-0 transition-all duration-500"
+                  />
+                </div>
               </div>
 
               {/* Useful Sites */}
@@ -284,15 +276,15 @@ export function QuickPanel() {
                       href="tel:+359899080016"
                       className="text-sm text-white/70 hover:text-primary transition-colors"
                     >
-                      +359 899 080 016
+                      +359 89 908 0016
                     </a>
                   </li>
-                  <li className="group flex items-center space-x-3">
-                    <div className="p-1.5 bg-white/5 rounded-lg border border-white/10 group-hover:border-primary transition-all duration-300">
+                  <li className="group flex items-start space-x-3">
+                    <div className="p-1.5 bg-white/5 rounded-lg border border-white/10 group-hover:border-primary transition-all duration-300 flex-shrink-0">
                       <MapPin className="h-3.5 w-3.5 text-primary" />
                     </div>
-                    <span className="text-sm text-white/70">
-                      София, България
+                    <span className="text-sm text-white/70 leading-relaxed">
+                      бул. „Александър Стамболийски" 30Б, 1000 София
                     </span>
                   </li>
                 </ul>

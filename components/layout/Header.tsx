@@ -265,11 +265,11 @@ export function Header() {
                   className="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:text-primary hover:bg-white/5 transition-all"
                 >
                   <Phone className="w-4 h-4 text-primary" />
-                  <span className="text-sm">+359 899 080 016</span>
+                  <span className="text-sm">+359 89 908 0016</span>
                 </a>
-                <div className="flex items-center gap-3 px-3 py-2 text-white/50">
-                  <MapPin className="w-4 h-4 text-primary/70" />
-                  <span className="text-sm">София, България</span>
+                <div className="flex items-start gap-3 px-3 py-2 text-white/50">
+                  <MapPin className="w-4 h-4 text-primary/70 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm leading-relaxed">бул. „Ал. Стамболийски" 30Б, София</span>
                 </div>
               </div>
             </div>

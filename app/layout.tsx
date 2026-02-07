@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { QuickPanel } from "@/components/layout/QuickPanel";
 import { PremiumLoader } from "@/components/shared/PremiumLoader";
+import { ScrollToTop } from "@/components/shared/ScrollToTop";
 import { LocalBusinessJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
@@ -116,6 +117,7 @@ export default function RootLayout({
         <QuickPanel />
         <main className="min-h-screen w-full">{children}</main>
         <Footer />
+        <ScrollToTop />
       </body>
     </html>
   );

@@ -14,7 +14,7 @@ export function LocalBusinessJsonLd() {
     email: 'office@takiev.bg', 
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'ул. Примерна 1', // Смени с твоя адрес
+      streetAddress: 'бул. „Александър Стамболийски" 30Б',
       addressLocality: 'София',
       addressRegion: 'София-град',
       postalCode: '1000',
@@ -22,8 +22,8 @@ export function LocalBusinessJsonLd() {
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: 42.6977, // Смени с твоите координати
-      longitude: 23.3219,
+      latitude: 42.6977078,
+      longitude: 23.3198778,
     },
     openingHoursSpecification: [
       {
