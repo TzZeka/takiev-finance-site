@@ -4,6 +4,7 @@ import { getAllBlogPosts, getBlogPostBySlug, getRelatedBlogPosts } from "@/lib/s
 import { extractHeadings } from "@/components/blog/PortableTextComponents";
 import { RelatedPosts } from "@/components/blog/RelatedPosts";
 import { ArticleJsonLd } from "@/components/seo/ArticleJsonLd";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { getImageUrl } from "@/lib/sanity/client";
 import { BlogArticleLayout } from "./BlogArticleLayout";
 
@@ -46,7 +47,16 @@ export async function generateMetadata({
       description: post.excerpt,
       type: "article",
       publishedTime: post.publishedAt,
+      modifiedTime: post._updatedAt,
       authors: post.author ? [post.author.name] : [],
+      images: post.mainImage ? [getImageUrl(post.mainImage)] : [],
+      locale: "bg_BG",
+      siteName: "Takiev Finance",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
       images: post.mainImage ? [getImageUrl(post.mainImage)] : [],
     },
   };
@@ -71,9 +81,20 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         title={post.title}
         description={post.excerpt}
         authorName={post.author?.name || "Takiev Finance"}
+        authorBio={post.author?.bio?.map((block: any) => block.children?.map((c: any) => c.text).join("")).join(" ")}
+        authorImageUrl={post.author?.image ? getImageUrl(post.author.image) : undefined}
         publishedAt={post.publishedAt}
+        modifiedAt={post._updatedAt}
         canonicalUrl={canonicalUrl}
         imageUrl={post.mainImage ? getImageUrl(post.mainImage) : undefined}
+        tags={post.tags}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Начало", url: "https://takiev.bg" },
+          { name: "Блог", url: "https://takiev.bg/blog" },
+          { name: post.title, url: canonicalUrl },
+        ]}
       />
 
       <BlogArticleLayout

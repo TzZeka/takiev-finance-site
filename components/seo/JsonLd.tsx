@@ -34,7 +34,7 @@ export function LocalBusinessJsonLd() {
       },
     ],
     priceRange: '$$',
-    currenciesAccepted: 'BGN, EUR',
+    currenciesAccepted: 'EUR',
     paymentAccepted: 'Cash, Credit Card, Bank Transfer',
     areaServed: {
       '@type': 'Country',

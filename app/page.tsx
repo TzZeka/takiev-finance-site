@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { HeroSection } from "@/components/home/HeroSection";
 import { MessagesSection } from "@/components/home/MessagesSection";
 import { CompanyPresentation } from "@/components/home/CompanyPresentation";
@@ -13,6 +14,39 @@ import {
   getFeaturedTestimonials,
   getAllClients,
 } from "@/lib/sanity/queries";
+
+export const metadata: Metadata = {
+  title: "Takiev Finance - Счетоводна Кантора | Такиев Финанс",
+  description:
+    "Избери своя доверен бизнес партньор. Счетоводството е движеща сила за всеки успешен бизнес. Счетоводни услуги, данъчни консултации, регистрация на фирми в София.",
+  alternates: {
+    canonical: "https://takiev.bg",
+  },
+  openGraph: {
+    title: "Takiev Finance - Счетоводна Кантора",
+    description:
+      "Избери своя доверен бизнес партньор. Експертно счетоводно обслужване, данъчни консултации и регистрация на фирми.",
+    url: "https://takiev.bg",
+    type: "website",
+    locale: "bg_BG",
+    siteName: "Takiev Finance",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Takiev Finance - Счетоводна Кантора",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Takiev Finance - Счетоводна Кантора",
+    description:
+      "Избери своя доверен бизнес партньор. Експертно счетоводно обслужване, данъчни консултации и регистрация на фирми.",
+    images: ["/opengraph-image"],
+  },
+};
 
 // Revalidate this page every 60 seconds (ISR)
 export const revalidate = 60;

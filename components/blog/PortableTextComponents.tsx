@@ -101,10 +101,10 @@ export const portableTextComponents = {
   },
   marks: {
     strong: ({ children }: any) => (
-      <strong className="font-bold text-stone-100">{children}</strong>
+      <strong className="font-bold text-inherit">{children}</strong>
     ),
     em: ({ children }: any) => (
-      <em className="italic text-stone-200">{children}</em>
+      <em className="italic text-inherit">{children}</em>
     ),
     code: ({ children }: any) => (
       <code className="bg-white/[0.06] text-primary/90 px-2 py-0.5 rounded-md text-[0.88em] font-mono border border-white/[0.08]">

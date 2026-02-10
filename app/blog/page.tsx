@@ -10,6 +10,33 @@ export const metadata: Metadata = {
   title: "Блог - Takiev Finance",
   description:
     "Актуални новини, съвети и анализи по счетоводство, данъци и бизнес. Професионални статии от експерти в областта.",
+  alternates: {
+    canonical: "https://takiev.bg/blog",
+  },
+  openGraph: {
+    title: "Блог - Takiev Finance",
+    description:
+      "Актуални новини, съвети и анализи по счетоводство, данъци и бизнес от експертите на Takiev Finance.",
+    url: "https://takiev.bg/blog",
+    type: "website",
+    locale: "bg_BG",
+    siteName: "Takiev Finance",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Блог - Takiev Finance",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Блог - Takiev Finance",
+    description:
+      "Актуални новини, съвети и анализи по счетоводство, данъци и бизнес от експертите на Takiev Finance.",
+    images: ["/opengraph-image"],
+  },
 };
 
 export default async function BlogPage() {
