@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -345,7 +345,7 @@ function ValuesCarousel() {
   );
 }
 
-// Infinite Scroll Row Component with CSS animation
+// Infinite Scroll Row Component with CSS animation - optimized for performance
 function InfiniteScrollRow({
   items,
   direction = "left",
@@ -355,23 +355,43 @@ function InfiniteScrollRow({
   direction?: "left" | "right";
   duration?: number;
 }) {
-  // Duplicate items multiple times for seamless loop
-  const duplicatedItems = [...items, ...items, ...items, ...items, ...items, ...items];
+  const rowRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(true);
+
+  // Pause animation when not visible to save resources
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0, rootMargin: "100px" }
+    );
+
+    if (rowRef.current) {
+      observer.observe(rowRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Duplicate items for seamless loop (reduced for performance)
+  const duplicatedItems = [...items, ...items, ...items, ...items];
 
   return (
-    <div className="group/row relative overflow-hidden py-1">
+    <div ref={rowRef} className="group/row relative overflow-hidden py-1">
       <div
         className={`flex gap-3 sm:gap-4 w-max ${
           direction === "left" ? "animate-scroll-left" : "animate-scroll-right"
         } group-hover/row:[animation-play-state:paused]`}
         style={{
           animationDuration: `${duration}s`,
+          animationPlayState: isVisible ? "running" : "paused",
         }}
       >
         {duplicatedItems.map((sector, index) => (
           <div
             key={index}
-            className="flex-shrink-0 flex items-center gap-2 sm:gap-2.5 lg:gap-3 bg-slate-800/70 backdrop-blur-sm border border-white/10 px-3 sm:px-4 lg:px-5 py-2.5 sm:py-3 lg:py-3.5 rounded-xl sm:rounded-2xl transition-all duration-500 ease-out hover:border-primary/40 hover:bg-slate-800 hover:scale-[1.02] shadow-lg shadow-black/10"
+            className="flex-shrink-0 flex items-center gap-2 sm:gap-2.5 lg:gap-3 bg-slate-800/90 border border-white/10 px-3 sm:px-4 lg:px-5 py-2.5 sm:py-3 lg:py-3.5 rounded-xl sm:rounded-2xl transition-colors duration-300 hover:border-primary/40 hover:bg-slate-800 shadow-lg shadow-black/10"
           >
             <div className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 bg-gradient-to-br from-primary/20 to-teal-500/20 rounded-lg flex items-center justify-center">
               <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4 text-primary" />

@@ -57,8 +57,10 @@ export function Header() {
   return (
     <>
       <header className={cn(
-        "fixed top-0 left-0 right-0 z-50 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 transition-all duration-300",
-        scrolled ? "backdrop-blur-md bg-slate-950/95" : ""
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        scrolled
+          ? "left-0 right-0 rounded-b-2xl bg-slate-950/70 backdrop-blur-xl border-b border-x border-white/10 shadow-lg shadow-black/20"
+          : "bg-slate-950/50 backdrop-blur-md border-b border-white/5"
       )}>
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div className={cn(
@@ -142,7 +144,10 @@ export function Header() {
           mobileMenuOpen ? "max-h-[calc(100vh-4rem)] opacity-100" : "max-h-0 opacity-0"
         )}
       >
-        <nav className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-b border-white/10 shadow-xl overflow-y-auto max-h-[calc(100vh-4rem)]">
+        <nav className={cn(
+          "bg-slate-950/70 backdrop-blur-xl border-b border-white/10 shadow-xl overflow-y-auto max-h-[calc(100vh-4rem)] transition-all duration-300",
+          scrolled ? "rounded-2xl border-x mx-2 mt-1" : ""
+        )}>
           <div className="container mx-auto px-4 py-4">
             <div className="flex flex-col space-y-1">
               {navItems.map((item) => {

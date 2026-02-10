@@ -68,6 +68,8 @@ export default defineType({
             { title: "Заглавие 2", value: "h2" },
             { title: "Заглавие 3", value: "h3" },
             { title: "Заглавие 4", value: "h4" },
+            { title: "Заглавие 5", value: "h5" },
+            { title: "Заглавие 6", value: "h6" },
             { title: "Цитат", value: "blockquote" },
           ],
           lists: [
@@ -96,6 +98,23 @@ export default defineType({
             ],
           },
         },
+        {
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            {
+              name: "alt",
+              title: "Алтернативен текст",
+              type: "string",
+            },
+            {
+              name: "caption",
+              title: "Описание",
+              type: "string",
+            },
+          ],
+        },
+        { type: "table" },
       ],
     }),
     defineField({

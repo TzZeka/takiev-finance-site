@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -9,6 +9,7 @@ import { ScrollToTop } from "@/components/shared/ScrollToTop";
 import { LocalBusinessJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
+const cormorant = Cormorant_Garamond({ subsets: ["latin", "cyrillic"], variable: "--font-cormorant", weight: ["400", "600", "700"] });
 
 const baseUrl = "https://takiev.bg";
 
@@ -105,13 +106,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="bg">
+    <html lang="bg" data-scroll-behavior="smooth">
       <head>
         <LocalBusinessJsonLd />
         <OrganizationJsonLd />
         <WebSiteJsonLd />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className} ${cormorant.variable}`}>
         <PremiumLoader />
         <Header />
         <QuickPanel />

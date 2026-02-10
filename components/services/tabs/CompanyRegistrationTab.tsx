@@ -116,7 +116,7 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
             </h3>
           </div>
 
-          <div className="space-y-4 text-white/80 leading-relaxed text-justify">
+          <div className="space-y-4 text-white/80 leading-relaxed md:text-justify break-words">
             <p>
               Стартирането на собствен бизнес, особено когато е за първи път, несъмнено е един вълнуващ и важен момент за Вас, който обаче доста често е свързан с много неизвестни.
             </p>
@@ -155,13 +155,13 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                 </div>
 
                 <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6 md:p-8 space-y-4">
-                  <p className="text-white/80 leading-relaxed text-justify">
+                  <p className="text-white/80 leading-relaxed md:text-justify break-words">
                     Вие можете да упражнявате търговска дейност по два начина – като <strong className="text-white">физическо лице</strong> или чрез <strong className="text-white">регистрация на търговско дружество</strong> (юридическо лице).
                   </p>
-                  <p className="text-white/80 leading-relaxed text-justify">
+                  <p className="text-white/80 leading-relaxed md:text-justify break-words">
                     Нашият екип работи съвместно с високо квалифицирани юристи, които могат да Ви съдействат за регистрация на търговско дружество или регистрация на едноличен търговец.
                   </p>
-                  <p className="text-white/80 leading-relaxed text-justify">
+                  <p className="text-white/80 leading-relaxed md:text-justify break-words">
                     За повече информация може да ни потърсите на посочения телефон за връзка или да ни пишете чрез <ContactLink>контактната форма</ContactLink> на нашия сайт.
                   </p>
 
@@ -210,7 +210,7 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                   </h4>
 
                   <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6 md:p-8">
-                    <p className="text-white/80 leading-relaxed text-justify mb-6">
+                    <p className="text-white/80 leading-relaxed md:text-justify break-words mb-6">
                       Според действащия у нас Търговски закон са възможни няколко правни форми на търговски дружества:
                     </p>
 
@@ -235,7 +235,7 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                       ))}
                     </div>
 
-                    <div className="space-y-4 text-white/80 leading-relaxed text-justify">
+                    <div className="space-y-4 text-white/80 leading-relaxed md:text-justify break-words">
                       <p>
                         <strong className="text-white">Най-често използваната форма</strong> на търговско дружество е дружеството с ограничена отговорност – ООД/ЕООД.
                       </p>
@@ -252,7 +252,7 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                     <h4 className="text-lg font-semibold text-white mb-3">
                       Разлика между ООД и ЕООД
                     </h4>
-                    <p className="text-white/80 leading-relaxed text-justify mb-4">
+                    <p className="text-white/80 leading-relaxed md:text-justify break-words mb-4">
                       Разликата между ООД и ЕООД е единствено и само в броя на собствениците – при ООД са налице <strong className="text-white">двама или повече съдружници</strong>, докато при ЕООД е налице <strong className="text-white">един единствен собственик</strong>.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 mt-4">
@@ -284,7 +284,7 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                   </h4>
 
                   <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6 md:p-8">
-                    <p className="text-white/80 leading-relaxed text-justify mb-6">
+                    <p className="text-white/80 leading-relaxed md:text-justify break-words mb-6">
                       Регистрацията на търговско дружество може да се извърши от управителя на дружеството или от лице, което е адвокат и е вписан в адвокатска колегия.
                     </p>
 
@@ -343,10 +343,10 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                   </h4>
 
                   <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6 md:p-8">
-                    <p className="text-white/80 leading-relaxed text-justify">
+                    <p className="text-white/80 leading-relaxed md:text-justify break-words">
                       Нашият екип работи съвместно с висококвалифицирани юристи, които могат да Ви съдействат с всичко необходимо за регистрация на Вашия бизнес.
                     </p>
-                    <p className="text-white/80 leading-relaxed text-justify mt-4">
+                    <p className="text-white/80 leading-relaxed md:text-justify break-words mt-4">
                       За повече информация можете да се свържете с нас на посочения телефон или чрез <ContactLink>контактната форма</ContactLink> на нашия сайт.
                     </p>
                   </div>
@@ -378,13 +378,13 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                   </h4>
 
                   <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6 md:p-8 space-y-4">
-                    <p className="text-white/80 leading-relaxed text-justify">
+                    <p className="text-white/80 leading-relaxed md:text-justify break-words">
                       За да упражнявате търговска дейност като физическо лице е необходимо да се регистрирате като едноличен търговец в Търговския регистър. По този начин вие ще придобиете търговско качество и ще можете законно да упражнявате своята дейност.
                     </p>
-                    <p className="text-white/80 leading-relaxed text-justify">
+                    <p className="text-white/80 leading-relaxed md:text-justify break-words">
                       След като бъдете регистрирани като едноличен търговец (ЕТ), ще можете да издавате фактури към контрагенти, да бъдете работодател по трудови договори и др.
                     </p>
-                    <p className="text-white/80 leading-relaxed text-justify">
+                    <p className="text-white/80 leading-relaxed md:text-justify break-words">
                       Упражняването на търговска дейност от едноличния търговец поражда задължение за социално и здравно осигуряване и поради тази причина следва да се регистрирате като самоосигуряващо се лице.
                     </p>
 
@@ -409,7 +409,7 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                       <div className="p-3 bg-primary/20 rounded-xl">
                         <BookOpen className="w-5 h-5 text-primary" />
                       </div>
-                      <p className="text-white/80 leading-relaxed text-justify">
+                      <p className="text-white/80 leading-relaxed md:text-justify break-words">
                         Едноличните търговци са <strong className="text-white">длъжни да водят счетоводна отчетност</strong> за своята дейност според Закона за счетоводството.
                       </p>
                     </div>
@@ -424,7 +424,7 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                   </h4>
 
                   <div className="bg-white/5 border-2 border-white/10 rounded-2xl p-6 md:p-8">
-                    <p className="text-white/80 leading-relaxed text-justify mb-4">
+                    <p className="text-white/80 leading-relaxed md:text-justify break-words mb-4">
                       Макар много често физическите лица да упражняват търговска дейност без да са регистрирани официално като еднолични търговци, трябва да знаете, че за данъчни цели тези лица се приравняват на еднолични търговци.
                     </p>
                     <div className="flex items-center gap-3 p-4 bg-primary/10 border border-primary/20 rounded-xl">
@@ -444,10 +444,10 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
                   </h4>
 
                   <div className="bg-gradient-to-br from-primary/10 via-white/5 to-primary/5 border-2 border-primary/20 rounded-2xl p-6 md:p-8">
-                    <p className="text-white/80 leading-relaxed text-justify mb-4">
+                    <p className="text-white/80 leading-relaxed md:text-justify break-words mb-4">
                       Нашият екип работи съвместно с висококвалифицирани юристи, които могат да Ви съдействат с всичко необходимо за регистрация на едноличен търговец.
                     </p>
-                    <p className="text-white/80 leading-relaxed text-justify">
+                    <p className="text-white/80 leading-relaxed md:text-justify break-words">
                       За повече информация можете да се свържете с нас на посочения телефон или чрез <ContactLink>контактната форма</ContactLink> на нашия сайт.
                     </p>
                   </div>

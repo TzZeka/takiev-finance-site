@@ -10,6 +10,7 @@ import accountingServicesContent from './accountingServicesContent'
 import taxConsultationContent from './taxConsultationContent'
 import legalServicesContent from './legalServicesContent'
 import companyRegistrationContent from './companyRegistrationContent'
+import table from './table'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -27,5 +28,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     client,
     video,
     homeContent,
+    table,
   ],
 }

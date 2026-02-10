@@ -163,6 +163,67 @@ export async function getBlogPostBySlug(
   );
 }
 
+export async function getRelatedBlogPosts(
+  currentPostId: string,
+  tags: string[],
+  limit: number = 3
+): Promise<BlogPost[]> {
+  // If there are tags, find posts with matching tags
+  // Otherwise, just get recent posts
+  if (tags.length > 0) {
+    return client.fetch(
+      `*[_type == "blogPost" && _id != $currentPostId && count((tags[])[@ in $tags]) > 0] | order(publishedAt desc) [0...${limit}] {
+        _id,
+        _type,
+        _createdAt,
+        _updatedAt,
+        title,
+        slug,
+        author-> {
+          _id,
+          _type,
+          name,
+          slug,
+          image,
+          bio
+        },
+        publishedAt,
+        mainImage,
+        excerpt,
+        tags,
+        featured
+      }`,
+      { currentPostId, tags }
+    );
+  }
+
+  // Fallback: get recent posts excluding current
+  return client.fetch(
+    `*[_type == "blogPost" && _id != $currentPostId] | order(publishedAt desc) [0...${limit}] {
+      _id,
+      _type,
+      _createdAt,
+      _updatedAt,
+      title,
+      slug,
+      author-> {
+        _id,
+        _type,
+        name,
+        slug,
+        image,
+        bio
+      },
+      publishedAt,
+      mainImage,
+      excerpt,
+      tags,
+      featured
+    }`,
+    { currentPostId }
+  );
+}
+
 // Testimonials
 export async function getAllTestimonials(): Promise<Testimonial[]> {
   return client.fetch(
