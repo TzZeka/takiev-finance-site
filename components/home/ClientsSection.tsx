@@ -1,7 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Building2 } from "lucide-react";
 import { getImageUrl } from "@/lib/sanity/client";
 import type { Client } from "@/types";
@@ -11,108 +12,103 @@ interface ClientsSectionProps {
 }
 
 export function ClientsSection({ clients }: ClientsSectionProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const prefersReducedMotion = useReducedMotion();
 
   if (clients.length === 0) return null;
 
-  return (
-    <section ref={sectionRef} className="relative py-20 md:py-32 bg-slate-50 dark:bg-slate-900 overflow-hidden">
-      {/* Vertical lines pattern */}
-      <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.03]">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-px h-full bg-[#19BFB7]"
-            style={{
-              left: `${i * 5}%`,
-            }}
-          />
-        ))}
-      </div>
+  const midpoint = Math.ceil(clients.length / 2);
+  const row1 = clients.slice(0, midpoint);
+  const row2 = clients.slice(midpoint);
+  const row1Items = [...row1, ...row1, ...row1, ...row1];
+  const row2Items = [...row2, ...row2, ...row2, ...row2];
 
-      <div className="container mx-auto px-4 relative z-10">
+  const anim = (delay: number) =>
+    prefersReducedMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 20 },
+          animate: isInView ? { opacity: 1, y: 0 } : {},
+          transition: { duration: 0.5, delay },
+        };
+
+  return (
+    <section ref={ref} className="relative py-20 md:py-28 bg-slate-950 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-sm">
+      {/* Subtle gradient */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-primary/5 rounded-full blur-[100px]" />
+
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}
-        <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="inline-block mb-4">
-            <span className="text-sm font-semibold text-[#19BFB7] tracking-wider uppercase flex items-center justify-center gap-2">
-              <Building2 className="w-4 h-4" />
-              Партньори
-            </span>
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-            Нашите <span className="text-[#19BFB7]">партньори</span>
+        <motion.div {...anim(0)} className="text-center mb-14">
+          <span className="text-sm font-semibold text-primary tracking-wider uppercase flex items-center justify-center gap-2">
+            <Building2 className="w-4 h-4" />
+            Партньори
+          </span>
+          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3">
+            Нашите <span className="text-primary">партньори</span>
           </h2>
-          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+          <p className="text-lg text-white/50 max-w-2xl mx-auto">
             Сътрудничим с водещи компании за цялостни решения на Вашия бизнес
           </p>
-        </div>
+        </motion.div>
+      </div>
 
-        {/* Clients Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-16">
-          {clients.map((client, index) => (
+      {/* Marquee Row 1 */}
+      <div className="relative mb-4 overflow-hidden">
+        <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-slate-950 to-transparent z-10" />
+        <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-slate-950 to-transparent z-10" />
+        <div
+          className="flex gap-5 animate-scroll-left"
+          style={{ animationDuration: `${row1Items.length * 3}s`, width: "max-content" }}
+        >
+          {row1Items.map((client, index) => (
             <div
-              key={client._id}
-              className={`transition-all duration-700 ${
-                isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8"
-              }`}
-              style={{
-                transitionDelay: `${index * 50}ms`,
-              }}
+              key={`r1-${client._id}-${index}`}
+              className="group flex-shrink-0 flex items-center justify-center w-44 h-24 bg-white/[0.04] border border-white/[0.08] rounded-xl hover:border-primary/25 hover:bg-white/[0.07] transition-all duration-300"
             >
-              <div className="group relative flex items-center justify-center p-6 h-32 bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-lg hover:border-[#19BFB7] transition-all duration-300 hover:shadow-lg">
-                {/* Logo */}
-                <div className="relative w-full h-20">
+              <div className="relative w-28 h-14">
+                <Image
+                  src={getImageUrl(client.logo)}
+                  alt={client.name}
+                  fill
+                  sizes="112px"
+                  className="object-contain filter grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Marquee Row 2 */}
+      {row2.length > 0 && (
+        <div className="relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-slate-950 to-transparent z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-slate-950 to-transparent z-10" />
+          <div
+            className="flex gap-5 animate-scroll-right"
+            style={{ animationDuration: `${row2Items.length * 3}s`, width: "max-content" }}
+          >
+            {row2Items.map((client, index) => (
+              <div
+                key={`r2-${client._id}-${index}`}
+                className="group flex-shrink-0 flex items-center justify-center w-44 h-24 bg-white/[0.04] border border-white/[0.08] rounded-xl hover:border-primary/25 hover:bg-white/[0.07] transition-all duration-300"
+              >
+                <div className="relative w-28 h-14">
                   <Image
                     src={getImageUrl(client.logo)}
                     alt={client.name}
                     fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                    className="object-contain filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                    sizes="112px"
+                    className="object-contain filter grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
                   />
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-
-        {/* Stats */}
-        <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: `${clients.length * 50 + 200}ms` }}>
-          {[
-            { number: `${clients.length}+`, label: "Партньори" },
-            { number: "10+", label: "Индустрии" },
-            { number: "5+", label: "Години сътрудничество" },
-          ].map((stat, index) => (
-            <div key={index} className="text-center p-6 bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-lg">
-              <div className="text-4xl md:text-5xl font-bold text-[#19BFB7] mb-2">
-                {stat.number}
-              </div>
-              <div className="text-slate-600 dark:text-slate-400 font-medium">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+      )}
     </section>
   );
 }

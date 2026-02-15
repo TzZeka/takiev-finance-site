@@ -90,13 +90,15 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection motto={motto} videoUrl={homeContent?.heroVideoUrl} />
-      <MessagesSection messages={messages} />
-      <CompanyPresentation />
-      <ServicesPreview services={services} />
-      <BlogPreview posts={blogPosts} />
-      <TestimonialsSection testimonials={testimonials} />
-      <ClientsSection clients={clients} />
-      <ContactFormSection ctaText={homeContent?.ctaText} />
+      <div className="space-y-3 md:space-y-4 px-2 md:px-5 lg:px-8 py-3 md:py-4">
+        <MessagesSection messages={messages} />
+        <CompanyPresentation />
+        <ServicesPreview services={services} />
+        <BlogPreview posts={blogPosts} />
+        <TestimonialsSection testimonials={testimonials} />
+        <ClientsSection clients={clients} />
+        <ContactFormSection ctaText={homeContent?.ctaText} />
+      </div>
     </>
   );
 }

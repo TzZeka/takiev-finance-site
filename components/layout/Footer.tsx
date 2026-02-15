@@ -1,6 +1,47 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/shared/Logo";
-import { Mail, Phone, MapPin, Facebook, Linkedin, Youtube, ExternalLink } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Linkedin, Youtube, ExternalLink, ChevronDown } from "lucide-react";
+
+function FooterAccordion({ title, children }: { title: string; children: React.ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div>
+      {/* Mobile: clickable header */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between md:hidden"
+        aria-expanded={isOpen}
+      >
+        <h3 className="text-lg font-bold flex items-center">
+          <span className="text-[#19BFB7]">—</span>
+          <span className="ml-2">{title}</span>
+        </h3>
+        <ChevronDown
+          className={`w-5 h-5 text-white/50 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {/* Desktop: static header */}
+      <h3 className="text-lg font-bold mb-6 items-center hidden md:flex">
+        <span className="text-[#19BFB7]">—</span>
+        <span className="ml-2">{title}</span>
+      </h3>
+
+      {/* Mobile: collapsible content */}
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-out md:!max-h-none md:!opacity-100 md:!mt-0 ${
+          isOpen ? "max-h-96 opacity-100 mt-4" : "max-h-0 opacity-0 mt-0"
+        }`}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -14,23 +55,25 @@ export function Footer() {
       </div>
 
       <div className="container mx-auto px-4 py-16 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-12 mb-12">
           {/* Company Info */}
           <div className="space-y-6">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center justify-between">
               <Logo />
-              <div className="flex flex-col">
+              <div className="flex flex-col items-end">
                 <span className="text-sm text-white/50">ЕИК: 206666484</span>
-                <div className="h-px w-full bg-gradient-to-r from-[#19BFB7] to-transparent mt-1" />
+                <div className="h-px w-full bg-gradient-to-l from-[#19BFB7] to-transparent mt-1" />
               </div>
             </div>
-            <p className="text-sm text-white/70 leading-relaxed">
+            <p className="text-sm text-white/70 leading-relaxed text-center md:text-left">
               Избери своя доверен бизнес партньор. Експертно счетоводно
               обслужване на Вашия бизнес.
             </p>
 
+            <p className="text-xs text-white/40 text-center md:text-left">Последвайте ни</p>
+
             {/* Social Media */}
-            <div className="flex space-x-3">
+            <div className="flex space-x-3 justify-center md:justify-start">
               <a
                 href="https://www.facebook.com/n.takiev"
                 target="_blank"
@@ -73,11 +116,7 @@ export function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h3 className="text-lg font-bold mb-6 flex items-center">
-              <span className="text-[#19BFB7]">—</span>
-              <span className="ml-2">Бързи връзки</span>
-            </h3>
+          <FooterAccordion title="Бързи връзки">
             <ul className="space-y-3">
               <li>
                 <Link
@@ -116,14 +155,10 @@ export function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
+          </FooterAccordion>
 
           {/* Services */}
-          <div>
-            <h3 className="text-lg font-bold mb-6 flex items-center">
-              <span className="text-[#19BFB7]">—</span>
-              <span className="ml-2">Услуги</span>
-            </h3>
+          <FooterAccordion title="Услуги">
             <ul className="space-y-3">
               <li>
                 <Link
@@ -162,14 +197,10 @@ export function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
+          </FooterAccordion>
 
           {/* Useful Sites */}
-          <div>
-            <h3 className="text-lg font-bold mb-6 flex items-center">
-              <span className="text-[#19BFB7]">—</span>
-              <span className="ml-2">Полезни сайтове</span>
-            </h3>
+          <FooterAccordion title="Полезни сайтове">
             <ul className="space-y-3">
               <li>
                 <a
@@ -208,14 +239,10 @@ export function Footer() {
                 </a>
               </li>
             </ul>
-          </div>
+          </FooterAccordion>
 
           {/* Contact Info */}
-          <div>
-            <h3 className="text-lg font-bold mb-6 flex items-center">
-              <span className="text-[#19BFB7]">—</span>
-              <span className="ml-2">Контакти</span>
-            </h3>
+          <FooterAccordion title="Контакти">
             <ul className="space-y-4">
               <li className="group flex items-start space-x-3">
                 <div className="p-2 bg-white/5 rounded-lg border border-white/10 group-hover:border-[#19BFB7] transition-all duration-300">
@@ -248,7 +275,7 @@ export function Footer() {
                 </span>
               </li>
             </ul>
-          </div>
+          </FooterAccordion>
         </div>
 
         {/* Bottom Bar */}

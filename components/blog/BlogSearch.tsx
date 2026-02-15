@@ -223,7 +223,7 @@ export function BlogSearch({ onSearch, posts = [], placeholder = "Търсене
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           autoComplete="off"
-          className="w-full bg-transparent text-foreground placeholder:text-slate-500 pl-10 pr-10 py-3 text-sm rounded-xl focus:outline-none transition-all duration-200"
+          className="w-full bg-transparent text-foreground placeholder:text-slate-500 pl-10 pr-10 py-3 text-base sm:text-sm rounded-xl focus:outline-none transition-all duration-200"
         />
         {query && (
           <button

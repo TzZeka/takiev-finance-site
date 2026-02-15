@@ -46,10 +46,10 @@ interface ContactModalProps {
 }
 
 const inputClass =
-  "bg-slate-900/80 border-white/[0.08] text-white placeholder:text-white/40 h-9 sm:h-10 text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] focus:border-white/[0.12] focus:ring-0 focus:-translate-y-px focus:placeholder:text-transparent rounded-xl transition-transform duration-150 ease-out will-change-transform pr-9";
+  "bg-slate-900/80 border-white/[0.08] text-white placeholder:text-white/40 h-9 sm:h-10 text-base sm:text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] focus:border-white/[0.12] focus:ring-0 focus:-translate-y-px focus:placeholder:text-transparent rounded-xl transition-transform duration-150 ease-out will-change-transform pr-9";
 
 const textareaClass =
-  "bg-slate-900/80 border-white/[0.08] text-white placeholder:text-white/40 resize-none text-sm min-h-[80px] sm:min-h-[100px] shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] focus:border-white/[0.12] focus:ring-0 focus:-translate-y-px focus:placeholder:text-transparent rounded-xl transition-transform duration-150 ease-out will-change-transform pr-9";
+  "bg-slate-900/80 border-white/[0.08] text-white placeholder:text-white/40 resize-none text-base sm:text-sm min-h-[80px] sm:min-h-[100px] shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] focus:border-white/[0.12] focus:ring-0 focus:-translate-y-px focus:placeholder:text-transparent rounded-xl transition-transform duration-150 ease-out will-change-transform pr-9";
 
 function ContactCard({ icon: Icon, label, value, href }: { icon: React.ElementType; label: string; value: string; href?: string }) {
   const content = (

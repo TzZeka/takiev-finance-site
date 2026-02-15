@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
@@ -10,6 +10,13 @@ import { LocalBusinessJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/compon
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
 const cormorant = Cormorant_Garamond({ subsets: ["latin", "cyrillic"], variable: "--font-cormorant", weight: ["400", "600", "700"] });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 const baseUrl = "https://takiev.bg";
 

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
+import { motion, useInView, useReducedMotion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
 import { getImageUrl } from "@/lib/sanity/client";
 import type { Testimonial } from "@/types";
@@ -10,104 +11,60 @@ interface TestimonialsSectionProps {
   testimonials: Testimonial[];
 }
 
-export function TestimonialsSection({
-  testimonials,
-}: TestimonialsSectionProps) {
+export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const prefersReducedMotion = useReducedMotion();
 
   if (testimonials.length === 0) return null;
 
-  const goToPrevious = () => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setCurrentIndex((prev) =>
-      prev === 0 ? testimonials.length - 1 : prev - 1
-    );
-    setTimeout(() => setIsAnimating(false), 300);
-  };
-
-  const goToNext = () => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setCurrentIndex((prev) =>
-      prev === testimonials.length - 1 ? 0 : prev + 1
-    );
-    setTimeout(() => setIsAnimating(false), 300);
-  };
+  const goToPrevious = () =>
+    setCurrentIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+  const goToNext = () =>
+    setCurrentIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
 
   const currentTestimonial = testimonials[currentIndex];
 
-  return (
-    <section ref={sectionRef} className="relative py-20 md:py-32 bg-slate-50 dark:bg-slate-900 overflow-hidden">
-      {/* Grid pattern background */}
-      <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.03]">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-              linear-gradient(#19BFB7 1px, transparent 1px),
-              linear-gradient(90deg, #19BFB7 1px, transparent 1px)
-            `,
-            backgroundSize: '60px 60px',
-          }}
-        />
-      </div>
+  const anim = (delay: number) =>
+    prefersReducedMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 30 },
+          animate: isInView ? { opacity: 1, y: 0 } : {},
+          transition: { duration: 0.5, delay },
+        };
 
-      <div className="container mx-auto px-4 relative z-10">
+  return (
+    <section ref={ref} className="relative py-20 md:py-28 bg-white rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-sm">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}
-        <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="inline-block mb-4">
-            <span className="text-sm font-semibold text-[#19BFB7] tracking-wider uppercase">
-              Отзиви
-            </span>
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-            Какво казват <span className="text-[#19BFB7]">нашите клиенти</span>
+        <motion.div {...anim(0)} className="text-center mb-14">
+          <span className="text-sm font-semibold text-primary tracking-wider uppercase">
+            Отзиви
+          </span>
+          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-3">
+            Какво казват <span className="text-primary">нашите клиенти</span>
           </h2>
-          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+          <p className="text-lg text-slate-500 max-w-2xl mx-auto">
             Довери на опита на клиентите, които работят с нас
           </p>
-        </div>
+        </motion.div>
 
         {/* Testimonial Card */}
-        <div className="max-w-5xl mx-auto">
+        <motion.div {...anim(0.15)} className="max-w-4xl mx-auto">
           <div className="relative">
-            {/* Main Card */}
-            <div
-              className={`relative bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl transition-all duration-300 ${
-                isAnimating ? "opacity-0" : "opacity-100"
-              }`}
-            >
-              {/* Top accent bar */}
-              <div className="h-2 bg-gradient-to-r from-[#19BFB7] to-[#40514E] rounded-t-2xl" />
+            <div className="relative rounded-2xl bg-gradient-to-br from-slate-50 to-white border border-slate-200 shadow-md overflow-hidden">
+              {/* Top gradient accent */}
+              <div className="h-1.5 bg-gradient-to-r from-primary via-emerald-400 to-primary" />
 
-              <div className="p-8 md:p-12">
-                {/* Quote icon */}
-                <div className="mb-6">
-                  <Quote className="h-12 w-12 text-[#19BFB7]/20" />
+              <div className="p-8 md:p-12 relative">
+                {/* Large decorative quote */}
+                <div className="absolute top-6 right-8 text-[120px] md:text-[160px] leading-none font-serif text-primary/[0.05] select-none pointer-events-none">
+                  &ldquo;
                 </div>
+
+                <Quote className="h-8 w-8 text-primary/20 mb-6" />
 
                 {/* Stars */}
                 <div className="flex items-center gap-1 mb-6">
@@ -116,110 +73,94 @@ export function TestimonialsSection({
                       key={i}
                       className={`h-5 w-5 ${
                         i < currentTestimonial.rating
-                          ? "text-[#19BFB7] fill-[#19BFB7]"
-                          : "text-slate-300 dark:text-slate-700"
+                          ? "text-amber-400 fill-amber-400"
+                          : "text-slate-200"
                       }`}
                     />
                   ))}
                 </div>
 
                 {/* Content */}
-                <p className="text-xl md:text-2xl text-slate-700 dark:text-slate-300 mb-8 leading-relaxed font-light">
-                  &ldquo;{currentTestimonial.content}&rdquo;
-                </p>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentIndex}
+                    initial={prefersReducedMotion ? false : { opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0, x: -20 }}
+                    transition={{ duration: 0.35 }}
+                  >
+                    <p className="text-xl md:text-2xl text-slate-700 mb-8 leading-relaxed font-light relative z-10">
+                      &ldquo;{currentTestimonial.content}&rdquo;
+                    </p>
 
-                {/* Client Info */}
-                <div className="flex items-center pt-6 border-t-2 border-slate-200 dark:border-slate-800">
-                  {currentTestimonial.avatar && (
-                    <div className="relative w-16 h-16 rounded-full overflow-hidden mr-4 ring-2 ring-[#19BFB7]/20">
-                      <Image
-                        src={getImageUrl(currentTestimonial.avatar)}
-                        alt={currentTestimonial.clientName}
-                        fill
-                        sizes="64px"
-                        className="object-cover"
-                      />
+                    <div className="flex items-center pt-6 border-t border-slate-200">
+                      {currentTestimonial.avatar && (
+                        <div className="relative w-14 h-14 rounded-full overflow-hidden mr-4 ring-2 ring-primary/15 ring-offset-2">
+                          <Image
+                            src={getImageUrl(currentTestimonial.avatar)}
+                            alt={currentTestimonial.clientName}
+                            fill
+                            sizes="56px"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-bold text-slate-900 text-lg">
+                          {currentTestimonial.clientName}
+                        </p>
+                        <p className="text-slate-500 text-sm">
+                          {currentTestimonial.clientRole}
+                        </p>
+                        <p className="text-primary text-sm font-semibold">
+                          {currentTestimonial.clientCompany}
+                        </p>
+                      </div>
                     </div>
-                  )}
-                  <div>
-                    <p className="font-bold text-slate-900 dark:text-white text-lg">
-                      {currentTestimonial.clientName}
-                    </p>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm">
-                      {currentTestimonial.clientRole}
-                    </p>
-                    <p className="text-[#19BFB7] text-sm font-semibold">
-                      {currentTestimonial.clientCompany}
-                    </p>
-                  </div>
-                </div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </div>
 
-            {/* Navigation Arrows */}
+            {/* Navigation */}
             {testimonials.length > 1 && (
               <>
                 <button
                   onClick={goToPrevious}
-                  disabled={isAnimating}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-16 w-12 h-12 rounded-full bg-white dark:bg-slate-950 border-2 border-[#19BFB7] text-[#19BFB7] flex items-center justify-center hover:bg-[#19BFB7] hover:text-white transition-all duration-300 disabled:opacity-50 shadow-lg"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 md:-translate-x-14 w-11 h-11 rounded-full bg-white border border-slate-200 text-slate-500 flex items-center justify-center hover:border-primary hover:text-primary hover:shadow-md transition-all duration-300 shadow-sm"
                   aria-label="Previous testimonial"
                 >
-                  <ChevronLeft className="h-6 w-6" />
+                  <ChevronLeft className="h-5 w-5" />
                 </button>
                 <button
                   onClick={goToNext}
-                  disabled={isAnimating}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-16 w-12 h-12 rounded-full bg-white dark:bg-slate-950 border-2 border-[#19BFB7] text-[#19BFB7] flex items-center justify-center hover:bg-[#19BFB7] hover:text-white transition-all duration-300 disabled:opacity-50 shadow-lg"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 md:translate-x-14 w-11 h-11 rounded-full bg-white border border-slate-200 text-slate-500 flex items-center justify-center hover:border-primary hover:text-primary hover:shadow-md transition-all duration-300 shadow-sm"
                   aria-label="Next testimonial"
                 >
-                  <ChevronRight className="h-6 w-6" />
+                  <ChevronRight className="h-5 w-5" />
                 </button>
               </>
             )}
           </div>
 
-          {/* Dots Navigation */}
+          {/* Dots */}
           {testimonials.length > 1 && (
-            <div className="flex items-center justify-center mt-8 gap-2">
+            <div className="flex items-center justify-center mt-8 gap-2.5">
               {testimonials.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => {
-                    if (!isAnimating) {
-                      setIsAnimating(true);
-                      setCurrentIndex(index);
-                      setTimeout(() => setIsAnimating(false), 300);
-                    }
-                  }}
-                  disabled={isAnimating}
+                  onClick={() => setCurrentIndex(index)}
                   className={`transition-all duration-300 rounded-full ${
                     index === currentIndex
-                      ? "w-8 h-2 bg-[#19BFB7]"
-                      : "w-2 h-2 bg-slate-300 dark:bg-slate-700 hover:bg-[#19BFB7]"
+                      ? "w-8 h-2.5 bg-gradient-to-r from-primary to-emerald-400"
+                      : "w-2.5 h-2.5 bg-slate-300 hover:bg-primary/50"
                   }`}
                   aria-label={`Go to testimonial ${index + 1}`}
                 />
               ))}
             </div>
           )}
-        </div>
-
-        {/* Stats */}
-        <div className={`mt-20 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: '200ms' }}>
-          {[
-            { number: "100+", label: "Доволни клиенти" },
-            { number: "15+", label: "Години опит" },
-            { number: "99%", label: "Успешност" },
-          ].map((stat, index) => (
-            <div key={index} className="text-center p-6 bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-xl">
-              <div className="text-4xl md:text-5xl font-bold text-[#19BFB7] mb-2">
-                {stat.number}
-              </div>
-              <div className="text-slate-600 dark:text-slate-400 font-medium">{stat.label}</div>
-            </div>
-          ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
