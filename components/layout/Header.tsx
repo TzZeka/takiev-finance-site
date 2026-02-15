@@ -60,7 +60,7 @@ export function Header() {
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
           ? "left-0 right-0 rounded-b-2xl bg-slate-950/70 backdrop-blur-xl border-b border-x border-white/10 shadow-lg shadow-black/20"
-          : "bg-slate-950/50 backdrop-blur-md border-b border-white/5"
+          : "bg-transparent border-b border-transparent"
       )}>
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div className={cn(
@@ -327,11 +327,6 @@ export function Header() {
         </nav>
       </div>
 
-      {/* Spacer to prevent content jump */}
-      <div className={cn(
-        "transition-all duration-300",
-        scrolled ? "h-14 md:h-16" : "h-16 md:h-20 xl:h-24"
-      )} />
 
       {/* Contact Modal */}
       <ContactModal

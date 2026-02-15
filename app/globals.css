@@ -88,23 +88,16 @@ body:has(.loader-active) {
     overflow-x: clip;
   }
 
-  /* Scroll margin for sections - accounts for sticky header + service navigation */
+  /* Scroll margin for sections - accounts for scrolled header (56-64px) + padding */
   section[id],
   div[id] {
-    scroll-margin-top: 120px;
+    scroll-margin-top: 72px;
   }
 
   @media (min-width: 768px) {
     section[id],
     div[id] {
-      scroll-margin-top: 136px;
-    }
-  }
-
-  @media (min-width: 1280px) {
-    section[id],
-    div[id] {
-      scroll-margin-top: 152px;
+      scroll-margin-top: 80px;
     }
   }
 }
