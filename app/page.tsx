@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { HeroSection } from "@/components/home/HeroSection";
 import { MessagesSection } from "@/components/home/MessagesSection";
-import { CompanyPresentation } from "@/components/home/CompanyPresentation";
+import { CompanyPresentation, CompanyHistory, CompanyValues } from "@/components/home/CompanyPresentation";
 import { ServicesPreview } from "@/components/home/ServicesPreview";
 import { BlogPreview } from "@/components/home/BlogPreview";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
@@ -93,6 +93,8 @@ export default async function HomePage() {
       <div className="space-y-3 md:space-y-4 px-2 md:px-5 lg:px-8 py-3 md:py-4">
         <MessagesSection messages={messages} />
         <CompanyPresentation />
+        <CompanyHistory />
+        <CompanyValues />
         <ServicesPreview services={services} />
         <BlogPreview posts={blogPosts} />
         <TestimonialsSection testimonials={testimonials} />

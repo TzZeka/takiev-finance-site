@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { ArrowRight, Award, TrendingUp } from "lucide-react";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { ArrowRight } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 interface HeroSectionProps {
@@ -22,7 +22,7 @@ interface Slide {
 const slides: Slide[] = [
   {
     video: "/firm-logo/hero-video/hero-section-video-handshake.mp4",
-    badge: "Доверен партньор за Вашия бизнес",
+    badge: "",
     badgeIcon: "award",
     heading: "Избери своя доверен",
     highlight: "бизнес партньор",
@@ -39,16 +39,11 @@ const slides: Slide[] = [
     description:
       "Професионално счетоводство, данъчни консултации и правни услуги — всичко, от което вашият бизнес се нуждае на едно място.",
     primaryCta: null,
-    secondaryCta: { label: "Кои сме ние", href: "/za-nas", icon: "none" },
+    secondaryCta: { label: "Кои сме ние?", href: "/za-nas", icon: "none" },
   },
 ];
 
 const SLIDE_INTERVAL = 8000;
-
-const BadgeIcon = ({ type }: { type: Slide["badgeIcon"] }) => {
-  if (type === "trending") return <TrendingUp className="w-4 h-4 mr-2" />;
-  return <Award className="w-4 h-4 mr-2" />;
-};
 
 const CtaIcon = ({ type }: { type: "arrow" | "none" }) => {
   if (type === "none") return null;
@@ -58,10 +53,20 @@ const CtaIcon = ({ type }: { type: "arrow" | "none" }) => {
 export function HeroSection({ motto }: HeroSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const prefersReducedMotion = useReducedMotion();
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const nextSlide = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % slides.length);
   }, []);
+
+  // Restart video from beginning when it becomes active
+  useEffect(() => {
+    const video = videoRefs.current[activeIndex];
+    if (video) {
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    }
+  }, [activeIndex]);
 
   useEffect(() => {
     const interval = setInterval(nextSlide, SLIDE_INTERVAL);
@@ -82,11 +87,12 @@ export function HeroSection({ motto }: HeroSectionProps) {
       {slides.map((slide, index) => (
         <video
           key={slide.video}
-          autoPlay
+          ref={(el) => { videoRefs.current[index] = el; }}
+          autoPlay={index === 0}
           loop
           muted
           playsInline
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity ${crossfadeDuration} ease-in-out ${
+          className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity ${crossfadeDuration} ease-in-out ${
             index === activeIndex ? "opacity-100" : "opacity-0"
           }`}
         >
@@ -109,17 +115,18 @@ export function HeroSection({ motto }: HeroSectionProps) {
             className="max-w-4xl space-y-7"
           >
             {/* Badge */}
-            <motion.div
-              className="flex justify-center"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: fadeDuration, delay: 0.1 }}
-            >
-              <div className="inline-flex items-center px-5 py-2.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-sm font-medium tracking-wide text-white/90">
-                <BadgeIcon type={currentSlide.badgeIcon} />
-                {currentSlide.badge}
-              </div>
-            </motion.div>
+            {currentSlide.badge && (
+              <motion.div
+                className="flex justify-center"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: fadeDuration, delay: 0.1 }}
+              >
+                <div className="inline-flex items-center px-5 py-2.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-sm font-medium tracking-wide text-white/90">
+                  {currentSlide.badge}
+                </div>
+              </motion.div>
+            )}
 
             {/* Heading */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight drop-shadow-lg">
@@ -139,17 +146,18 @@ export function HeroSection({ motto }: HeroSectionProps) {
 
             {/* Description */}
             <motion.p
-              className="text-base sm:text-lg md:text-xl text-white/70 leading-relaxed max-w-2xl mx-auto font-light"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: fadeDuration, delay: 0.2 }}
+              className="text-base sm:text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl mx-auto font-medium tracking-wide"
+              style={{ fontFamily: "'Avenir', sans-serif" }}
+              initial={{ clipPath: "inset(0 100% 0 0)", opacity: 0 }}
+              animate={{ clipPath: "inset(0 0% 0 0)", opacity: 1 }}
+              transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
             >
               {currentSlide.description}
             </motion.p>
 
             {/* CTA Buttons */}
             <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center pt-2"
+              className="flex flex-col sm:flex-row gap-4 justify-center pt-8"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: fadeDuration, delay: 0.3 }}
@@ -191,21 +199,6 @@ export function HeroSection({ motto }: HeroSectionProps) {
         </div>
       </div>
 
-      {/* Wave separator */}
-      <div className="absolute bottom-0 left-0 right-0 z-20">
-        <svg
-          viewBox="0 0 1440 100"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-auto"
-        >
-          <path
-            d="M0 100L60 88.3C120 76.7 240 53.3 360 41.7C480 30 600 30 720 35C840 40 960 50 1080 55C1200 60 1320 60 1380 60L1440 60V100H1380C1320 100 1200 100 1080 100C960 100 840 100 720 100C600 100 480 100 360 100C240 100 120 100 60 100H0Z"
-            fill="currentColor"
-            className="text-background"
-          />
-        </svg>
-      </div>
     </section>
   );
 }

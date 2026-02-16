@@ -101,7 +101,6 @@ function TeamCollage() {
         preserveAspectRatio="xMidYMid meet"
       >
         <defs>
-          {/* Animated light gradient for line 1 */}
           <linearGradient id="light1" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="transparent" />
             <stop offset="40%" stopColor="transparent" />
@@ -116,7 +115,6 @@ function TeamCollage() {
               repeatCount="indefinite"
             />
           </linearGradient>
-          {/* Animated light gradient for line 2 */}
           <linearGradient id="light2" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="transparent" />
             <stop offset="40%" stopColor="transparent" />
@@ -131,7 +129,6 @@ function TeamCollage() {
               repeatCount="indefinite"
             />
           </linearGradient>
-          {/* Animated light gradient for line 3 */}
           <linearGradient id="light3" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="transparent" />
             <stop offset="40%" stopColor="transparent" />
@@ -148,14 +145,12 @@ function TeamCollage() {
           </linearGradient>
         </defs>
 
-        {/* Static base lines — subtle silver/gray */}
         <path d="M40 100 C40 100 150 30 280 30 C410 30 520 100 520 100" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
         <path d="M20 310 C20 310 60 200 280 200 C500 200 540 310 540 310" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
         <path d="M60 520 C60 520 160 580 280 580 C400 580 500 520 500 520" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
         <ellipse cx="280" cy="310" rx="260" ry="280" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
         <line x1="280" y1="10" x2="280" y2="610" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
 
-        {/* Animated light lines on top */}
         <path d="M40 100 C40 100 150 30 280 30 C410 30 520 100 520 100" stroke="url(#light1)" strokeWidth="1.5" />
         <path d="M20 310 C20 310 60 200 280 200 C500 200 540 310 540 310" stroke="url(#light2)" strokeWidth="1.5" />
         <path d="M60 520 C60 520 160 580 280 580 C400 580 500 520 500 520" stroke="url(#light1)" strokeWidth="1.5" />
@@ -164,7 +159,6 @@ function TeamCollage() {
 
       {/* Photo grid */}
       <div className="relative z-10 grid grid-cols-12 grid-rows-[auto] gap-3">
-        {/* Nikolay — large, spans 7 cols, left side */}
         <div className="col-span-7 row-span-2 rounded-2xl overflow-hidden border border-white/[0.08]">
           <div className="relative w-full" style={{ paddingBottom: "130%" }}>
             <Image
@@ -177,7 +171,6 @@ function TeamCollage() {
           </div>
         </div>
 
-        {/* Krisi — medium, top-right */}
         <div className="col-span-5 rounded-2xl overflow-hidden border border-white/[0.08]">
           <div className="relative w-full" style={{ paddingBottom: "120%" }}>
             <Image
@@ -190,7 +183,6 @@ function TeamCollage() {
           </div>
         </div>
 
-        {/* Tedi — bottom-right beside Krisi */}
         <div className="col-span-5 rounded-2xl overflow-hidden border border-white/[0.08]">
           <div className="relative w-full" style={{ paddingBottom: "110%" }}>
             <Image
@@ -203,7 +195,6 @@ function TeamCollage() {
           </div>
         </div>
 
-        {/* Rosi — wide bottom strip */}
         <div className="col-span-12 rounded-2xl overflow-hidden border border-white/[0.08]">
           <div className="relative w-full" style={{ paddingBottom: "40%" }}>
             <Image
@@ -220,6 +211,10 @@ function TeamCollage() {
   );
 }
 
+/* ==========================================
+   Section 1: CompanyPresentation
+   Header + Stats + TeamCollage + CTA
+   ========================================== */
 export function CompanyPresentation() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
@@ -236,7 +231,6 @@ export function CompanyPresentation() {
 
   return (
     <section className="relative py-20 md:py-28 bg-slate-950 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-sm">
-      {/* Subtle gradient orb */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]" />
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10" ref={ref}>
@@ -257,7 +251,6 @@ export function CompanyPresentation() {
 
         {/* Stats + Team Collage */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 mb-20 items-center">
-          {/* Stats */}
           <motion.div {...anim(0.15)} className="grid grid-cols-2 gap-4">
             {stats.map((stat) => {
               const Icon = stat.icon;
@@ -276,124 +269,13 @@ export function CompanyPresentation() {
             })}
           </motion.div>
 
-          {/* Team Collage */}
           <motion.div {...anim(0.3)}>
             <TeamCollage />
           </motion.div>
         </div>
 
-        {/* Timeline */}
-        <motion.div {...anim(0.3)} className="mb-20">
-          <h3 className="text-2xl md:text-3xl font-bold text-white text-center mb-12">
-            Нашата <span className="text-primary">история</span>
-          </h3>
-
-          {/* Desktop horizontal */}
-          <div className="hidden md:block relative max-w-5xl mx-auto">
-            <div className="absolute top-[18px] left-[10%] right-[10%] h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-            <div className="flex justify-between">
-              {timeline.map((item, index) => (
-                <motion.div
-                  key={item.year}
-                  {...(prefersReducedMotion
-                    ? {}
-                    : {
-                        initial: { opacity: 0, y: 20 },
-                        animate: isInView ? { opacity: 1, y: 0 } : {},
-                      })}
-                  transition={{ delay: 0.5 + index * 0.12, duration: 0.5 }}
-                  className="flex flex-col items-center text-center flex-1 group"
-                >
-                  <div
-                    className={`w-4 h-4 rounded-full mb-5 transition-transform group-hover:scale-125 ${
-                      item.highlight
-                        ? "bg-primary shadow-[0_0_12px_rgba(25,191,183,0.4)]"
-                        : "bg-white/30 group-hover:bg-primary/60"
-                    }`}
-                  />
-                  <div className={`text-xl font-bold mb-1 ${item.highlight ? "text-primary" : "text-white"}`}>
-                    {item.year}
-                  </div>
-                  <div className="text-sm text-white/50 max-w-[150px] leading-relaxed">{item.event}</div>
-                  {item.highlight && (
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary mt-2">
-                      <CheckCircle className="w-3 h-3" />
-                      Ключов момент
-                    </span>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* Mobile vertical */}
-          <div className="md:hidden relative pl-6 max-w-sm mx-auto">
-            <div className="absolute left-[7px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-primary/40 via-primary/20 to-transparent" />
-            <div className="space-y-8">
-              {timeline.map((item, index) => (
-                <motion.div
-                  key={item.year}
-                  {...(prefersReducedMotion
-                    ? {}
-                    : {
-                        initial: { opacity: 0, x: 15 },
-                        animate: isInView ? { opacity: 1, x: 0 } : {},
-                      })}
-                  transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
-                  className="relative"
-                >
-                  <div
-                    className={`absolute -left-6 top-1.5 w-[10px] h-[10px] rounded-full ${
-                      item.highlight ? "bg-primary shadow-[0_0_8px_rgba(25,191,183,0.4)]" : "bg-white/30"
-                    }`}
-                  />
-                  <div className={`text-base font-bold ${item.highlight ? "text-primary" : "text-white"}`}>
-                    {item.year}
-                  </div>
-                  <div className="text-sm text-white/50">{item.event}</div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Values */}
-        <motion.div {...anim(0.4)}>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {values.map((value, index) => {
-              const Icon = value.icon;
-              return (
-                <motion.div
-                  key={value.title}
-                  {...(prefersReducedMotion
-                    ? {}
-                    : {
-                        initial: { opacity: 0, y: 20 },
-                        animate: isInView ? { opacity: 1, y: 0 } : {},
-                      })}
-                  transition={{ delay: 0.6 + index * 0.08, duration: 0.5 }}
-                  className="group"
-                >
-                  <div className="h-full rounded-2xl bg-white/[0.04] border border-white/[0.08] p-6 hover:border-primary/30 transition-all duration-300 relative overflow-hidden">
-                    <div className={`absolute inset-0 bg-gradient-to-br ${value.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                    <div className="relative z-10">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <Icon className="w-6 h-6 text-primary" />
-                      </div>
-                      <h4 className="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
-                        {value.title}
-                      </h4>
-                      <p className="text-sm text-white/50 leading-relaxed">{value.description}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </motion.div>
-
         {/* CTA */}
-        <motion.div {...anim(0.6)} className="mt-16 text-center">
+        <motion.div {...anim(0.4)} className="text-center">
           <div className="inline-block rounded-2xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/[0.08] p-8 md:p-12 max-w-2xl">
             <Users className="w-10 h-10 text-primary mx-auto mb-4" />
             <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
@@ -412,6 +294,249 @@ export function CompanyPresentation() {
           </div>
         </motion.div>
       </div>
+    </section>
+  );
+}
+
+/* ==========================================
+   Section 2: CompanyHistory
+   Stylish timeline with glow effects
+   ========================================== */
+export function CompanyHistory() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const prefersReducedMotion = useReducedMotion();
+
+  const anim = (delay: number) =>
+    prefersReducedMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 30 },
+          animate: isInView ? { opacity: 1, y: 0 } : {},
+          transition: { duration: 0.6, delay },
+        };
+
+  return (
+    <section className="relative py-20 md:py-28 bg-slate-950 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-sm">
+      {/* Background gradient orb */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-primary/[0.03] rounded-full blur-[120px]" />
+
+      <div className="container mx-auto px-4 sm:px-6 relative z-10" ref={ref}>
+        {/* Header */}
+        <motion.div {...anim(0)} className="text-center mb-16">
+          <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 text-primary text-sm font-semibold border border-primary/20 backdrop-blur-sm">
+            <CheckCircle className="w-4 h-4" />
+            Нашият път
+          </span>
+          <h2 className="mt-5 text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
+            Нашата <span className="text-primary">история</span>
+          </h2>
+          <p className="mt-4 text-lg text-white/50 max-w-2xl mx-auto">
+            Ключовите моменти, които ни направиха лидер в счетоводните услуги
+          </p>
+        </motion.div>
+
+        {/* Desktop horizontal timeline */}
+        <div className="hidden md:block relative max-w-5xl mx-auto">
+          {/* Gradient accent line with animated glow */}
+          <div className="absolute top-[22px] left-[10%] right-[10%] h-[2px]">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent blur-sm animate-pulse" />
+          </div>
+
+          <div className="flex justify-between">
+            {timeline.map((item, index) => (
+              <motion.div
+                key={item.year}
+                {...(prefersReducedMotion
+                  ? {}
+                  : {
+                      initial: { opacity: 0, y: 30 },
+                      animate: isInView ? { opacity: 1, y: 0 } : {},
+                    })}
+                transition={{ delay: 0.2 + index * 0.15, duration: 0.5 }}
+                className="flex flex-col items-center text-center flex-1 group"
+              >
+                {/* Timeline dot — larger with hover glow */}
+                <div className="relative mb-6">
+                  <div
+                    className={`w-5 h-5 rounded-full transition-all duration-300 group-hover:scale-125 ${
+                      item.highlight
+                        ? "bg-primary shadow-[0_0_16px_rgba(25,191,183,0.5)]"
+                        : "bg-white/30 group-hover:bg-primary/60 group-hover:shadow-[0_0_12px_rgba(25,191,183,0.3)]"
+                    }`}
+                  />
+                  {item.highlight && (
+                    <div className="absolute inset-0 w-5 h-5 rounded-full bg-primary/30 animate-ping" />
+                  )}
+                </div>
+
+                {/* Content card */}
+                <div
+                  className={`rounded-xl p-4 transition-all duration-300 ${
+                    item.highlight
+                      ? "bg-primary/[0.08] border border-primary/20 shadow-[0_0_20px_rgba(25,191,183,0.08)]"
+                      : "bg-white/[0.03] border border-transparent group-hover:border-white/[0.08] group-hover:bg-white/[0.05]"
+                  }`}
+                >
+                  <div className={`text-xl font-bold mb-1.5 ${item.highlight ? "text-primary" : "text-white group-hover:text-primary/80"} transition-colors`}>
+                    {item.year}
+                  </div>
+                  <div className="text-sm text-white/50 max-w-[160px] leading-relaxed">{item.event}</div>
+                  {item.highlight && (
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary mt-2">
+                      <CheckCircle className="w-3 h-3" />
+                      Ключов момент
+                    </span>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Mobile vertical timeline */}
+        <div className="md:hidden relative pl-8 max-w-sm mx-auto">
+          {/* Gradient vertical line with glow */}
+          <div className="absolute left-[9px] top-2 bottom-2 w-[2px]">
+            <div className="absolute inset-0 bg-gradient-to-b from-primary/50 via-primary/25 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-primary/10 to-transparent blur-sm" />
+          </div>
+
+          <div className="space-y-6">
+            {timeline.map((item, index) => (
+              <motion.div
+                key={item.year}
+                {...(prefersReducedMotion
+                  ? {}
+                  : {
+                      initial: { opacity: 0, x: 20 },
+                      animate: isInView ? { opacity: 1, x: 0 } : {},
+                    })}
+                transition={{ delay: 0.2 + index * 0.12, duration: 0.4 }}
+                className="relative"
+              >
+                {/* Dot */}
+                <div className="absolute -left-8 top-1.5">
+                  <div
+                    className={`w-[12px] h-[12px] rounded-full ${
+                      item.highlight
+                        ? "bg-primary shadow-[0_0_10px_rgba(25,191,183,0.5)]"
+                        : "bg-white/30"
+                    }`}
+                  />
+                </div>
+
+                {/* Content */}
+                <div
+                  className={`rounded-xl p-3 ${
+                    item.highlight
+                      ? "bg-primary/[0.08] border border-primary/20"
+                      : "bg-transparent"
+                  }`}
+                >
+                  <div className={`text-base font-bold ${item.highlight ? "text-primary" : "text-white"}`}>
+                    {item.year}
+                  </div>
+                  <div className="text-sm text-white/50">{item.event}</div>
+                  {item.highlight && (
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary mt-1">
+                      <CheckCircle className="w-3 h-3" />
+                      Ключов момент
+                    </span>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ==========================================
+   Section 3: CompanyValues
+   Auto-scrolling carousel
+   ========================================== */
+export function CompanyValues() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const prefersReducedMotion = useReducedMotion();
+
+  // Duplicate items for infinite scroll effect
+  const carouselItems = [...values, ...values, ...values, ...values];
+
+  const anim = (delay: number) =>
+    prefersReducedMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 30 },
+          animate: isInView ? { opacity: 1, y: 0 } : {},
+          transition: { duration: 0.6, delay },
+        };
+
+  return (
+    <section className="relative py-20 md:py-28 bg-slate-950 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-sm">
+      {/* Background gradient orb */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-primary/5 rounded-full blur-[100px]" />
+
+      <div className="container mx-auto px-4 sm:px-6 relative z-10" ref={ref}>
+        {/* Header */}
+        <motion.div {...anim(0)} className="text-center mb-14">
+          <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 text-primary text-sm font-semibold border border-primary/20 backdrop-blur-sm">
+            <Sparkles className="w-4 h-4" />
+            Ценности
+          </span>
+          <h2 className="mt-5 text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
+            Нашите <span className="text-primary">ценности</span>
+          </h2>
+          <p className="mt-4 text-lg text-white/50 max-w-2xl mx-auto">
+            Принципите, които ръководят нашата работа всеки ден
+          </p>
+        </motion.div>
+      </div>
+
+      {/* Carousel — full width, overflows container */}
+      <motion.div {...anim(0.2)}>
+        <div className="relative overflow-hidden group/carousel">
+          {/* Fade edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-slate-950 to-transparent z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-slate-950 to-transparent z-10" />
+
+          {/* Scrolling track — pauses on hover */}
+          <div
+            className="flex gap-5 animate-scroll-left group-hover/carousel:[animation-play-state:paused]"
+            style={{
+              animationDuration: `${carouselItems.length * 4}s`,
+              width: "max-content",
+            }}
+          >
+            {carouselItems.map((value, index) => {
+              const Icon = value.icon;
+              return (
+                <div
+                  key={`val-${index}`}
+                  className="group flex-shrink-0 w-72 sm:w-80"
+                >
+                  <div className="h-full rounded-2xl bg-white/[0.04] border border-white/[0.08] p-6 hover:border-primary/30 transition-all duration-300 relative overflow-hidden">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${value.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                    <div className="relative z-10">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <Icon className="w-6 h-6 text-primary" />
+                      </div>
+                      <h4 className="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
+                        {value.title}
+                      </h4>
+                      <p className="text-sm text-white/50 leading-relaxed">{value.description}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </motion.div>
     </section>
   );
 }

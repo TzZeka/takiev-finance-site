@@ -1,9 +1,25 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import type { Metadata } from "next";
+import Image from "next/image";
 import { ContactForm } from "@/components/shared/ContactForm";
-import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, CheckCircle } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Контакти | Takiev Finance - Счетоводна Кантора",
+  description:
+    "Свържете се с нас за професионална счетоводна консултация. Телефон, имейл, адрес и работно време на Takiev Finance.",
+  alternates: {
+    canonical: "https://takiev.bg/kontakti",
+  },
+  openGraph: {
+    title: "Контакти | Takiev Finance",
+    description:
+      "Свържете се с нас за професионална счетоводна консултация.",
+    url: "https://takiev.bg/kontakti",
+    type: "website",
+    locale: "bg_BG",
+    siteName: "Takiev Finance",
+  },
+};
 
 const whyChooseUsReasons = [
   "Бърз отговор на запитвания",
@@ -41,243 +57,121 @@ const contactInfo = [
 ];
 
 export default function ContactPage() {
-  const [currentReasonIndex, setCurrentReasonIndex] = useState(0);
-  const [animationVariant, setAnimationVariant] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentReasonIndex((prev) => (prev + 1) % whyChooseUsReasons.length);
-      setAnimationVariant((prev) => (prev + 1) % 4); // 4 different animation types
-    }, 3000); // Change every 3 seconds
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Different animation variants
-  const getAnimationVariant = () => {
-    switch (animationVariant) {
-      case 0:
-        return {
-          initial: { opacity: 0, y: 20, scale: 0.9 },
-          animate: { opacity: 1, y: 0, scale: 1 },
-          exit: { opacity: 0, y: -20, scale: 0.9 },
-        };
-      case 1:
-        return {
-          initial: { opacity: 0, x: 50, rotateY: 90 },
-          animate: { opacity: 1, x: 0, rotateY: 0 },
-          exit: { opacity: 0, x: -50, rotateY: -90 },
-        };
-      case 2:
-        return {
-          initial: { opacity: 0, scale: 0, rotate: -180 },
-          animate: { opacity: 1, scale: 1, rotate: 0 },
-          exit: { opacity: 0, scale: 0, rotate: 180 },
-        };
-      case 3:
-        return {
-          initial: { opacity: 0, y: -30, skewY: 10 },
-          animate: { opacity: 1, y: 0, skewY: 0 },
-          exit: { opacity: 0, y: 30, skewY: -10 },
-        };
-      default:
-        return {
-          initial: { opacity: 0 },
-          animate: { opacity: 1 },
-          exit: { opacity: 0 },
-        };
-    }
-  };
-
   return (
-    <div className="py-16 md:py-24">
-      <div className="container mx-auto px-4">
-        {/* Header Section with "Why Choose Us" */}
-        <div className="max-w-7xl mx-auto mb-16">
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Контакти
-              </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                Свържете се с нас за професионална консултация
-              </p>
-            </div>
+    <div className="relative min-h-screen">
+      {/* Full-page background image */}
+      <Image
+        src="/firm-logo/contact-photos/контакти-фон.png"
+        alt=""
+        fill
+        className="object-cover fixed"
+        priority
+      />
 
-            {/* Why Choose Us - Animated */}
-            <div className="relative bg-card/80 backdrop-blur-sm border-2 border-primary/20 rounded-xl p-6 md:min-w-[380px] shadow-xl overflow-hidden">
-              {/* Diagonal accent */}
-              <div className="absolute -top-2 -right-2 w-24 h-24 bg-primary/10 rounded-full blur-3xl" />
-              <div className="relative">
-                <h3 className="font-semibold text-primary mb-4 text-lg">
-                  Защо да изберете нас?
+      {/* Dark overlay over entire page */}
+      <div className="fixed inset-0 bg-slate-950/40" />
+
+      {/* All content sits above the background */}
+      <div className="relative z-10">
+      {/* Hero */}
+      <section className="pt-28 sm:pt-32 md:pt-40 lg:pt-48 pb-24 md:pb-32 text-white text-center">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8">
+          <p className="text-primary font-medium tracking-widest uppercase text-sm mb-4">
+            Свържете се с нас
+          </p>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight">
+            Контакти
+          </h1>
+          <p className="text-base sm:text-lg md:text-xl text-white/70 leading-relaxed max-w-2xl mx-auto font-light">
+            Ще се радваме да обсъдим как можем да помогнем на вашия бизнес
+          </p>
+        </div>
+      </section>
+
+      {/* Contact Info Cards */}
+      <section className="container mx-auto px-4 md:px-6 lg:px-8 -mt-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {contactInfo.map((item, index) => {
+            const IconComponent = item.icon;
+            const content = item.link ? (
+              <a
+                href={item.link}
+                className="text-white/80 hover:text-primary transition-colors text-sm"
+              >
+                {item.content}
+              </a>
+            ) : (
+              <span className="text-white/80 text-sm">{item.content}</span>
+            );
+
+            return (
+              <div
+                key={index}
+                className="bg-slate-950/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:border-primary/40 transition-colors"
+              >
+                <div className="p-2.5 bg-primary/20 rounded-xl w-fit mb-4">
+                  <IconComponent className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="font-semibold text-white text-sm uppercase tracking-wide mb-1">
+                  {item.title}
                 </h3>
-
-                {/* Animated rotating text */}
-                <div className="relative h-20 flex items-center">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={currentReasonIndex}
-                      {...getAnimationVariant()}
-                      transition={{
-                        duration: 0.6,
-                        ease: [0.34, 1.56, 0.64, 1],
-                      }}
-                      className="absolute inset-0 flex items-center"
-                    >
-                      <div className="flex items-start gap-3 w-full">
-                        <motion.span
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                          className="text-primary text-2xl font-bold flex-shrink-0"
-                        >
-                          ✓
-                        </motion.span>
-                        <span className="text-foreground text-base font-medium leading-relaxed">
-                          {whyChooseUsReasons[currentReasonIndex]}
-                        </span>
-                      </div>
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-
-                {/* Progress dots */}
-                <div className="flex gap-2 mt-4 justify-center">
-                  {whyChooseUsReasons.map((_, index) => (
-                    <motion.div
-                      key={index}
-                      className={`h-1.5 rounded-full transition-all duration-500 ${
-                        index === currentReasonIndex
-                          ? "w-8 bg-primary"
-                          : "w-1.5 bg-primary/30"
-                      }`}
-                      animate={{
-                        scale: index === currentReasonIndex ? 1 : 0.8,
-                      }}
-                    />
-                  ))}
-                </div>
+                {content}
               </div>
-            </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Main Content: Map + Form */}
+      <section className="container mx-auto px-4 md:px-6 lg:px-8 py-10 md:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Google Maps */}
+          <div className="h-[300px] lg:h-[420px] rounded-2xl overflow-hidden border border-white/10 bg-slate-950/40">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2932.283956399353!2d23.319877890847863!3d42.697707877149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40aa855eff40e335%3A0xa7cffc05e42a4e56!2sTakiev%20Finance%20EOOD!5e0!3m2!1sbg!2sbg!4v1768080298879!5m2!1sbg!2sbg&style=feature:all|element:geometry|color:0x40514E&style=feature:all|element:labels.text.fill|color:0x19BFB7&style=feature:all|element:labels.text.stroke|color:0x2c3e3b&style=feature:water|element:geometry|color:0x2c3e3b"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Takiev Finance Location"
+            />
+          </div>
+
+          {/* Contact Form */}
+          <div className="bg-slate-950/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 md:p-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+              Изпратете запитване
+            </h2>
+            <p className="text-white/60 mb-6">
+              Ще се свържем с вас възможно най-скоро
+            </p>
+            <ContactForm />
           </div>
         </div>
+      </section>
 
-        {/* Main Content Grid */}
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-8">
-            {/* Left Column: Map + Contact Info */}
-            <div className="space-y-8">
-              {/* Google Maps - Modern Styled */}
-              <div className="relative group">
-                {/* Decorative elements */}
-                <div className="absolute -top-4 -left-4 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
-                <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-primary/5 rounded-full blur-3xl" />
-
-                {/* Diagonal accent bars */}
-                <div className="absolute -top-2 -left-2 w-24 h-1 bg-gradient-to-r from-primary to-primary/50 transform -rotate-12 rounded-full" />
-                <div className="absolute -bottom-2 -right-2 w-24 h-1 bg-gradient-to-r from-primary/50 to-primary transform -rotate-12 rounded-full" />
-
-                <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl border-2 border-primary/20 transform transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-primary/20">
-                  {/* Diagonal gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none z-10"
-                       style={{ transform: "skewY(-2deg)", transformOrigin: "top left" }} />
-
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2932.283956399353!2d23.319877890847863!3d42.697707877149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40aa855eff40e335%3A0xa7cffc05e42a4e56!2sTakiev%20Finance%20EOOD!5e0!3m2!1sbg!2sbg!4v1768080298879!5m2!1sbg!2sbg&style=feature:all|element:geometry|color:0x40514E&style=feature:all|element:labels.text.fill|color:0x19BFB7&style=feature:all|element:labels.text.stroke|color:0x2c3e3b&style=feature:water|element:geometry|color:0x2c3e3b"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Takiev Finance Location"
-                  />
-                </div>
-              </div>
-
-              {/* Contact Information Cards */}
-              <div className="relative bg-card/80 backdrop-blur-sm border-2 border-primary/10 rounded-xl p-5 shadow-xl overflow-hidden">
-                {/* Diagonal background accent */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl" />
-
-                <div className="relative">
-                  <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                    <div className="w-1 h-6 bg-gradient-to-b from-primary to-primary/50 rounded-full" />
-                    Информация за контакт
-                  </h2>
-
-                  <div className="space-y-2">
-                    {contactInfo.map((item, index) => {
-                      const IconComponent = item.icon;
-                      const content = item.link ? (
-                        <a
-                          href={item.link}
-                          className="text-foreground hover:text-primary transition-colors font-medium text-sm"
-                        >
-                          {item.content}
-                        </a>
-                      ) : (
-                        <span className="text-foreground font-medium text-sm">{item.content}</span>
-                      );
-
-                      return (
-                        <div
-                          key={index}
-                          className="relative group/item"
-                        >
-                          {/* Hover effect line */}
-                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-full scale-y-0 group-hover/item:scale-y-100 transition-transform origin-top" />
-
-                          <div className="flex items-center gap-3 p-3 pl-4 rounded-lg bg-muted/20 hover:bg-muted/40 transition-all duration-300 transform hover:translate-x-1">
-                            <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 transition-transform">
-                              <IconComponent className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <h3 className="font-semibold text-foreground mb-0.5 text-xs uppercase tracking-wide opacity-70">
-                                {item.title}
-                              </h3>
-                              {content}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
+      {/* Why Choose Us */}
+      <section className="container mx-auto px-4 md:px-6 lg:px-8 pb-8 md:pb-12">
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">
+          Защо да изберете нас?
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {whyChooseUsReasons.map((reason, index) => (
+            <div
+              key={index}
+              className="bg-slate-950/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 flex items-start gap-3"
+            >
+              <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+              <span className="text-white/80 text-sm md:text-base">
+                {reason}
+              </span>
             </div>
-
-            {/* Right Column: Contact Form */}
-            <div className="relative">
-              {/* Decorative elements */}
-              <div className="absolute -top-4 -right-4 w-40 h-40 bg-primary/10 rounded-full blur-3xl" />
-
-              {/* Diagonal accent bars */}
-              <div className="absolute -top-2 -right-2 w-32 h-1 bg-gradient-to-r from-primary to-primary/50 transform rotate-12 rounded-full" />
-
-              <div className="relative bg-card/90 backdrop-blur-md border-2 border-primary/20 rounded-2xl p-8 md:p-10 shadow-2xl overflow-hidden">
-                {/* Diagonal gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none"
-                     style={{ transform: "skewY(-1deg)", transformOrigin: "top left" }} />
-
-                {/* Diagonal accent line */}
-                <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-primary via-primary/50 to-transparent transform skew-x-12 origin-top-right opacity-20" />
-
-                <div className="relative">
-                  <h2 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
-                    <div className="w-1 h-10 bg-gradient-to-b from-primary to-primary/50 rounded-full" />
-                    Изпратете запитване
-                  </h2>
-                  <p className="text-muted-foreground mb-8 ml-7">
-                    Ще се свържем с вас възможно най-скоро
-                  </p>
-                  <ContactForm />
-                </div>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
+      </section>
+
       </div>
     </div>
   );
