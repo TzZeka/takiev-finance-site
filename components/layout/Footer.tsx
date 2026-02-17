@@ -16,20 +16,20 @@ function FooterAccordion({ title, children }: { title: string; children: React.R
         className="w-full flex items-center justify-between md:hidden"
         aria-expanded={isOpen}
       >
-        <h3 className="text-lg font-bold flex items-center">
+        <p className="text-lg font-bold flex items-center">
           <span className="text-[#19BFB7]">—</span>
           <span className="ml-2">{title}</span>
-        </h3>
+        </p>
         <ChevronDown
           className={`w-5 h-5 text-white/50 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 
       {/* Desktop: static header */}
-      <h3 className="text-lg font-bold mb-6 items-center hidden md:flex">
+      <p className="text-lg font-bold mb-6 items-center hidden md:flex">
         <span className="text-[#19BFB7]">—</span>
         <span className="ml-2">{title}</span>
-      </h3>
+      </p>
 
       {/* Mobile: collapsible content */}
       <div
@@ -49,7 +49,7 @@ export function Footer() {
   return (
     <footer className="relative bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden rounded-t-3xl">
       {/* Decorative background elements */}
-      <div className="absolute inset-0 opacity-20">
+      <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#19BFB7] rounded-full blur-[120px]"></div>
         <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#40514E] rounded-full blur-[120px]"></div>
       </div>
@@ -70,7 +70,7 @@ export function Footer() {
               обслужване на Вашия бизнес.
             </p>
 
-            <p className="text-xs text-white/40 text-center md:text-left">Последвайте ни</p>
+            <p className="text-xs text-white/60 text-center md:text-left">Последвайте ни</p>
 
             {/* Social Media */}
             <div className="flex space-x-3 justify-center md:justify-start">
@@ -281,10 +281,10 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-white/10 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-sm text-white/50">
+            <p className="text-sm text-white/70">
               &copy; 2021-{currentYear} Takiev Finance. Всички права запазени.
             </p>
-            <div className="flex items-center space-x-6 text-xs text-white/50">
+            <div className="flex items-center space-x-6 text-xs text-white/70">
               <Link href="/privacy" className="hover:text-[#19BFB7] transition-colors">
                 Политика за поверителност
               </Link>

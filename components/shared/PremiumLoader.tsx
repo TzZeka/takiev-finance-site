@@ -275,7 +275,7 @@ export function PremiumLoader() {
                     willChange: "transform, opacity, background-position",
                   }}
                 >
-                  Избери своя доверен бизнес партньор
+                  Счетоводна Кантора 
                 </p>
               </div>
             </div>

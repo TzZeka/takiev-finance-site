@@ -166,7 +166,7 @@ export function HeroSection({ motto }: HeroSectionProps) {
               {currentSlide.primaryCta && (
                 <a
                   href={currentSlide.primaryCta.href}
-                  className="group inline-flex items-center justify-center px-8 py-4 bg-[#19BFB7] text-white font-semibold rounded-xl shadow-lg shadow-[#19BFB7]/25 transition-all duration-300 hover:bg-[#15E6DB] hover:shadow-[#19BFB7]/40 hover:-translate-y-0.5"
+                  className="group inline-flex items-center justify-center px-8 py-4 bg-[#0E8A83] text-white font-semibold rounded-xl shadow-lg shadow-[#19BFB7]/25 transition-all duration-300 hover:bg-[#19BFB7] hover:shadow-[#19BFB7]/40 hover:-translate-y-0.5"
                 >
                   {currentSlide.primaryCta.label}
                   <CtaIcon type={currentSlide.primaryCta.icon} />

@@ -256,7 +256,7 @@ export function Header() {
 
             {/* Mobile Contact Info */}
             <div className="mt-6 pt-4 border-t border-white/10">
-              <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Контакти</h3>
+              <p className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Контакти</p>
               <div className="space-y-2.5">
                 <a
                   href="mailto:office@takiev.bg"
@@ -281,7 +281,7 @@ export function Header() {
 
             {/* Mobile Social Links */}
             <div className="mt-6 pt-4 border-t border-white/10">
-              <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Социални мрежи</h3>
+              <p className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Социални мрежи</p>
               <div className="flex items-center gap-2">
                 <a
                   href="https://www.facebook.com/n.takiev"

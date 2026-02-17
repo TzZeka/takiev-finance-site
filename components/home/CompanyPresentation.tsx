@@ -525,9 +525,9 @@ export function CompanyValues() {
                       <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                         <Icon className="w-6 h-6 text-primary" />
                       </div>
-                      <h4 className="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
+                      <h3 className="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
                         {value.title}
-                      </h4>
+                      </h3>
                       <p className="text-sm text-white/50 leading-relaxed">{value.description}</p>
                     </div>
                   </div>

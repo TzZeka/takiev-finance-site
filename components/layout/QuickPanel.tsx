@@ -220,10 +220,10 @@ export function QuickPanel() {
                   transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.1s",
                 }}
               >
-                <h3 className="text-sm font-bold mb-4 flex items-center text-white">
+                <p className="text-sm font-bold mb-4 flex items-center text-white">
                   <span className="text-primary">—</span>
                   <span className="ml-2">Полезни сайтове</span>
-                </h3>
+                </p>
                 <ul className="space-y-2.5">
                   {[
                     { href: "https://nula.bg", label: "Nula.bg" },
@@ -254,10 +254,10 @@ export function QuickPanel() {
                   transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.15s",
                 }}
               >
-                <h3 className="text-sm font-bold mb-4 flex items-center text-white">
+                <p className="text-sm font-bold mb-4 flex items-center text-white">
                   <span className="text-primary">—</span>
                   <span className="ml-2">Контакти</span>
-                </h3>
+                </p>
                 <ul className="space-y-2.5">
                   <li className="group flex items-center space-x-3">
                     <div className="p-1.5 bg-white/5 rounded-lg border border-white/10 group-hover:border-primary transition-all duration-300">
@@ -300,10 +300,10 @@ export function QuickPanel() {
                   transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.2s",
                 }}
               >
-                <h3 className="text-sm font-bold mb-4 flex items-center text-white">
+                <p className="text-sm font-bold mb-4 flex items-center text-white">
                   <span className="text-primary">—</span>
                   <span className="ml-2">Социални мрежи</span>
-                </h3>
+                </p>
                 <div className="flex flex-wrap gap-2.5">
                   <a
                     href="https://www.facebook.com/n.takiev"
