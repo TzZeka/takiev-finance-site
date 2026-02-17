@@ -64,6 +64,7 @@ export interface HomeContent {
     icon: string;
     title: string;
     description: string;
+    image?: SanityImage;
   }>;
   ctaText?: string;
   ctaButtonText?: string;

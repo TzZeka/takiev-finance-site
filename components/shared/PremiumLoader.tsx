@@ -1,351 +1,359 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+
+/*
+ * PremiumLoader
+ *
+ * Brick icon matches app/icon.svg exactly:
+ *   - 3 squares top row, 1 centered bottom row
+ *   - Each brick is a square with ~13% gradient border
+ *   - Gap between bricks ≈ 20% of brick size
+ *   - Grid aspect ratio 54.5 : 35.3 ≈ 1.545 : 1
+ *
+ * Performance: CSS @keyframes for everything repeating,
+ * Framer Motion only for the one-time exit transition.
+ */
+
+const TOTAL_MS = 3400;
+
+/* SVG-exact brick positions (normalised to grid 0..1) */
+const BRICKS = [
+  { col: 0, row: 0, delay: 0 },
+  { col: 1, row: 0, delay: 0.12 },
+  { col: 2, row: 0, delay: 0.24 },
+  { col: 1, row: 1, delay: 0.36 },
+];
+
+/* Grid constants derived from icon.svg coordinates */
+const BRICK = 16.07;
+const GAP = 3.17;
+const COLS = 3;
+const ROWS = 2;
+const GRID_W = COLS * BRICK + (COLS - 1) * GAP; // 54.57
+const GRID_H = ROWS * BRICK + (ROWS - 1) * GAP; // 35.31
+
+function brickLeft(col: number) {
+  return ((col * (BRICK + GAP)) / GRID_W) * 100;
+}
+function brickTop(row: number) {
+  return ((row * (BRICK + GAP)) / GRID_H) * 100;
+}
+const BRICK_W = (BRICK / GRID_W) * 100; // ~29.45%
+const BRICK_H = (BRICK / GRID_H) * 100; // ~45.5%
+const BORDER_RATIO = 2.1 / 16.07; // ~13%
 
 export function PremiumLoader() {
   const [isLoading, setIsLoading] = useState(true);
+  const [phase, setPhase] = useState<"bricks" | "text">("bricks");
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
-    // Add loader-active class to body
-    document.body.classList.add('loader-active');
+    document.body.classList.add("loader-active");
 
-    // Hide loader after animation completes
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-      document.body.classList.remove('loader-active');
-    }, 4000); // Total animation time
+    timers.current.push(setTimeout(() => setPhase("text"), 1100));
+    timers.current.push(
+      setTimeout(() => {
+        setIsLoading(false);
+        document.body.classList.remove("loader-active");
+      }, TOTAL_MS)
+    );
 
     return () => {
-      clearTimeout(timer);
-      document.body.classList.remove('loader-active');
+      timers.current.forEach(clearTimeout);
+      document.body.classList.remove("loader-active");
     };
   }, []);
 
-  // Brick pattern matching the logo (4 squares)
-  // Top row: 3 squares, Bottom row: 1 centered square
-  const brickPattern = [
-    { x: 0, y: 0, delay: 0 },      // Top left
-    { x: 1, y: 0, delay: 0.1 },    // Top center
-    { x: 2, y: 0, delay: 0.2 },    // Top right
-    { x: 1, y: 1, delay: 0.3 },    // Bottom center
-  ];
+  const textVisible = phase === "text";
 
   return (
-    <AnimatePresence>
-      {isLoading && (
-        <motion.div
-          initial={{ opacity: 1 }}
-          exit={{
-            y: "-100%",
-            transition: {
-              duration: 1,
-              ease: [0.76, 0, 0.24, 1],
-              delay: 0.2
-            }
-          }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
-          style={{
-            background: 'linear-gradient(135deg, #40514E 0%, #2a3634 50%, #1a2220 100%)'
-          }}
-        >
-          {/* Animated background grid */}
-          <div className="absolute inset-0 opacity-10">
-            <motion.div
-              className="absolute inset-0"
-              animate={{
-                backgroundPosition: ['0px 0px', '40px 40px'],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-              style={{
-                backgroundImage: `
-                  linear-gradient(#19BFB7 1px, transparent 1px),
-                  linear-gradient(90deg, #19BFB7 1px, transparent 1px)
-                `,
-                backgroundSize: '40px 40px'
-              }}
-            />
-          </div>
+    <>
+      <style jsx global>{`
+        /* ── Background gradient flow ── */
+        @keyframes loader-bg-flow {
+          0%   { background-position: 0% 50%; }
+          50%  { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
 
-          {/* Decorative corner ornaments */}
-          {[
-            { top: '40px', left: '40px', rotate: 0 },
-            { top: '40px', right: '40px', rotate: 90 },
-            { bottom: '40px', right: '40px', rotate: 180 },
-            { bottom: '40px', left: '40px', rotate: 270 },
-          ].map((position, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 0.3, scale: 1 }}
-              transition={{ delay: 0.5 + i * 0.1, duration: 0.6 }}
-              className="absolute"
-              style={position}
-            >
-              <svg width="60" height="60" viewBox="0 0 60 60">
-                <path
-                  d="M0,0 L30,0 L30,2 L20,2 L20,20 L18,20 L18,2 L2,2 L2,18 L0,18 Z"
-                  fill="url(#corner-gradient)"
-                  transform={`rotate(${position.rotate} 30 30)`}
-                />
-                <defs>
-                  <linearGradient id="corner-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#19BFB7" />
-                    <stop offset="100%" stopColor="#147d6c" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </motion.div>
-          ))}
+        /* ── Brick entrance: 3D flip + scale ── */
+        @keyframes loader-brick-in {
+          0% {
+            opacity: 0;
+            transform: perspective(600px) rotateY(-90deg) scale(0.5);
+          }
+          60% {
+            opacity: 1;
+            transform: perspective(600px) rotateY(8deg) scale(1.04);
+          }
+          100% {
+            opacity: 1;
+            transform: perspective(600px) rotateY(0deg) scale(1);
+          }
+        }
 
-          {/* Center ornamental frame */}
+        /* ── Shimmer across each brick (once) ── */
+        @keyframes loader-brick-shimmer {
+          0%   { transform: translateX(-120%); }
+          100% { transform: translateX(220%); }
+        }
+
+        /* ── Text fade-in from below ── */
+        @keyframes loader-text-in {
+          0%   { opacity: 0; transform: translateY(14px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Light sweep across text (once, quick flash left→right) ── */
+        @keyframes loader-text-shine {
+          0%   { background-position: -50% 0; }
+          100% { background-position: 150% 0; }
+        }
+
+        /* ── Divider line grow ── */
+        @keyframes loader-line-grow {
+          0%   { transform: scaleX(0); opacity: 0; }
+          100% { transform: scaleX(1); opacity: 1; }
+        }
+
+        /* ── Subtle glow pulse behind bricks ── */
+        @keyframes loader-glow {
+          0%, 100% { opacity: 0.25; transform: scale(1); }
+          50%      { opacity: 0.5;  transform: scale(1.1); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .loader-brick,
+          .loader-shimmer-bar,
+          .loader-glow-orb,
+          .loader-heading,
+          .loader-slogan,
+          .loader-tagline,
+          .loader-divider {
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+          }
+          .loader-bg {
+            animation: none !important;
+          }
+        }
+      `}</style>
+
+      <AnimatePresence>
+        {isLoading && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="absolute"
+            initial={{ opacity: 1 }}
+            exit={{
+              y: "-100%",
+              transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] },
+            }}
+            className="loader-bg fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
             style={{
-              width: '400px',
-              height: '400px',
-              border: '2px solid rgba(25, 191, 183, 0.2)',
-              borderRadius: '8px',
-              transform: 'rotate(45deg)',
+              background:
+                "linear-gradient(135deg, #020617 0%, #0f172a 20%, #19BFB7 50%, #0f172a 80%, #020617 100%)",
+              backgroundSize: "300% 300%",
+              animation: "loader-bg-flow 6s ease infinite",
+              willChange: "transform",
             }}
           >
-            <div className="absolute inset-4 border-2 border-primary/10 rounded-lg" />
-          </motion.div>
+            {/* Radial glow behind bricks */}
+            <div
+              className="loader-glow-orb absolute rounded-full pointer-events-none"
+              style={{
+                width: "min(55vw, 300px)",
+                height: "min(55vw, 300px)",
+                background:
+                  "radial-gradient(circle, rgba(25,191,183,0.35) 0%, transparent 70%)",
+                animation: "loader-glow 3s ease-in-out infinite",
+                willChange: "opacity, transform",
+              }}
+            />
 
-          {/* Content */}
-          <div className="relative flex flex-col items-center z-10">
-            {/* Logo Animation */}
-            <div className="relative mb-12">
-              {/* Outer glow rings */}
-              {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{
-                    opacity: [0, 0.3, 0],
-                    scale: [0.8, 1.5 + i * 0.3, 2 + i * 0.3],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    delay: i * 0.4,
-                    ease: "easeOut"
-                  }}
-                  className="absolute rounded-full border-2 border-primary/40"
-                  style={{
-                    width: '220px',
-                    height: '220px',
-                    left: '50%',
-                    top: '50%',
-                    marginLeft: '-110px',
-                    marginTop: '-110px',
-                  }}
-                />
-              ))}
-
-              {/* Main glow */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: [0.4, 0.8, 0.4],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="absolute blur-3xl rounded-full"
+            {/* ── Center column ── */}
+            <div className="relative flex flex-col items-center z-10 px-6">
+              {/* ── Brick grid ── */}
+              <div
+                className="relative mb-10 sm:mb-12"
                 style={{
-                  width: '280px',
-                  height: '280px',
-                  left: '50%',
-                  top: '50%',
-                  marginLeft: '-140px',
-                  marginTop: '-140px',
-                  background: 'radial-gradient(circle, rgba(25, 191, 183, 0.4) 0%, transparent 70%)',
+                  /* Responsive: 28vw clamped 130–210px, height by aspect ratio */
+                  width: "clamp(130px, 28vw, 210px)",
+                  aspectRatio: `${GRID_W} / ${GRID_H}`,
+                  perspective: "800px",
                 }}
-              />
-
-              {/* Brick squares - matching logo exactly */}
-              <div className="relative" style={{ width: '200px', height: '140px' }}>
-                {brickPattern.map((brick, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{
-                      scale: 0,
-                      opacity: 0,
-                      rotate: -90,
-                      y: -50,
-                    }}
-                    animate={{
-                      scale: 1,
-                      opacity: 1,
-                      rotate: 0,
-                      y: 0,
-                    }}
-                    transition={{
-                      delay: 0.8 + brick.delay,
-                      duration: 0.8,
-                      ease: [0.34, 1.56, 0.64, 1], // Elastic spring
-                    }}
-                    className="absolute"
+              >
+                {BRICKS.map(({ col, row, delay }, i) => (
+                  <div
+                    key={i}
+                    className="loader-brick absolute"
                     style={{
-                      left: `${brick.x * 66 + 1}px`,
-                      top: `${brick.y * 70}px`,
-                      width: '64px',
-                      height: '64px',
+                      left: `${brickLeft(col)}%`,
+                      top: `${brickTop(row)}%`,
+                      width: `${BRICK_W}%`,
+                      height: `${BRICK_H}%`,
+                      opacity: 0,
+                      animation: `loader-brick-in 0.75s cubic-bezier(0.34,1.56,0.64,1) ${delay}s forwards`,
+                      willChange: "transform, opacity",
+                      transformStyle: "preserve-3d",
                     }}
                   >
-                    {/* Outer border (like logo) */}
+                    {/* Gradient border — matches SVG 2.1-unit stroke */}
                     <div
-                      className="absolute inset-0 rounded-md"
+                      className="w-full h-full rounded-[6%]"
                       style={{
-                        background: 'linear-gradient(135deg, #147d6c 0%, #1effff 100%)',
-                        padding: '3px',
+                        padding: `${BORDER_RATIO * 100}%`,
+                        background:
+                          "linear-gradient(135deg, #147d6c 0%, #1effff 100%)",
+                        boxShadow:
+                          "0 8px 24px rgba(0,0,0,0.35), 0 2px 8px rgba(25,191,183,0.3)",
                       }}
                     >
-                      {/* Inner square */}
+                      {/* Inner fill */}
                       <div
-                        className="w-full h-full rounded-sm relative overflow-hidden"
+                        className="relative w-full h-full rounded-[4%] overflow-hidden"
                         style={{
-                          background: 'linear-gradient(135deg, #19BFB7 0%, #15a39d 100%)',
-                          boxShadow: '0 0 30px rgba(25, 191, 183, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.2)',
+                          background:
+                            "linear-gradient(145deg, #22d4cb 0%, #19BFB7 40%, #15a39d 100%)",
+                          boxShadow:
+                            "inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.15)",
                         }}
                       >
-                        {/* Shimmer effect */}
-                        <motion.div
-                          animate={{
-                            x: ['-100%', '200%'],
-                          }}
-                          transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            delay: brick.delay + 1,
-                            ease: "linear"
-                          }}
-                          className="absolute inset-0"
+                        {/* 3D highlight edge (top-left) */}
+                        <div
+                          className="absolute top-0 left-0 right-0 h-[20%] pointer-events-none"
                           style={{
-                            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
-                            width: '50%',
+                            background:
+                              "linear-gradient(180deg, rgba(255,255,255,0.25) 0%, transparent 100%)",
+                            borderRadius: "inherit",
                           }}
                         />
 
-                        {/* Pulsing glow */}
-                        <motion.div
-                          animate={{
-                            opacity: [0.2, 0.5, 0.2],
+                        {/* Shimmer (single pass) */}
+                        <div
+                          className="loader-shimmer-bar absolute inset-0 pointer-events-none"
+                          style={{
+                            background:
+                              "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 50%, transparent 100%)",
+                            width: "40%",
+                            opacity: 0.8,
+                            animation: `loader-brick-shimmer 0.8s ease-in-out ${
+                              delay + 0.7
+                            }s forwards`,
+                            transform: "translateX(-120%)",
+                            willChange: "transform",
                           }}
-                          transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            delay: brick.delay,
-                            ease: "easeInOut"
-                          }}
-                          className="absolute inset-0 bg-white/20 rounded-sm"
                         />
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
+
+              {/* ── Text section ── */}
+              <div className="flex flex-col items-center text-center">
+                {/* Top divider */}
+                <div
+                  className="loader-divider h-px w-16 sm:w-20 mb-5 origin-center"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent)",
+                    opacity: 0,
+                    transform: "scaleX(0)",
+                    animation: textVisible
+                      ? "loader-line-grow 0.5s ease-out 0s forwards"
+                      : "none",
+                  }}
+                />
+
+                {/* Company name — with single light sweep */}
+                <h1
+                  className="loader-heading text-4xl sm:text-5xl md:text-6xl font-bold tracking-wide mb-2"
+                  style={{
+                    fontFamily: "'Berkslund', serif",
+                    /* Base white text, then shine overlay via background-clip */
+                    color: "transparent",
+                    backgroundImage:
+                      "linear-gradient(90deg, #fff 0%, #fff 42%, #19BFB7 47%, #1effff 50%, #19BFB7 53%, #fff 58%, #fff 100%)",
+                    backgroundSize: "300% 100%",
+                    backgroundPosition: "-100% 0",
+                    backgroundClip: "text",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    opacity: 0,
+                    animation: textVisible
+                      ? "loader-text-in 0.6s ease-out 0.05s forwards, loader-text-shine 0.6s ease-in-out 0.6s forwards"
+                      : "none",
+                    willChange: "transform, opacity, background-position",
+                  }}
+                >
+                  Takiev Finance
+                </h1>
+
+                {/* Slogan — matching Logo.tsx exactly */}
+                <p
+                  className="loader-slogan text-[10px] sm:text-xs md:text-sm font-extrabold tracking-[0.25em] uppercase mb-5"
+                  style={{
+                    fontFamily: "'Avenir', sans-serif",
+                    color: "transparent",
+                    backgroundImage:
+                      "linear-gradient(90deg, #147d6c 0%, #147d6c 42%, #fff 47%, #1effff 50%, #fff 53%, #1effff 58%, #1effff 100%)",
+                    backgroundSize: "300% 100%",
+                    backgroundPosition: "-100% 0",
+                    backgroundClip: "text",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    opacity: 0,
+                    animation: textVisible
+                      ? "loader-text-in 0.6s ease-out 0.2s forwards, loader-text-shine 0.6s ease-in-out 0.75s forwards"
+                      : "none",
+                    willChange: "transform, opacity, background-position",
+                  }}
+                >
+                  Accounting & Tax Company
+                </p>
+
+                {/* Bottom divider */}
+                <div
+                  className="loader-divider h-px w-16 sm:w-20 mb-6 origin-center"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent)",
+                    opacity: 0,
+                    transform: "scaleX(0)",
+                    animation: textVisible
+                      ? "loader-line-grow 0.5s ease-out 0.3s forwards"
+                      : "none",
+                  }}
+                />
+
+                {/* Tagline — with light sweep */}
+                <p
+                  className="loader-tagline text-xs sm:text-sm tracking-wide"
+                  style={{
+                    color: "transparent",
+                    backgroundImage:
+                      "linear-gradient(90deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.55) 42%, #19BFB7 47%, #1effff 50%, #19BFB7 53%, rgba(255,255,255,0.55) 58%, rgba(255,255,255,0.55) 100%)",
+                    backgroundSize: "300% 100%",
+                    backgroundPosition: "-100% 0",
+                    backgroundClip: "text",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    opacity: 0,
+                    animation: textVisible
+                      ? "loader-text-in 0.5s ease-out 0.4s forwards, loader-text-shine 0.6s ease-in-out 0.9s forwards"
+                      : "none",
+                    willChange: "transform, opacity, background-position",
+                  }}
+                >
+                  Избери своя доверен бизнес партньор
+                </p>
+              </div>
             </div>
-
-            {/* Company Name with ornamental dividers */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 2.2, duration: 0.8 }}
-              className="text-center"
-            >
-              {/* Top ornament */}
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ delay: 2.4, duration: 0.6 }}
-                className="flex items-center justify-center gap-3 mb-4"
-              >
-                <div className="h-px w-12 bg-gradient-to-r from-transparent via-primary to-primary" />
-                <div className="w-2 h-2 rotate-45 border-2 border-primary" />
-                <div className="h-px w-12 bg-gradient-to-l from-transparent via-primary to-primary" />
-              </motion.div>
-
-              <motion.h1
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 2.5, duration: 0.8 }}
-                className="text-5xl md:text-6xl font-bold mb-3 tracking-wide"
-                style={{
-                  background: 'linear-gradient(135deg, #1effff 0%, #19BFB7 50%, #FFFFFF 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  textShadow: '0 0 40px rgba(25, 191, 183, 0.3)',
-                }}
-              >
-                Takiev Finance
-              </motion.h1>
-
-              {/* Bottom ornament */}
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ delay: 2.6, duration: 0.6 }}
-                className="flex items-center justify-center gap-3 mb-6"
-              >
-                <div className="h-px w-12 bg-gradient-to-r from-transparent via-primary to-primary" />
-                <div className="w-2 h-2 rotate-45 border-2 border-primary" />
-                <div className="h-px w-12 bg-gradient-to-l from-transparent via-primary to-primary" />
-              </motion.div>
-
-              {/* Elegant tagline */}
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 2.8, duration: 0.8 }}
-                className="text-primary/60 text-sm tracking-widest uppercase"
-              >
-                Избери своя доверен бизнес партньор
-              </motion.p>
-
-              {/* Loading indicator */}
-              <motion.div
-                className="flex justify-center gap-2 mt-8"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 3 }}
-              >
-                {[0, 1, 2].map((i) => (
-                  <motion.div
-                    key={i}
-                    animate={{
-                      y: [0, -10, 0],
-                      opacity: [0.3, 1, 0.3],
-                    }}
-                    transition={{
-                      duration: 1.2,
-                      repeat: Infinity,
-                      delay: i * 0.2,
-                      ease: "easeInOut"
-                    }}
-                    className="w-2 h-2 rounded-full"
-                    style={{
-                      background: 'linear-gradient(135deg, #19BFB7, #1effff)',
-                      boxShadow: '0 0 10px rgba(25, 191, 183, 0.8)',
-                    }}
-                  />
-                ))}
-              </motion.div>
-            </motion.div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

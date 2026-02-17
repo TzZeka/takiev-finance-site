@@ -5,6 +5,9 @@
 import { defineCliConfig } from 'sanity/cli'
 
 export default defineCliConfig({
+   deployment: {
+      appId: 'q56mxno0b4vgylkctfnec5bl',
+    },
   api: {
     projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'oy6qgfzp',
     dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'

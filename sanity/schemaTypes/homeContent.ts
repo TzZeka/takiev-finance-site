@@ -54,6 +54,15 @@ export default defineType({
               type: "text",
               rows: 2,
             },
+            {
+              name: "image",
+              title: "Снимка",
+              type: "image",
+              description: "Снимка, която се показва до посланието",
+              options: {
+                hotspot: true,
+              },
+            },
           ],
         },
       ],

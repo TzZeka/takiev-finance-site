@@ -4,23 +4,20 @@ import { useRef, useEffect, useCallback, useState } from "react";
 import Image from "next/image";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import * as Icons from "lucide-react";
+import { getImageUrl } from "@/lib/sanity/client";
+import type { SanityImage } from "@/types";
 
 interface Message {
   _key: string;
   icon: string;
   title: string;
   description: string;
+  image?: SanityImage;
 }
 
 interface MessagesSectionProps {
   messages: Message[];
 }
-
-const messageImages = [
-  { src: "/firm-logo/choose-us/индивидуален-подход.png", alt: "Индивидуален подход към всеки клиент" },
-  { src: "/firm-logo/choose-us/професионална-експертиза.png", alt: "Висока професионална експертиза" },
-  { src: "/firm-logo/choose-us/дигитализирано-счетоводствто.png", alt: "Дигитализиране на счетоводството" },
-];
 
 const messageVideos = [
   "/firm-logo/messages-videos/индивидуален-подход.mp4",
@@ -42,6 +39,7 @@ function MessageCard({
   index: number;
   isReversed: boolean;
 }) {
+  const hasImage = !!message.image;
   const cardRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const isInView = useInView(cardRef, { once: false, margin: "-20%" });
@@ -228,7 +226,7 @@ function MessageCard({
           animate={isInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
         >
-          {messageImages[index] && (
+          {hasImage && (
             <div
               className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-2xl"
               style={{
@@ -238,8 +236,8 @@ function MessageCard({
               }}
             >
               <Image
-                src={messageImages[index].src}
-                alt={messageImages[index].alt}
+                src={getImageUrl(message.image!)}
+                alt={message.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 40vw"
                 className="object-cover"
