@@ -196,17 +196,19 @@ export function QuickPanel() {
               >
                 {/* Using padding-bottom trick for consistent aspect ratio across browsers */}
                 <div className="relative w-full min-h-[180px] rounded-lg overflow-hidden border border-white/10" style={{ paddingBottom: '75%' }}>
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2932.283956399353!2d23.319877890847863!3d42.697707877149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40aa855eff40e335%3A0xa7cffc05e42a4e56!2sTakiev%20Finance%20EOOD!5e0!3m2!1sbg!2sbg!4v1768080298879!5m2!1sbg!2sbg"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Takiev Finance Location"
-                    className="grayscale hover:grayscale-0 transition-all duration-500"
-                  />
+                  {isOpen && (
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2932.283956399353!2d23.319877890847863!3d42.697707877149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40aa855eff40e335%3A0xa7cffc05e42a4e56!2sTakiev%20Finance%20EOOD!5e0!3m2!1sbg!2sbg!4v1768080298879!5m2!1sbg!2sbg"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Takiev Finance Location"
+                      className="grayscale hover:grayscale-0 transition-all duration-500"
+                    />
+                  )}
                 </div>
               </div>
 
@@ -345,7 +347,7 @@ export function QuickPanel() {
 
                 {/* EIK */}
                 <div className="mt-6 pt-4 border-t border-white/10">
-                  <p className="text-xs text-white/40">
+                  <p className="text-xs text-white/60">
                     ЕИК: 206666484
                   </p>
                 </div>

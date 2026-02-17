@@ -14,8 +14,8 @@ const cormorant = Cormorant_Garamond({ subsets: ["latin", "cyrillic"], variable:
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  maximumScale: 5,
+  userScalable: true,
 };
 
 const baseUrl = "https://takiev.bg";

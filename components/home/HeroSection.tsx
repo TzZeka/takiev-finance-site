@@ -92,6 +92,7 @@ export function HeroSection({ motto }: HeroSectionProps) {
           loop
           muted
           playsInline
+          preload={index === 0 ? "metadata" : "none"}
           className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity ${crossfadeDuration} ease-in-out ${
             index === activeIndex ? "opacity-100" : "opacity-0"
           }`}
@@ -148,9 +149,9 @@ export function HeroSection({ motto }: HeroSectionProps) {
             <motion.p
               className="text-base sm:text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl mx-auto font-medium tracking-wide"
               style={{ fontFamily: "'Avenir', sans-serif" }}
-              initial={{ clipPath: "inset(0 100% 0 0)", opacity: 0 }}
-              animate={{ clipPath: "inset(0 0% 0 0)", opacity: 1 }}
-              transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
             >
               {currentSlide.description}
             </motion.p>

@@ -143,7 +143,7 @@ function MessageCard({
             ref={videoRef}
             muted
             playsInline
-            preload="auto"
+            preload="none"
             onEnded={handleEnded}
             className="absolute inset-0 w-full h-full object-cover"
             style={{ transform: "scale(1.05)", filter: "blur(2px)" }}
