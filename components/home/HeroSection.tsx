@@ -14,7 +14,8 @@ interface Slide {
   badgeIcon: "award" | "trending";
   heading: string;
   highlight: string;
-  description: string;
+  /** Sentence marked with `*` prefix will render larger */
+  descriptionLines: string[];
   primaryCta: { label: string; href: string; icon: "arrow" } | null;
   secondaryCta: { label: string; href: string; icon: "arrow" | "none" };
 }
@@ -26,7 +27,7 @@ const slides: Slide[] = [
     badgeIcon: "award",
     heading: "Избери своя доверен",
     highlight: "бизнес партньор",
-    description: "",
+    descriptionLines: [], // filled from motto prop at render time
     primaryCta: { label: "Изпрати запитване", href: "/kontakti", icon: "arrow" },
     secondaryCta: { label: "Разгледай услугите", href: "/uslugi", icon: "arrow" },
   },
@@ -36,8 +37,10 @@ const slides: Slide[] = [
     badgeIcon: "trending",
     heading: "Вашият бизнес расте,",
     highlight: "ние го подкрепяме",
-    description:
-      "Професионално счетоводство, данъчни консултации и правни услуги. Всичко, от което вашият бизнес се нуждае на едно място.",
+    descriptionLines: [
+      "Професионално счетоводство, данъчни консултации и правни услуги.",
+      "Всичко, от което вашият бизнес се нуждае на едно място.",
+    ],
     primaryCta: null,
     secondaryCta: { label: "Кои сме ние?", href: "/za-nas", icon: "none" },
   },
@@ -73,9 +76,26 @@ export function HeroSection({ motto }: HeroSectionProps) {
     return () => clearInterval(interval);
   }, [nextSlide]);
 
+  // Build per-sentence description lines for the current slide
+  const mottoLines = (() => {
+    // Split motto into sentences, drop the heading-duplicate first sentence
+    const sentences = motto
+      .split(/(?<=\.)\s+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    // Remove sentence that duplicates the heading text
+    const filtered = sentences.filter(
+      (s) => !s.replace(/\.$/, "").includes("Избери своя доверен бизнес партньор")
+    );
+    // Mark the "driving force" sentence as large with * prefix
+    return filtered.map((s) =>
+      s.includes("Счетоводството е движеща сила") ? `*${s}` : s
+    );
+  })();
+
   const currentSlide = {
     ...slides[activeIndex],
-    description: activeIndex === 0 ? motto : slides[activeIndex].description,
+    descriptionLines: activeIndex === 0 ? mottoLines : slides[activeIndex].descriptionLines,
   };
 
   const fadeDuration = prefersReducedMotion ? 0 : 0.8;
@@ -93,7 +113,7 @@ export function HeroSection({ motto }: HeroSectionProps) {
           muted
           playsInline
           preload={index === 0 ? "metadata" : "none"}
-          className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity ${crossfadeDuration} ease-in-out ${
+          className={`absolute inset-0 w-full h-full object-cover scale-105 blur-[2px] transition-opacity ${crossfadeDuration} ease-in-out ${
             index === activeIndex ? "opacity-100" : "opacity-0"
           }`}
         >
@@ -145,16 +165,33 @@ export function HeroSection({ motto }: HeroSectionProps) {
               </span>
             </h1>
 
-            {/* Description */}
-            <motion.p
-              className="text-base sm:text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl mx-auto font-medium tracking-wide"
-              style={{ fontFamily: "'Avenir', sans-serif" }}
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-            >
-              {currentSlide.description}
-            </motion.p>
+            {/* Description — each sentence on its own line */}
+            {currentSlide.descriptionLines.length > 0 && (
+              <motion.div
+                className="flex flex-col items-center gap-2 max-w-2xl mx-auto"
+                style={{ fontFamily: "'Avenir', sans-serif" }}
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+              >
+                {currentSlide.descriptionLines.map((line, i) => {
+                  const isLarge = line.startsWith("*");
+                  const text = isLarge ? line.slice(1) : line;
+                  return (
+                    <p
+                      key={i}
+                      className={
+                        isLarge
+                          ? "text-lg sm:text-xl md:text-2xl text-white font-semibold tracking-wide leading-relaxed"
+                          : "text-base sm:text-lg md:text-xl text-white/80 font-medium tracking-wide leading-relaxed"
+                      }
+                    >
+                      {text}
+                    </p>
+                  );
+                })}
+              </motion.div>
+            )}
 
             {/* CTA Buttons */}
             <motion.div
