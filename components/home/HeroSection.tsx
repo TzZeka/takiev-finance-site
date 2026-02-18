@@ -118,7 +118,7 @@ export function HeroSection({ motto }: HeroSectionProps) {
           key={slide.video}
           ref={(el) => { videoRefs.current[index] = el; }}
           autoPlay={index === 0}
-          loop
+          loop={autoPlay}
           muted
           playsInline
           preload={index === 0 ? "metadata" : "none"}
