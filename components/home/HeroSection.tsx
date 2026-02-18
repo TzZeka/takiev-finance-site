@@ -55,11 +55,18 @@ const CtaIcon = ({ type }: { type: "arrow" | "none" }) => {
 
 export function HeroSection({ motto }: HeroSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(true);
   const prefersReducedMotion = useReducedMotion();
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const nextSlide = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % slides.length);
+  }, []);
+
+  // Manual slide change — stop auto-rotation
+  const goToSlide = useCallback((index: number) => {
+    setAutoPlay(false);
+    setActiveIndex(index);
   }, []);
 
   // Restart video from beginning when it becomes active
@@ -71,10 +78,12 @@ export function HeroSection({ motto }: HeroSectionProps) {
     }
   }, [activeIndex]);
 
+  // Auto-rotate only while autoPlay is true
   useEffect(() => {
+    if (!autoPlay) return;
     const interval = setInterval(nextSlide, SLIDE_INTERVAL);
     return () => clearInterval(interval);
-  }, [nextSlide]);
+  }, [autoPlay, nextSlide]);
 
   // Build per-sentence description lines for the current slide
   const mottoLines = (() => {
@@ -225,7 +234,7 @@ export function HeroSection({ motto }: HeroSectionProps) {
           {slides.map((_, index) => (
             <button
               key={index}
-              onClick={() => setActiveIndex(index)}
+              onClick={() => goToSlide(index)}
               aria-label={`Slide ${index + 1}`}
               className={`rounded-full transition-all duration-500 ${
                 index === activeIndex
