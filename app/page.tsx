@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { HeroSection } from "@/components/home/HeroSection";
 import { MessagesSection } from "@/components/home/MessagesSection";
 import { CompanyPresentation, CompanyHistory, CompanyValues } from "@/components/home/CompanyPresentation";
 import { ServicesPreview } from "@/components/home/ServicesPreview";
-import { BlogPreview } from "@/components/home/BlogPreview";
-import { TestimonialsSection } from "@/components/home/TestimonialsSection";
-import { ClientsSection } from "@/components/home/ClientsSection";
-import { ContactFormSection } from "@/components/home/ContactFormSection";
+
+const BlogPreview = dynamic(() =>
+  import("@/components/home/BlogPreview").then((m) => ({ default: m.BlogPreview }))
+);
+const TestimonialsSection = dynamic(() =>
+  import("@/components/home/TestimonialsSection").then((m) => ({ default: m.TestimonialsSection }))
+);
+const ClientsSection = dynamic(() =>
+  import("@/components/home/ClientsSection").then((m) => ({ default: m.ClientsSection }))
+);
+const ContactFormSection = dynamic(() =>
+  import("@/components/home/ContactFormSection").then((m) => ({ default: m.ContactFormSection }))
+);
 import {
   getHomeContent,
   getAllServices,
@@ -90,16 +100,34 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection motto={motto} />
-      <div className="space-y-3 md:space-y-4 px-2 md:px-5 lg:px-8 py-3 md:py-4">
-        <MessagesSection messages={messages} />
-        <CompanyPresentation />
-        <CompanyHistory />
-        <CompanyValues />
-        <ServicesPreview services={services} />
-        <BlogPreview posts={blogPosts} />
-        <TestimonialsSection testimonials={testimonials} />
-        <ClientsSection clients={clients} />
-        <ContactFormSection ctaText={homeContent?.ctaText} />
+      <div className="pb-3 md:pb-4">
+        <div className="-mt-24 md:-mt-36 relative" style={{ zIndex: 1 }}>
+          <MessagesSection messages={messages} />
+        </div>
+        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 2 }}>
+          <CompanyPresentation />
+        </div>
+        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 3 }}>
+          <CompanyHistory />
+        </div>
+        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 4 }}>
+          <CompanyValues />
+        </div>
+        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 5 }}>
+          <ServicesPreview services={services} />
+        </div>
+        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 6 }}>
+          <BlogPreview posts={blogPosts} />
+        </div>
+        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 7 }}>
+          <TestimonialsSection testimonials={testimonials} />
+        </div>
+        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 8 }}>
+          <ClientsSection clients={clients} />
+        </div>
+        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 9 }}>
+          <ContactFormSection ctaText={homeContent?.ctaText} />
+        </div>
       </div>
     </>
   );

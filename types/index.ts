@@ -4,6 +4,20 @@ export * from "./service";
 
 import { SanityImage, Slug } from "./sanity";
 
+// Team Member Type
+export interface TeamMember {
+  _id: string;
+  _type: "teamMember";
+  _createdAt: string;
+  name: string;
+  role: string;
+  roleType: "leader" | "operative";
+  education: string;
+  image: SanityImage;
+  bio: string;
+  order?: number;
+}
+
 // Testimonial Type
 export interface Testimonial {
   _id: string;
@@ -25,6 +39,7 @@ export interface Client {
   _createdAt: string;
   name: string;
   logo: SanityImage;
+  cardImage?: SanityImage;
   website?: string;
   sector: string;
   order?: number;

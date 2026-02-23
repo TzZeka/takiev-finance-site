@@ -97,6 +97,7 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Toggle menu"
                 aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-menu"
               >
                 <div className="w-6 h-5 relative flex flex-col justify-center items-center">
                   {/* Top line */}
@@ -144,7 +145,7 @@ export function Header() {
           mobileMenuOpen ? "max-h-[calc(100vh-4rem)] opacity-100" : "max-h-0 opacity-0"
         )}
       >
-        <nav className={cn(
+        <nav id="mobile-menu" className={cn(
           "bg-slate-950/70 backdrop-blur-xl border-b border-white/10 shadow-xl overflow-y-auto max-h-[calc(100vh-4rem)] transition-all duration-300",
           scrolled ? "rounded-2xl border-x mx-2 mt-1" : ""
         )}>

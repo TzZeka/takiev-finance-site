@@ -34,7 +34,7 @@ export function LocalBusinessJsonLd() {
       },
     ],
     priceRange: '$$',
-    currenciesAccepted: 'EUR',
+    currenciesAccepted: 'BGN',
     paymentAccepted: 'Cash, Credit Card, Bank Transfer',
     areaServed: {
       '@type': 'Country',
@@ -100,13 +100,11 @@ export function WebSiteJsonLd() {
     name: 'Takiev Finance',
     alternateName: 'Такиев Финанс',
     url: 'https://takiev.bg',
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: 'https://takiev.bg/search?q={search_term_string}',
-      },
-      'query-input': 'required name=search_term_string',
+    inLanguage: 'bg',
+    publisher: {
+      '@type': 'Organization',
+      name: 'Takiev Finance',
+      url: 'https://takiev.bg',
     },
   }
 

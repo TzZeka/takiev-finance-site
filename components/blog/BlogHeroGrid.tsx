@@ -270,7 +270,6 @@ export function BlogHeroGrid() {
           <div
             className="tracking-[0.15em] whitespace-nowrap font-semibold"
             style={{
-              fontFamily: "var(--font-cormorant), 'Cormorant Garamond', Georgia, serif",
               fontSize: `${s.size}px`,
               opacity: 0.03,
               color: "rgba(80, 95, 100, 0.03)",
@@ -282,7 +281,6 @@ export function BlogHeroGrid() {
           <div
             className="italic"
             style={{
-              fontFamily: "var(--font-cormorant), 'Cormorant Garamond', Georgia, serif",
               fontSize: `${Math.max(10, s.size - 3)}px`,
               opacity: 0,
               color: "rgba(185, 175, 155, 0)",

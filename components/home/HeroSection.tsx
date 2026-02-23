@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { ArrowRight } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion, useMotionValue, useSpring } from "framer-motion";
 
 interface HeroSectionProps {
   motto: string;
@@ -48,10 +48,74 @@ const slides: Slide[] = [
 
 const SLIDE_INTERVAL = 8000;
 
-const CtaIcon = ({ type }: { type: "arrow" | "none" }) => {
-  if (type === "none") return null;
-  return <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />;
-};
+function MagneticButton({
+  href,
+  children,
+  variant,
+}: {
+  href: string;
+  children: React.ReactNode;
+  variant: "primary" | "secondary";
+}) {
+  const btnRef = useRef<HTMLAnchorElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const xS = useSpring(x, { stiffness: 400, damping: 30 });
+  const yS = useSpring(y, { stiffness: 400, damping: 30 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = btnRef.current!.getBoundingClientRect();
+    x.set((e.clientX - rect.left - rect.width / 2) * 0.3);
+    y.set((e.clientY - rect.top - rect.height / 2) * 0.3);
+  };
+  const reset = () => {
+    x.set(0);
+    y.set(0);
+  };
+  const isPrimary = variant === "primary";
+
+  return (
+    <motion.a
+      ref={btnRef}
+      href={href}
+      style={{ x: xS, y: yS }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={reset}
+      whileHover={{ scale: 1.04 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      className={`group relative overflow-hidden inline-flex items-center justify-center gap-2 px-8 py-4 font-semibold rounded-xl cursor-pointer ${
+        isPrimary
+          ? "bg-[#0E8A83] text-white shadow-lg shadow-[#19BFB7]/20"
+          : "bg-white/10 backdrop-blur-sm border border-white/20 text-white"
+      }`}
+    >
+      {/* Shimmer sweep */}
+      <motion.span
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.22) 50%, transparent 65%)",
+        }}
+        initial={{ x: "-150%" }}
+        whileHover={{ x: "150%" }}
+        transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
+      />
+      {/* Hover bg brightening */}
+      <motion.span
+        aria-hidden
+        className={`absolute inset-0 rounded-xl pointer-events-none ${
+          isPrimary ? "bg-[#19BFB7]" : "bg-white/10"
+        }`}
+        initial={{ opacity: 0 }}
+        whileHover={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+      />
+      <span className="relative z-10 flex items-center gap-2">{children}</span>
+    </motion.a>
+  );
+}
 
 export function HeroSection({ motto }: HeroSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -111,7 +175,11 @@ export function HeroSection({ motto }: HeroSectionProps) {
   const crossfadeDuration = prefersReducedMotion ? "duration-0" : "duration-[2000ms]";
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center text-white overflow-hidden">
+    <section
+      role="region"
+      aria-label="Начален екран"
+      className="relative min-h-screen flex items-center justify-center text-white overflow-hidden"
+    >
       {/* Video carousel layer */}
       {slides.map((slide, index) => (
         <video
@@ -141,35 +209,35 @@ export function HeroSection({ motto }: HeroSectionProps) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: fadeDuration, ease: "easeOut" }}
-            className="max-w-4xl space-y-7"
+            transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 200, damping: 30, mass: 1 }}
+            className="max-w-4xl space-y-6 pt-20 md:pt-24 xl:pt-28"
           >
-            {/* Badge */}
-            {currentSlide.badge && (
-              <motion.div
-                className="flex justify-center"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: fadeDuration, delay: 0.1 }}
-              >
-                <div className="inline-flex items-center px-5 py-2.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-sm font-medium tracking-wide text-white/90">
-                  {currentSlide.badge}
-                </div>
-              </motion.div>
-            )}
+            {/* Eyebrow */}
+            <motion.div
+              className="flex items-center justify-center gap-3"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 280, damping: 24, delay: 0.1 }}
+            >
+              <span className="h-px w-10 bg-primary/50" />
+              <span className="text-[10px] font-bold tracking-[0.35em] uppercase text-primary/80">
+                {currentSlide.badge || "Такиев Финанс"}
+              </span>
+              <span className="h-px w-10 bg-primary/50" />
+            </motion.div>
 
             {/* Heading */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight drop-shadow-lg">
-              {currentSlide.heading}{" "}
-              <span className="relative inline-block">
-                <span className="bg-gradient-to-r from-[#19BFB7] to-[#15E6DB] bg-clip-text text-transparent">
-                  {currentSlide.highlight}
-                </span>
+            <h1 className="font-extrabold leading-[1.05] tracking-tight drop-shadow-lg">
+              <span className="block text-fluid-hero text-white">
+                {currentSlide.heading}
+              </span>
+              <span className="block text-[1.2em] bg-gradient-to-r from-[#19BFB7] to-[#15E6DB] bg-clip-text text-transparent relative">
+                {currentSlide.highlight}
                 <motion.span
                   className="absolute -bottom-1 left-0 h-[3px] bg-gradient-to-r from-[#19BFB7] to-[#15E6DB] rounded-full"
                   initial={{ width: "0%" }}
                   animate={{ width: "100%" }}
-                  transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+                  transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 180, damping: 28, delay: 0.4 }}
                 />
               </span>
             </h1>
@@ -177,12 +245,12 @@ export function HeroSection({ motto }: HeroSectionProps) {
             {/* Description — each sentence on its own line */}
             {currentSlide.descriptionLines.length > 0 && (
               <motion.div
-                className="flex flex-col items-center gap-2 max-w-2xl mx-auto"
-                style={{ fontFamily: "'Avenir', sans-serif" }}
+                className="flex flex-col items-center gap-3 max-w-xl mx-auto min-h-[100px]"
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+                transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 280, damping: 24, delay: 0.3 }}
               >
+                <span className="block w-10 h-px bg-primary/40" />
                 {currentSlide.descriptionLines.map((line, i) => {
                   const isLarge = line.startsWith("*");
                   const text = isLarge ? line.slice(1) : line;
@@ -191,8 +259,8 @@ export function HeroSection({ motto }: HeroSectionProps) {
                       key={i}
                       className={
                         isLarge
-                          ? "text-lg sm:text-xl md:text-2xl text-white font-semibold tracking-wide leading-relaxed"
-                          : "text-base sm:text-lg md:text-xl text-white/80 font-medium tracking-wide leading-relaxed"
+                          ? "text-lg sm:text-xl md:text-2xl text-white font-semibold tracking-wide text-center leading-snug"
+                          : "text-sm sm:text-base md:text-lg text-white/70 font-medium tracking-wide text-center leading-relaxed"
                       }
                     >
                       {text}
@@ -204,27 +272,23 @@ export function HeroSection({ motto }: HeroSectionProps) {
 
             {/* CTA Buttons */}
             <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center pt-8"
+              className="flex flex-col sm:flex-row gap-4 justify-center pt-6"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: fadeDuration, delay: 0.3 }}
+              transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 200, damping: 30, delay: 0.35 }}
             >
               {currentSlide.primaryCta && (
-                <a
-                  href={currentSlide.primaryCta.href}
-                  className="group inline-flex items-center justify-center px-8 py-4 bg-[#0E8A83] text-white font-semibold rounded-xl shadow-lg shadow-[#19BFB7]/25 transition-all duration-300 hover:bg-[#19BFB7] hover:shadow-[#19BFB7]/40 hover:-translate-y-0.5"
-                >
+                <MagneticButton href={currentSlide.primaryCta.href} variant="primary">
                   {currentSlide.primaryCta.label}
-                  <CtaIcon type={currentSlide.primaryCta.icon} />
-                </a>
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+                </MagneticButton>
               )}
-              <a
-                href={currentSlide.secondaryCta.href}
-                className="group inline-flex items-center justify-center px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold rounded-xl transition-all duration-300 hover:bg-white/20 hover:border-white/40 hover:-translate-y-0.5"
-              >
+              <MagneticButton href={currentSlide.secondaryCta.href} variant="secondary">
                 {currentSlide.secondaryCta.label}
-                <CtaIcon type={currentSlide.secondaryCta.icon} />
-              </a>
+                {currentSlide.secondaryCta.icon !== "none" && (
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+                )}
+              </MagneticButton>
             </motion.div>
           </motion.div>
         </AnimatePresence>

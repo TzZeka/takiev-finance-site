@@ -6,6 +6,7 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 import * as Icons from "lucide-react";
 import { getImageUrl } from "@/lib/sanity/client";
 import type { SanityImage } from "@/types";
+import { SectionBadge } from "@/components/shared/SectionBadge";
 
 interface Message {
   _key: string;
@@ -46,6 +47,7 @@ function MessageCard({
   const hasTriggeredRef = useRef(false);
   const sweepingRef = useRef(false);
   const [sweepPhase, setSweepPhase] = useState<"idle" | "in" | "hold" | "out">("idle");
+  const prefersReducedMotion = useReducedMotion();
 
   const IconComponent =
     Icons[message.icon as keyof typeof Icons] || Icons.CheckCircle;
@@ -174,7 +176,7 @@ function MessageCard({
           className="flex-1 w-full"
           initial={{ opacity: 0, x: textSlideFrom }}
           animate={isInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+          transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 200, damping: 30, mass: 1, delay: 0.15 }}
         >
           <div className="flex items-start gap-4">
             <span
@@ -224,7 +226,7 @@ function MessageCard({
           className="flex-1 w-full max-w-xs md:max-w-sm"
           initial={{ opacity: 0, x: imageSlideFrom }}
           animate={isInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+          transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 200, damping: 30, mass: 1, delay: 0.3 }}
         >
           {hasImage && (
             <div
@@ -263,19 +265,31 @@ export function MessagesSection({ messages }: MessagesSectionProps) {
       };
 
   return (
-    <section ref={ref} className="relative py-16 md:py-24 lg:py-32 bg-white rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-sm">
+    <motion.section
+      ref={ref}
+      {...(prefersReducedMotion ? {} : {
+        initial: { y: 60 },
+        whileInView: { y: 0 },
+        viewport: { once: true, margin: "-40px" },
+        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
+      })}
+      className="relative py-16 md:py-24 lg:py-32 bg-white rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
+      style={{
+        borderTopLeftRadius: "50% 2rem",
+        borderTopRightRadius: "50% 2rem",
+        filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
+      }}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
           {...fadeInUp}
-          transition={{ duration: 0.5 }}
+          transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 200, damping: 30, mass: 1 }}
           className="text-center mb-16 md:mb-20"
         >
-          <span className="text-xs sm:text-sm font-semibold text-primary tracking-wider uppercase">
-            Защо Такиев Финанс
-          </span>
+          <SectionBadge>Защо Такиев Финанс</SectionBadge>
           <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
-            Защо да изберете <span className="text-primary">нас?</span>
+            Защо да изберете <span className="text-primary text-4xl sm:text-5xl md:text-6xl">нас?</span>
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
             Нашият екип се отличава с професионализъм, иновативност и грижа към всеки клиент.
@@ -302,6 +316,6 @@ export function MessagesSection({ messages }: MessagesSectionProps) {
         {/* Bottom divider */}
         <div className="mt-16 md:mt-24 border-t border-slate-200" />
       </div>
-    </section>
+    </motion.section>
   );
 }

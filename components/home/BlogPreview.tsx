@@ -5,9 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { ArrowRight, Calendar, Clock } from "lucide-react";
+import { SectionBadge } from "@/components/shared/SectionBadge";
 import { formatDate } from "@/lib/utils";
 import { getImageUrl } from "@/lib/sanity/client";
 import type { BlogPost } from "@/types";
+import { PremiumCTA } from "@/components/ui/PremiumCTA";
+import { MaskReveal } from "@/components/effects/MaskReveal";
 
 interface BlogPreviewProps {
   posts: BlogPost[];
@@ -26,22 +29,36 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
       : {
           initial: { opacity: 0, y: 30 },
           animate: isInView ? { opacity: 1, y: 0 } : {},
-          transition: { duration: 0.5, delay },
+          transition: { type: "spring", stiffness: 200, damping: 30, mass: 1, delay },
         };
 
   return (
-    <section ref={ref} className="relative py-20 md:py-28 bg-slate-950 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-sm">
+    <motion.section
+      ref={ref}
+      {...(prefersReducedMotion ? {} : {
+        initial: { opacity: 0, y: 50 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "-40px" },
+        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
+      })}
+      className="relative py-20 md:py-28 bg-slate-950 rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
+      style={{
+        borderTopLeftRadius: "50% 2rem",
+        borderTopRightRadius: "50% 2rem",
+        filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
+      }}
+    >
       {/* Subtle gradient */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-[100px]" />
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}
         <motion.div {...anim(0)} className="text-center mb-14">
-          <span className="text-sm font-semibold text-primary tracking-wider uppercase">
-            Нашият блог
-          </span>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3">
-            Последни <span className="text-primary">статии</span>
+          <SectionBadge>Нашият блог</SectionBadge>
+          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 leading-tight">
+            <MaskReveal>
+              Последни <span className="text-primary text-4xl sm:text-5xl md:text-6xl">статии</span>
+            </MaskReveal>
           </h2>
           <p className="text-lg text-white/50 max-w-2xl mx-auto">
             Разгледайте нашия блог за актуални новини и съвети по счетоводство и данъци
@@ -107,15 +124,12 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
 
         {/* View All */}
         <motion.div {...anim(0.4)} className="text-center">
-          <Link
-            href="/blog"
-            className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-primary to-emerald-500 text-white font-semibold rounded-xl hover:shadow-[0_0_30px_rgba(25,191,183,0.25)] transition-all duration-300"
-          >
+          <PremiumCTA href="/blog">
             Всички статии
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
+            <ArrowRight className="h-5 w-5" />
+          </PremiumCTA>
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }

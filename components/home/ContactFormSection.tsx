@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { ContactForm } from "@/components/shared/ContactForm";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import { SectionBadge } from "@/components/shared/SectionBadge";
 
 interface ContactFormSectionProps {
   ctaText?: string;
@@ -20,20 +21,36 @@ export function ContactFormSection({ ctaText }: ContactFormSectionProps) {
       : {
           initial: { opacity: 0, y: 25 },
           animate: isInView ? { opacity: 1, y: 0 } : {},
-          transition: { duration: 0.5, delay },
+          transition: { type: "spring", stiffness: 200, damping: 30, mass: 1, delay },
         };
 
   return (
-    <section ref={ref} className="relative py-20 md:py-28 bg-slate-950 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-sm">
+    <motion.section
+      ref={ref}
+      {...(prefersReducedMotion ? {} : {
+        initial: { opacity: 0, y: 50 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "-40px" },
+        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
+      })}
+      className="relative py-20 md:py-28 bg-slate-950 rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
+      style={{
+        borderTopLeftRadius: "50% 2rem",
+        borderTopRightRadius: "50% 2rem",
+        filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
+      }}
+    >
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="max-w-5xl mx-auto">
           {/* Header */}
           <motion.div {...anim(0)} className="text-center mb-12">
-            <span className="text-sm font-semibold text-primary tracking-wider uppercase">
-              Свържете се с нас
-            </span>
+            <SectionBadge>Свържете се с нас</SectionBadge>
             <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3">
-              {ctaText || "Готови ли сте да "}<span className="text-primary">започнете?</span>
+              {ctaText ? (
+                ctaText
+              ) : (
+                <>Готови ли сте да <span className="text-primary">започнете?</span></>
+              )}
             </h2>
             <p className="text-lg text-white/50 max-w-2xl mx-auto">
               Свържете се с нас днес и нека обсъдим как можем да помогнем на Вашия бизнес да расте и да успява
@@ -96,7 +113,6 @@ export function ContactFormSection({ ctaText }: ContactFormSectionProps) {
                   {[
                     "Бърз отговор в рамките на 24 часа",
                     "100% Поверителност",
-                    "Безплатна първа консултация",
                   ].map((text) => (
                     <div key={text} className="flex items-center gap-3">
                       <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -127,6 +143,6 @@ export function ContactFormSection({ ctaText }: ContactFormSectionProps) {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

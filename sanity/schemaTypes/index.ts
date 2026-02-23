@@ -11,6 +11,7 @@ import taxConsultationContent from './taxConsultationContent'
 import legalServicesContent from './legalServicesContent'
 import companyRegistrationContent from './companyRegistrationContent'
 import table from './table'
+import teamMember from './teamMember'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -29,5 +30,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     video,
     homeContent,
     table,
+    teamMember,
   ],
 }

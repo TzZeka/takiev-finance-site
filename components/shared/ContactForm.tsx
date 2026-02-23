@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import { PremiumCTA } from "@/components/ui/PremiumCTA";
 import {
   Form,
   FormControl,
@@ -215,7 +216,7 @@ export function ContactForm() {
           </div>
         )}
 
-        <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+        <PremiumCTA type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -224,7 +225,7 @@ export function ContactForm() {
           ) : (
             "Изпрати запитване"
           )}
-        </Button>
+        </PremiumCTA>
       </form>
     </Form>
   );

@@ -1,37 +1,37 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { Logo } from "@/components/shared/Logo";
-import { Mail, Phone, MapPin, Facebook, Linkedin, Youtube, ExternalLink, ChevronDown } from "lucide-react";
+import { Facebook, Linkedin, Youtube, ExternalLink, ChevronDown } from "lucide-react";
 
 function FooterAccordion({ title, children }: { title: string; children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div>
-      {/* Mobile: clickable header */}
+      {/* Mobile: accordion header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between md:hidden"
+        className="w-full flex items-center justify-between md:hidden py-4 border-b border-white/[0.06]"
         aria-expanded={isOpen}
       >
-        <p className="text-lg font-bold flex items-center">
-          <span className="text-[#19BFB7]">—</span>
-          <span className="ml-2">{title}</span>
-        </p>
+        <span className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/40">
+          {title}
+        </span>
         <ChevronDown
-          className={`w-5 h-5 text-white/50 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+          className={`w-4 h-4 text-white/25 transition-transform duration-300 ${
+            isOpen ? "rotate-180" : ""
+          }`}
         />
       </button>
 
       {/* Desktop: static header */}
-      <p className="text-lg font-bold mb-6 items-center hidden md:flex">
-        <span className="text-[#19BFB7]">—</span>
-        <span className="ml-2">{title}</span>
+      <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/35 mb-6 hidden md:block">
+        {title}
       </p>
 
-      {/* Mobile: collapsible content */}
+      {/* Content */}
       <div
         className={`overflow-hidden transition-all duration-300 ease-out md:!max-h-none md:!opacity-100 md:!mt-0 ${
           isOpen ? "max-h-96 opacity-100 mt-4" : "max-h-0 opacity-0 mt-0"
@@ -47,253 +47,236 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden rounded-t-3xl">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#19BFB7] rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#40514E] rounded-full blur-[120px]"></div>
+    <footer className="relative bg-[#06100e] text-white overflow-hidden">
+
+      {/* ── Top accent line ── */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-[#19BFB7]/50 to-transparent" />
+
+      {/* ── Logo banner — full width, no padding ── */}
+      <div className="relative w-full bg-[#06100e] border-b border-white/[0.05]" style={{ height: "clamp(72px, 10vw, 120px)" }}>
+        <Image
+          src="/firm-logo/logo.png"
+          alt="Takiev Finance"
+          fill
+          className="object-contain object-center px-8 sm:px-16 md:px-24 lg:px-32"
+          sizes="100vw"
+          priority
+        />
       </div>
 
-      <div className="container mx-auto px-4 py-16 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-12 mb-12">
-          {/* Company Info */}
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <Logo />
-              <div className="flex flex-col items-end">
-                <span className="text-sm text-white/50">ЕИК: 206666484</span>
-                <div className="h-px w-full bg-gradient-to-l from-[#19BFB7] to-transparent mt-1" />
+      {/* ── Main columns ── */}
+      <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 pt-16 pb-10 relative z-10">
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 xl:gap-16 pb-14 border-b border-white/[0.05]">
+
+          {/* Brand column */}
+          <div className="md:col-span-3 space-y-8">
+            <div className="space-y-4">
+              <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/30">
+                ЕИК: 206666484
+              </p>
+              <div className="w-6 h-px bg-[#19BFB7]/60" />
+              <p className="text-sm text-white/50 leading-relaxed">
+                Избери своя доверен бизнес партньор. Експертно счетоводно обслужване на Вашия бизнес.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/25">
+                Последвайте ни
+              </p>
+              <div className="flex items-center gap-2">
+                {/* Facebook */}
+                <a
+                  href="https://www.facebook.com/n.takiev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="w-8 h-8 border border-white/10 flex items-center justify-center text-white/35 hover:text-[#19BFB7] hover:border-[#19BFB7]/50 transition-all duration-300"
+                >
+                  <Facebook className="w-3.5 h-3.5" />
+                </a>
+                {/* LinkedIn */}
+                <a
+                  href="https://www.linkedin.com/company/takiev-finance/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                  className="w-8 h-8 border border-white/10 flex items-center justify-center text-white/35 hover:text-[#19BFB7] hover:border-[#19BFB7]/50 transition-all duration-300"
+                >
+                  <Linkedin className="w-3.5 h-3.5" />
+                </a>
+                {/* YouTube */}
+                <a
+                  href="https://www.youtube.com/@nikolaytakiev6221"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  className="w-8 h-8 border border-white/10 flex items-center justify-center text-white/35 hover:text-[#19BFB7] hover:border-[#19BFB7]/50 transition-all duration-300"
+                >
+                  <Youtube className="w-3.5 h-3.5" />
+                </a>
+                {/* TikTok */}
+                <a
+                  href="https://www.tiktok.com/@n.takiev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok"
+                  className="w-8 h-8 border border-white/10 flex items-center justify-center text-white/35 hover:text-[#19BFB7] hover:border-[#19BFB7]/50 transition-all duration-300"
+                >
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+                  </svg>
+                </a>
               </div>
             </div>
-            <p className="text-sm text-white/70 leading-relaxed text-center md:text-left">
-              Избери своя доверен бизнес партньор. Експертно счетоводно
-              обслужване на Вашия бизнес.
-            </p>
-
-            <p className="text-xs text-white/60 text-center md:text-left">Последвайте ни</p>
-
-            {/* Social Media */}
-            <div className="flex space-x-3 justify-center md:justify-start">
-              <a
-                href="https://www.facebook.com/n.takiev"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3 bg-white/5 hover:bg-[#19BFB7] rounded-lg transition-all duration-300 backdrop-blur-sm border border-white/10 hover:border-[#19BFB7]"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-5 w-5 text-white/60 group-hover:text-white transition-colors" />
-              </a>
-              <a
-                href="https://www.linkedin.com/company/takiev-finance/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3 bg-white/5 hover:bg-[#19BFB7] rounded-lg transition-all duration-300 backdrop-blur-sm border border-white/10 hover:border-[#19BFB7]"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5 text-white/60 group-hover:text-white transition-colors" />
-              </a>
-              <a
-                href="https://www.youtube.com/@nikolaytakiev6221"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3 bg-white/5 hover:bg-[#19BFB7] rounded-lg transition-all duration-300 backdrop-blur-sm border border-white/10 hover:border-[#19BFB7]"
-                aria-label="YouTube"
-              >
-                <Youtube className="h-5 w-5 text-white/60 group-hover:text-white transition-colors" />
-              </a>
-              <a
-                href="https://www.tiktok.com/@n.takiev"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3 bg-white/5 hover:bg-[#19BFB7] rounded-lg transition-all duration-300 backdrop-blur-sm border border-white/10 hover:border-[#19BFB7]"
-                aria-label="TikTok"
-              >
-                <svg className="h-5 w-5 text-white/60 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-                </svg>
-              </a>
-            </div>
           </div>
 
-          {/* Quick Links */}
-          <FooterAccordion title="Бързи връзки">
-            <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/za-nas"
-                  className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
-                >
-                  <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
-                  За нас
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/uslugi"
-                  className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
-                >
-                  <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
-                  Услуги
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/blog"
-                  className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
-                >
-                  <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
-                  Блог
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/video"
-                  className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
-                >
-                  <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
-                  Видео
-                </Link>
-              </li>
-            </ul>
-          </FooterAccordion>
+          {/* 4 link columns */}
+          <div className="md:col-span-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-6">
 
-          {/* Services */}
-          <FooterAccordion title="Услуги">
-            <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/uslugi/schetovodni-uslugi"
-                  className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
-                >
-                  <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
-                  Счетоводни услуги
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/uslugi/danachni-konsultacii"
-                  className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
-                >
-                  <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
-                  Данъчни консултации
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/uslugi/pravni-uslugi"
-                  className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
-                >
-                  <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
-                  Правни услуги
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/uslugi/registraciq-na-firmi"
-                  className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
-                >
-                  <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
-                  Регистрация на фирми
-                </Link>
-              </li>
-            </ul>
-          </FooterAccordion>
+            {/* Бързи връзки */}
+            <FooterAccordion title="Бързи връзки">
+              <ul className="space-y-3">
+                <li>
+                  <Link href="/za-nas" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    За нас
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/uslugi" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    Услуги
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blog" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    Блог
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/video" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    Видео
+                  </Link>
+                </li>
+              </ul>
+            </FooterAccordion>
 
-          {/* Useful Sites */}
-          <FooterAccordion title="Полезни сайтове">
-            <ul className="space-y-3">
-              <li>
-                <a
-                  href="https://nula.bg"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
-                >
-                  <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
-                  Nula.bg
-                  <ExternalLink className="w-3 h-3 ml-1.5 opacity-50" />
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.portalschetovodstvo.bg/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
-                >
-                  <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
-                  Портал Счетоводство
-                  <ExternalLink className="w-3 h-3 ml-1.5 opacity-50" />
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://nap.bg"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group text-sm text-white/70 hover:text-[#19BFB7] transition-colors flex items-center"
-                >
-                  <span className="w-0 group-hover:w-2 h-0.5 bg-[#19BFB7] transition-all duration-300 mr-0 group-hover:mr-2"></span>
-                  НАП
-                  <ExternalLink className="w-3 h-3 ml-1.5 opacity-50" />
-                </a>
-              </li>
-            </ul>
-          </FooterAccordion>
+            {/* Услуги */}
+            <FooterAccordion title="Услуги">
+              <ul className="space-y-3">
+                <li>
+                  <Link href="/uslugi/schetovodni-uslugi" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    Счетоводни услуги
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/uslugi/danachni-konsultacii" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    Данъчни консултации
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/uslugi/pravni-uslugi" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    Правни услуги
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/uslugi/registraciq-na-firmi" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    Регистрация на фирми
+                  </Link>
+                </li>
+              </ul>
+            </FooterAccordion>
 
-          {/* Contact Info */}
-          <FooterAccordion title="Контакти">
-            <ul className="space-y-4">
-              <li className="group flex items-start space-x-3">
-                <div className="p-2 bg-white/5 rounded-lg border border-white/10 group-hover:border-[#19BFB7] transition-all duration-300">
-                  <Mail className="h-4 w-4 text-[#19BFB7] flex-shrink-0" />
-                </div>
-                <a
-                  href="mailto:office@takiev.bg"
-                  className="text-sm text-white/70 hover:text-[#19BFB7] transition-colors pt-1"
-                >
-                  office@takiev.bg
-                </a>
-              </li>
-              <li className="group flex items-start space-x-3">
-                <div className="p-2 bg-white/5 rounded-lg border border-white/10 group-hover:border-[#19BFB7] transition-all duration-300">
-                  <Phone className="h-4 w-4 text-[#19BFB7] flex-shrink-0" />
-                </div>
-                <a
-                  href="tel:+359899080016"
-                  className="text-sm text-white/70 hover:text-[#19BFB7] transition-colors pt-1"
-                >
-                  +359 89 908 0016
-                </a>
-              </li>
-              <li className="group flex items-start space-x-3">
-                <div className="p-2 bg-white/5 rounded-lg border border-white/10 group-hover:border-[#19BFB7] transition-all duration-300 flex-shrink-0">
-                  <MapPin className="h-4 w-4 text-[#19BFB7] flex-shrink-0" />
-                </div>
-                <span className="text-sm text-white/70 pt-1 leading-relaxed">
-                  бул. „Александър Стамболийски" 30Б, 1000 София
-                </span>
-              </li>
-            </ul>
-          </FooterAccordion>
-        </div>
+            {/* Полезни сайтове */}
+            <FooterAccordion title="Полезни сайтове">
+              <ul className="space-y-3">
+                <li>
+                  <a
+                    href="https://nula.bg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-white/45 hover:text-white transition-colors duration-200 inline-flex items-center gap-1.5"
+                  >
+                    Nula.bg
+                    <ExternalLink className="w-3 h-3 opacity-35" />
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.portalschetovodstvo.bg/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-white/45 hover:text-white transition-colors duration-200 inline-flex items-center gap-1.5"
+                  >
+                    Портал Счетоводство
+                    <ExternalLink className="w-3 h-3 opacity-35" />
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://nap.bg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-white/45 hover:text-white transition-colors duration-200 inline-flex items-center gap-1.5"
+                  >
+                    НАП
+                    <ExternalLink className="w-3 h-3 opacity-35" />
+                  </a>
+                </li>
+              </ul>
+            </FooterAccordion>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-white/10 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-sm text-white/70">
-              &copy; 2021-{currentYear} Takiev Finance. Всички права запазени.
-            </p>
-            <div className="flex items-center space-x-6 text-xs text-white/70">
-              <Link href="/privacy" className="hover:text-[#19BFB7] transition-colors">
-                Политика за поверителност
-              </Link>
-              <Link href="/terms" className="hover:text-[#19BFB7] transition-colors">
-                Условия за ползване
-              </Link>
-            </div>
+            {/* Контакти — без икони */}
+            <FooterAccordion title="Контакти">
+              <ul className="space-y-3">
+                <li>
+                  <a
+                    href="mailto:office@takiev.bg"
+                    className="text-sm text-white/45 hover:text-white transition-colors duration-200"
+                  >
+                    office@takiev.bg
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="tel:+359899080016"
+                    className="text-sm text-white/45 hover:text-white transition-colors duration-200"
+                  >
+                    +359 89 908 0016
+                  </a>
+                </li>
+                <li>
+                  <span className="text-sm text-white/35 leading-relaxed block">
+                    бул. „Александър Стамболийски" 30Б, 1000 София
+                  </span>
+                </li>
+              </ul>
+            </FooterAccordion>
+
           </div>
         </div>
+
+        {/* ── Bottom bar ── */}
+        <div className="pt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <p className="text-xs text-white/25 tracking-wide">
+            &copy; 2021-{currentYear} Takiev Finance. Всички права запазени.
+          </p>
+          <div className="flex items-center gap-5">
+            <Link
+              href="/privacy"
+              className="text-xs text-white/25 hover:text-white/55 transition-colors duration-200"
+            >
+              Политика за поверителност
+            </Link>
+            <Link
+              href="/terms"
+              className="text-xs text-white/25 hover:text-white/55 transition-colors duration-200"
+            >
+              Условия за ползване
+            </Link>
+          </div>
+        </div>
+
       </div>
     </footer>
   );

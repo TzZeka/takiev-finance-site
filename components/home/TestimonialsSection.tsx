@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import { motion, useInView, useReducedMotion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
+import { SectionBadge } from "@/components/shared/SectionBadge";
 import { getImageUrl } from "@/lib/sanity/client";
 import type { Testimonial } from "@/types";
 
@@ -32,19 +33,31 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
       : {
           initial: { opacity: 0, y: 30 },
           animate: isInView ? { opacity: 1, y: 0 } : {},
-          transition: { duration: 0.5, delay },
+          transition: { type: "spring", stiffness: 200, damping: 30, mass: 1, delay },
         };
 
   return (
-    <section ref={ref} className="relative py-20 md:py-28 bg-white rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-sm">
+    <motion.section
+      ref={ref}
+      {...(prefersReducedMotion ? {} : {
+        initial: { opacity: 0, y: 50 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "-40px" },
+        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
+      })}
+      className="relative py-20 md:py-28 bg-white rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
+      style={{
+        borderTopLeftRadius: "50% 2rem",
+        borderTopRightRadius: "50% 2rem",
+        filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
+      }}
+    >
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}
         <motion.div {...anim(0)} className="text-center mb-14">
-          <span className="text-sm font-semibold text-primary tracking-wider uppercase">
-            Отзиви
-          </span>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-3">
-            Какво казват <span className="text-primary">нашите клиенти</span>
+          <SectionBadge>Отзиви</SectionBadge>
+          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-3 leading-tight">
+            Какво казват <span className="text-primary text-4xl sm:text-5xl md:text-6xl">нашите клиенти</span>
           </h2>
           <p className="text-lg text-slate-500 max-w-2xl mx-auto">
             Довери на опита на клиентите, които работят с нас
@@ -87,7 +100,7 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
                     initial={prefersReducedMotion ? false : { opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={prefersReducedMotion ? undefined : { opacity: 0, x: -20 }}
-                    transition={{ duration: 0.35 }}
+                    transition={{ type: "spring", stiffness: 280, damping: 24 }}
                   >
                     <p className="text-xl md:text-2xl text-slate-700 mb-8 leading-relaxed font-light relative z-10">
                       &ldquo;{currentTestimonial.content}&rdquo;
@@ -162,6 +175,6 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
           )}
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }

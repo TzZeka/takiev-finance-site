@@ -36,7 +36,7 @@ export function ServiceTimeline({ steps, title }: ServiceTimelineProps) {
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
+              transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1, delay: index * 0.1 }}
               className="relative flex gap-6 md:gap-8"
             >
               {/* Step Number/Circle */}

@@ -16,7 +16,7 @@ import { useEffect, useState, useRef } from "react";
  * Framer Motion only for the one-time exit transition.
  */
 
-const TOTAL_MS = 3400;
+const TOTAL_MS = 1800;
 
 /* SVG-exact brick positions (normalised to grid 0..1) */
 const BRICKS = [
@@ -52,7 +52,7 @@ export function PremiumLoader() {
   useEffect(() => {
     document.body.classList.add("loader-active");
 
-    timers.current.push(setTimeout(() => setPhase("text"), 1100));
+    timers.current.push(setTimeout(() => setPhase("text"), 580));
     timers.current.push(
       setTimeout(() => {
         setIsLoading(false);

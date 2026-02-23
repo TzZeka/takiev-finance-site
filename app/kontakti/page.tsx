@@ -1,23 +1,46 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { ContactForm } from "@/components/shared/ContactForm";
-import { Mail, Phone, MapPin, Clock, CheckCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, CheckCircle, Calculator, Receipt, Scale, Building2, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Контакти | Takiev Finance - Счетоводна Кантора",
+  title: "Контакти - Счетоводна кантора София, бул. Стамболийски",
   description:
-    "Свържете се с нас за професионална счетоводна консултация. Телефон, имейл, адрес и работно време на Takiev Finance.",
+    "Свържете се с Takiev Finance за счетоводна консултация. Телефон, имейл, адрес (бул. Ал. Стамболийски 30Б, София) и работно време.",
+  keywords: [
+    "контакти Takiev Finance",
+    "счетоводна кантора София адрес",
+    "счетоводител телефон",
+    "счетоводна консултация",
+    "счетоводна консултация София",
+  ],
   alternates: {
     canonical: "https://takiev.bg/kontakti",
   },
   openGraph: {
-    title: "Контакти | Takiev Finance",
+    title: "Контакти | Takiev Finance - Счетоводна Кантора София",
     description:
-      "Свържете се с нас за професионална счетоводна консултация.",
+      "Свържете се с Takiev Finance за счетоводна консултация. бул. Ал. Стамболийски 30Б, София.",
     url: "https://takiev.bg/kontakti",
     type: "website",
     locale: "bg_BG",
     siteName: "Takiev Finance",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Контакти - Takiev Finance",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Контакти | Takiev Finance",
+    description:
+      "Свържете се с Takiev Finance за счетоводна консултация.",
+    images: ["/opengraph-image"],
   },
 };
 
@@ -25,7 +48,7 @@ const whyChooseUsReasons = [
   "Бърз отговор на запитвания",
   "Професионален екип от експерти",
   "Индивидуален подход към всеки клиент",
-  "Над 10 години опит в бранша",
+  "Доказан опит от 2021 г.",
   "Прозрачна и коректна ценова политика",
 ];
 
@@ -169,6 +192,42 @@ export default function ContactPage() {
               </span>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Internal Links — Services */}
+      <section className="container mx-auto px-4 md:px-6 lg:px-8 pb-12 md:pb-16">
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+          Нашите услуги
+        </h2>
+        <p className="text-white/60 mb-8 max-w-xl">
+          Разгледайте пълната гама услуги, които предлагаме на нашите клиенти.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {[
+            { href: "/uslugi/schetovodni-uslugi", label: "Счетоводни услуги", desc: "Месечно счетоводство, годишно приключване, ТРЗ", icon: Calculator },
+            { href: "/uslugi/danachni-konsultacii", label: "Данъчни консултации", desc: "ДДС регистрация, данъчно планиране, НАП", icon: Receipt },
+            { href: "/uslugi/pravni-uslugi", label: "Правни услуги", desc: "Договори, трудово и търговско право", icon: Scale },
+            { href: "/uslugi/registraciq-na-firmi", label: "Регистрация на фирми", desc: "ЕООД, ООД, ЕТ — бързо и лесно", icon: Building2 },
+          ].map((service) => {
+            const Icon = service.icon;
+            return (
+              <Link
+                key={service.href}
+                href={service.href}
+                className="group bg-slate-950/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 flex items-center gap-4 hover:border-primary/40 transition-colors"
+              >
+                <div className="p-2.5 bg-primary/20 rounded-xl flex-shrink-0">
+                  <Icon className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-white group-hover:text-primary transition-colors">{service.label}</p>
+                  <p className="text-white/50 text-sm">{service.desc}</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-white/30 group-hover:text-primary group-hover:translate-x-1 transition-all flex-shrink-0" />
+              </Link>
+            );
+          })}
         </div>
       </section>
 

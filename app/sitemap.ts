@@ -37,7 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/uslugi/registraciya-na-firmi`,
+      url: `${baseUrl}/uslugi/registraciq-na-firmi`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,

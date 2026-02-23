@@ -22,7 +22,7 @@ export function ServiceIconCard({
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.05, duration: 0.4 }}
+      transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1, delay: index * 0.05 }}
       whileHover={{ y: -4, scale: 1.02 }}
       className="group relative rounded-xl border-2 border-white/10 bg-gradient-to-br from-white/5 to-transparent p-6 md:p-8 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 backdrop-blur-sm"
     >

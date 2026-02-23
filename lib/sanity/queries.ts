@@ -6,6 +6,7 @@ import type {
   Client,
   Video,
   HomeContent,
+  TeamMember,
 } from "@/types";
 
 // Services
@@ -268,6 +269,7 @@ export async function getAllClients(): Promise<Client[]> {
       _createdAt,
       name,
       logo,
+      cardImage,
       website,
       sector,
       order
@@ -327,6 +329,24 @@ export async function getHomeContent(): Promise<HomeContent | null> {
       messages,
       ctaText,
       ctaButtonText
+    }`
+  );
+}
+
+// Team Members — leaders first, then by order
+export async function getTeamMembers(): Promise<TeamMember[]> {
+  return client.fetch(
+    `*[_type == "teamMember"] | order(roleType asc, order asc) {
+      _id,
+      _type,
+      _createdAt,
+      name,
+      role,
+      roleType,
+      education,
+      image,
+      bio,
+      order
     }`
   );
 }

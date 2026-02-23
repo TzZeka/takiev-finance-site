@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { servicesConfig } from "@/lib/services-config";
 import { ArrowRight, CheckCircle } from "lucide-react";
+import { PremiumCTA } from "@/components/ui/PremiumCTA";
 
 export const metadata: Metadata = {
   title: "Услуги | Takiev Finance - Счетоводна Кантора",
@@ -114,6 +115,7 @@ export default function ServicesPage() {
                   src={image}
                   alt={service.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className={`absolute inset-0 bg-gradient-to-${isEven ? "r" : "l"} from-transparent via-transparent to-slate-950/60 hidden md:block`} />
@@ -164,16 +166,13 @@ export default function ServicesPage() {
             Не сте сигурни коя услуга ви е необходима?
           </h2>
           <p className="text-white/70 mb-8 max-w-2xl mx-auto">
-            Свържете се с нас за безплатна консултация. Ще ви помогнем да изберете
+            Свържете се с нас за консултация. Ще ви помогнем да изберете
             най-подходящото решение за вашия бизнес.
           </p>
-          <Link
-            href="/kontakti"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg transition-colors"
-          >
+          <PremiumCTA href="/kontakti">
             Свържете се с нас
             <ArrowRight className="w-4 h-4" />
-          </Link>
+          </PremiumCTA>
         </div>
       </section>
     </div>

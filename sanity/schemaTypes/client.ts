@@ -21,6 +21,15 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "cardImage",
+      title: "Картичка на партньора",
+      type: "image",
+      description: "Красива картичка с фон и лого (по желание). Ако е качена, тя се показва вместо обикновеното лого.",
+      options: {
+        hotspot: false,
+      },
+    }),
+    defineField({
       name: "website",
       title: "Уебсайт",
       type: "url",

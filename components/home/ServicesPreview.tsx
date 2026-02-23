@@ -3,8 +3,11 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ArrowRight } from "lucide-react";
 import type { Service } from "@/types";
+import { SectionBadge } from "@/components/shared/SectionBadge";
+import { PremiumCTA } from "@/components/ui/PremiumCTA";
+import { MaskReveal } from "@/components/effects/MaskReveal";
 
 interface ServicesPreviewProps {
   services: Service[];
@@ -93,22 +96,36 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
       : {
           initial: { opacity: 0, y: 30 },
           animate: isInView ? { opacity: 1, y: 0 } : {},
-          transition: { duration: 0.5, delay },
+          transition: { type: "spring", stiffness: 200, damping: 30, mass: 1, delay },
         };
 
   return (
-    <section
+    <motion.section
       ref={ref}
-      className="relative py-20 md:py-28 bg-white rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-sm"
+      {...(prefersReducedMotion ? {} : {
+        initial: { opacity: 0, y: 50 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "-40px" },
+        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
+      })}
+      className="relative py-20 md:py-28 bg-slate-950 rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
+      style={{
+        borderTopLeftRadius: "50% 2rem",
+        borderTopRightRadius: "50% 2rem",
+        filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
+      }}
     >
+      {/* Subtle orb */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-[100px]" />
+
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}
         <motion.div {...anim(0)} className="text-center mb-14">
-          <span className="text-sm font-semibold text-primary tracking-wider uppercase">
-            Какво предлагаме
-          </span>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900">
-            Нашите <span className="text-primary">услуги</span>
+          <SectionBadge>Какво предлагаме</SectionBadge>
+          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
+            <MaskReveal>
+              Нашите <span className="text-primary text-4xl sm:text-5xl md:text-6xl">услуги</span>
+            </MaskReveal>
           </h2>
           <div className="mt-4 h-1 w-16 bg-gradient-to-r from-primary to-emerald-400 mx-auto rounded-full" />
         </motion.div>
@@ -118,24 +135,24 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
           {serviceItems.map((service, index) => (
             <motion.div key={service.name} {...anim(0.1 + index * 0.1)}>
               <Link href={getServiceLink(service.category)} className="group block h-full">
-                <div className="relative h-full rounded-2xl border border-slate-200 bg-slate-50/50 p-7 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30 overflow-hidden">
+                <div className="relative h-full rounded-2xl border border-white/[0.08] bg-white/[0.04] p-7 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30 overflow-hidden">
                   {/* Gradient accent line on left */}
                   <div className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${service.accent} rounded-l-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
 
                   <div className="flex items-start gap-5">
                     {/* Icon */}
-                    <div className={`w-14 h-14 rounded-xl ${service.iconBg} flex items-center justify-center flex-shrink-0 text-slate-600 group-hover:scale-110 transition-transform duration-300`}>
+                    <div className={`w-14 h-14 rounded-xl ${service.iconBg} flex items-center justify-center flex-shrink-0 text-white/70 group-hover:scale-110 transition-transform duration-300`}>
                       {renderIcon(service.icon)}
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors duration-300">
+                        <h3 className="text-xl font-bold text-white group-hover:text-primary transition-colors duration-300">
                           {service.name}
                         </h3>
-                        <ArrowUpRight className="w-5 h-5 text-slate-300 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 flex-shrink-0" />
+                        <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 flex-shrink-0" />
                       </div>
-                      <p className="text-slate-500 text-sm leading-relaxed">
+                      <p className="text-white/50 text-sm leading-relaxed">
                         {service.description}
                       </p>
                     </div>
@@ -148,17 +165,12 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
 
         {/* Button */}
         <motion.div {...anim(0.5)} className="text-center mt-12">
-          <Link
-            href="/uslugi"
-            className="inline-flex items-center px-8 py-4 bg-slate-900 text-white font-semibold rounded-xl transition-all duration-300 hover:bg-primary hover:shadow-lg"
-          >
+          <PremiumCTA href="/uslugi">
             Всички услуги
-            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </Link>
+            <ArrowRight className="w-5 h-5" />
+          </PremiumCTA>
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }

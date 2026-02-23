@@ -135,10 +135,7 @@ export function ProfessionalJourney() {
                             y: isVisible ? -offset * 20 : 100,
                             zIndex: isCurrent ? 10 : index,
                           }}
-                          transition={{
-                            duration: 0.4,
-                            ease: "easeOut",
-                          }}
+                          transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1 }}
                           className="absolute inset-0 will-change-transform"
                         >
                           <div className="bg-white rounded-2xl shadow-2xl border-2 border-primary/10 overflow-hidden">
@@ -197,7 +194,7 @@ export function ProfessionalJourney() {
                     key="grid-view"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1 }}
                     className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-h-[80vh] overflow-y-auto custom-scrollbar pb-8"
                   >
                     {journeyItems.map((item, index) => {
@@ -208,11 +205,7 @@ export function ProfessionalJourney() {
                           key={index}
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
-                          transition={{
-                            duration: 0.3,
-                            delay: index * 0.08,
-                            ease: "easeOut",
-                          }}
+                          transition={{ type: "spring", stiffness: 280, damping: 24, delay: index * 0.08 }}
                           className="bg-white rounded-xl shadow-xl border-2 border-primary/10 overflow-hidden hover:border-primary/30 transition-colors duration-300 will-change-transform"
                         >
                           <div className="h-1.5 bg-gradient-to-r from-primary via-teal-500 to-primary" />

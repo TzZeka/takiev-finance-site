@@ -4,7 +4,9 @@
 
 @font-face {
   font-family: 'Berkslund';
-  src: url('/fonts/Berkslund-Bold.ttf') format('truetype');
+  src:
+    url('/fonts/Berkslund-Bold.woff2') format('woff2'),
+    url('/fonts/Berkslund-Bold.ttf') format('truetype');
   font-weight: 700;
   font-display: swap;
 }
@@ -17,10 +19,43 @@
 }
 
 @font-face {
-  font-family: 'Libre Franklin';
-  src: url('/fonts/LibreFranklin-Bold.ttf') format('truetype');
-  font-weight: 700;
+  font-family: 'Hubot Sans';
+  src:
+    url('/fonts/Hubot Sans/Hubot-Sans.woff2') format('woff2 supports variations'),
+    url('/fonts/Hubot Sans/Hubot-Sans.woff2') format('woff2-variations');
+  font-weight: 200 900;
+  font-stretch: 75% 125%;
   font-display: swap;
+}
+
+/* ── Hubot Sans — section headings (Black Wide: weight 900, stretch 125%) ── */
+h1.font-extrabold, h1.font-bold, h1.font-black,
+h2.font-extrabold, h2.font-bold, h2.font-black {
+  font-family: 'Hubot Sans', sans-serif;
+  font-weight: 900;
+  font-stretch: 125%;
+}
+
+/* ── Hubot Sans — sub-headings (Bold Wide: weight 700, stretch 110%) ── */
+h3.font-bold, h3.font-semibold, h3.font-extrabold,
+h4.font-bold, h4.font-semibold {
+  font-family: 'Hubot Sans', sans-serif;
+  font-weight: 700;
+  font-stretch: 110%;
+}
+
+/* ── Responsive font-stretch — prevent horizontal overflow on small screens ── */
+@media (max-width: 639px) {
+  h1.font-extrabold, h1.font-bold, h1.font-black,
+  h2.font-extrabold, h2.font-bold, h2.font-black {
+    font-stretch: 100%;
+  }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  h1.font-extrabold, h1.font-bold, h1.font-black,
+  h2.font-extrabold, h2.font-bold, h2.font-black {
+    font-stretch: 115%;
+  }
 }
 
 /* Prevent horizontal scrolling on mobile */
@@ -160,6 +195,7 @@ body:has(.loader-active) {
   html,
   body {
     @apply bg-background text-foreground;
+    font-family: 'Hubot Sans', system-ui, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
@@ -365,6 +401,104 @@ body:has(.loader-active) {
     }
   }
 
+  /* Social button coin-flip animation */
+  .social-flip {
+    perspective: 600px;
+  }
+
+  .social-flip-inner {
+    transform-style: preserve-3d;
+    transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .social-flip:hover .social-flip-inner {
+    transform: rotateY(180deg);
+  }
+
+  .social-flip-front,
+  .social-flip-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .social-flip-back {
+    transform: rotateY(180deg);
+  }
+
+  /* Progress bar fill for values auto-rotation */
+  @keyframes progress-fill {
+    from { width: 0%; }
+    to { width: 100%; }
+  }
+
+  /* Card flip animation for team section */
+  .card-flip-container {
+    perspective: 1000px;
+  }
+
+  .card-flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-flipped {
+    transform: rotateY(180deg);
+  }
+
+  .card-flip-front,
+  .card-flip-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .card-flip-back {
+    transform: rotateY(180deg);
+  }
+
+  /* ============================================
+     FLUID TYPOGRAPHY — clamp() utilities
+     ============================================ */
+  /* Linear fluid scale — 375px (mobile) → 1440px (desktop)            */
+  /* Formula: clamp(min, a + b·vw, max)  where b=(max-min)/10.65       */
+  .text-fluid-xs   { font-size: clamp(0.75rem,  0.71rem + 0.19vw, 0.875rem); } /* 12→14px */
+  .text-fluid-sm   { font-size: clamp(0.875rem, 0.83rem + 0.19vw, 1rem); }     /* 14→16px */
+  .text-fluid-base { font-size: clamp(1rem,     0.96rem + 0.19vw, 1.125rem); } /* 16→18px */
+  .text-fluid-lg   { font-size: clamp(1.125rem, 1rem    + 0.56vw, 1.5rem); }   /* 18→24px */
+  .text-fluid-xl   { font-size: clamp(1.25rem,  0.99rem + 1.13vw, 2rem); }     /* 20→32px */
+  .text-fluid-2xl  { font-size: clamp(1.75rem,  1.31rem + 1.88vw, 3rem); }     /* 28→48px */
+  .text-fluid-3xl  { font-size: clamp(2.25rem,  1.46rem + 3.38vw, 4.5rem); }   /* 36→72px */
+  .text-fluid-hero { font-size: clamp(2.25rem,  1rem + 3.5vw, 4.75rem); }      /* 36→76px */
+
+  /* ============================================
+     BUTTON MICRO-INTERACTION — slide-up hover
+     ============================================ */
+  .btn-slide-up {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-slide-up::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  .btn-slide-up:hover::after {
+    transform: translateY(0);
+  }
+
   /* Override browser autofill background */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
@@ -378,3 +512,14 @@ body:has(.loader-active) {
     transition: background-color 5000s ease-in-out 0s;
   }
 }
+
+/* ============================================
+   HIGH-END EFFECTS
+   ============================================ */
+
+/* Variable font weight hover effect */
+h1, h2, h3 { font-variation-settings: 'wght' 700; transition: font-variation-settings 0.25s ease; }
+.group:hover h3 { font-variation-settings: 'wght' 800; }
+
+/* Aspect ratio helpers */
+.aspect-video-safe { aspect-ratio: 16 / 9; }

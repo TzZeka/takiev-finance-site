@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -7,9 +6,7 @@ import { QuickPanel } from "@/components/layout/QuickPanel";
 import { PremiumLoader } from "@/components/shared/PremiumLoader";
 import { ScrollToTop } from "@/components/shared/ScrollToTop";
 import { LocalBusinessJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
-
-const inter = Inter({ subsets: ["latin", "cyrillic"] });
-const cormorant = Cormorant_Garamond({ subsets: ["latin", "cyrillic"], variable: "--font-cormorant", weight: ["400", "600", "700"] });
+import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -29,16 +26,10 @@ export const metadata: Metadata = {
   description:
     "Избери своя доверен бизнес партньор. Счетоводството е движеща сила за всеки успешен бизнес. Takiev Finance (Такиев Финанс) - счетоводни услуги, данъчни консултации, регистрация на фирми.",
   keywords: [
-    // Брандови ключови думи
-    "Takiev",
+    // Брандови
     "Takiev Finance",
-    "takiev",
-    "takiev finance",
-    "Такиев",
     "Такиев Финанс",
-    "такиев",
-    "такиев финанс",
-    // Услуги
+    // Основни услуги
     "счетоводни услуги",
     "счетоводна кантора",
     "счетоводство",
@@ -46,16 +37,30 @@ export const metadata: Metadata = {
     "данъчни консултации",
     "данъчен консултант",
     "регистрация на фирми",
+    "правни услуги",
+    // Конкретни услуги (long-tail)
+    "месечно счетоводство за фирми",
+    "годишно приключване",
+    "ТРЗ и осигуровки",
+    "ДДС регистрация",
     "регистрация на ЕООД",
     "регистрация на ООД",
-    "правни услуги",
-    "ТРЗ услуги",
-    "годишно приключване",
-    "ДДС регистрация",
-    // Локални
+    "данъчна декларация",
+    "данъчно планиране",
+    "осчетоводяване на фактури",
+    "финансови отчети",
+    // Локални (София)
     "счетоводител София",
     "счетоводна кантора София",
-    "счетоводни услуги България",
+    "счетоводни услуги София",
+    "данъчен консултант София",
+    "счетоводна фирма София",
+    // Намерение за покупка
+    "счетоводител София цена",
+    "евтин счетоводител София",
+    "онлайн счетоводство",
+    "счетоводство за малък бизнес",
+    "счетоводство за стартъп",
   ],
   authors: [{ name: "Nikolay Takiev" }],
   creator: "Takiev Finance",
@@ -115,17 +120,56 @@ export default function RootLayout({
   return (
     <html lang="bg" data-scroll-behavior="smooth">
       <head>
+        {/* Preload variable font (headings + body) */}
+        <link
+          rel="preload"
+          href="/fonts/Hubot Sans/Hubot-Sans.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        {/* Preload logo fonts to eliminate CLS in Header */}
+        <link
+          rel="preload"
+          href="/fonts/Berkslund-Bold.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/Avenir Heavy.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
         <LocalBusinessJsonLd />
         <OrganizationJsonLd />
         <WebSiteJsonLd />
       </head>
-      <body className={`${inter.className} ${cormorant.variable}`}>
-        <PremiumLoader />
-        <Header />
-        <QuickPanel />
-        <main className="min-h-screen w-full">{children}</main>
-        <Footer />
-        <ScrollToTop />
+      <body>
+        <SmoothScrollProvider>
+          <PremiumLoader />
+          <Header />
+          <QuickPanel />
+          <main className="min-h-screen w-full">{children}</main>
+          <Footer />
+          <ScrollToTop />
+        </SmoothScrollProvider>
+        <div
+          aria-hidden="true"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            pointerEvents: "none",
+            opacity: 0.038,
+            mixBlendMode: "overlay",
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+            backgroundRepeat: "repeat",
+            backgroundSize: "256px 256px",
+          }}
+        />
       </body>
     </html>
   );

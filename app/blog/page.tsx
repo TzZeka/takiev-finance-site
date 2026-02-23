@@ -7,16 +7,26 @@ import { BlogHeroGrid } from "@/components/blog/BlogHeroGrid";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Блог - Takiev Finance",
+  title: "Блог по счетоводство и данъци - Статии и съвети",
   description:
-    "Актуални новини, съвети и анализи по счетоводство, данъци и бизнес. Професионални статии от експерти в областта.",
+    "Актуални статии, съвети и анализи по счетоводство, данъци и бизнес от експертите на Takiev Finance. Полезна информация за ЕООД, ООД, ДДС и данъчни декларации.",
+  keywords: [
+    "блог счетоводство",
+    "данъчни съвети",
+    "счетоводни статии",
+    "бизнес съвети",
+    "ДДС информация",
+    "данъчна декларация съвети",
+    "счетоводство за бизнес",
+    "новини счетоводство България",
+  ],
   alternates: {
     canonical: "https://takiev.bg/blog",
   },
   openGraph: {
-    title: "Блог - Takiev Finance",
+    title: "Блог по счетоводство и данъци | Takiev Finance",
     description:
-      "Актуални новини, съвети и анализи по счетоводство, данъци и бизнес от експертите на Takiev Finance.",
+      "Актуални статии, съвети и анализи по счетоводство, данъци и бизнес от експертите на Takiev Finance.",
     url: "https://takiev.bg/blog",
     type: "website",
     locale: "bg_BG",
@@ -32,9 +42,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Блог - Takiev Finance",
+    title: "Блог по счетоводство и данъци | Takiev Finance",
     description:
-      "Актуални новини, съвети и анализи по счетоводство, данъци и бизнес от експертите на Takiev Finance.",
+      "Актуални статии, съвети и анализи по счетоводство, данъци и бизнес от експертите на Takiev Finance.",
     images: ["/opengraph-image"],
   },
 };
@@ -68,6 +78,7 @@ export default async function BlogPage() {
 
       {/* Blog Content */}
       <div className="container mx-auto px-4 -mt-8 relative z-20 pb-16 md:pb-24">
+        <h2 className="sr-only">Последни публикации</h2>
         <BlogListClient posts={posts} />
       </div>
     </div>

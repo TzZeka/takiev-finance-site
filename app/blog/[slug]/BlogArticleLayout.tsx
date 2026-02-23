@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { PortableText } from "@portabletext/react";
 import { Calendar, ArrowLeft, ExternalLink, Tag, User, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PremiumCTA } from "@/components/ui/PremiumCTA";
 import { formatDate } from "@/lib/utils";
 import { getImageUrl } from "@/lib/sanity/client";
 import { portableTextComponents } from "@/components/blog/PortableTextComponents";
@@ -351,9 +352,9 @@ export function BlogArticleLayout({ post, headings, categories, relatedPosts }: 
               </div>
               {/* Button — right */}
               <div className="shrink-0">
-                <Button asChild size="lg" className="px-8 py-3 text-sm font-medium rounded-xl bg-white text-slate-950 hover:bg-white/90 border-0">
-                  <Link href="/kontakti">Свържи се с нас</Link>
-                </Button>
+                <PremiumCTA href="/kontakti">
+                  Свържи се с нас
+                </PremiumCTA>
               </div>
             </div>
           </div>

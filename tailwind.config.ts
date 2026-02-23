@@ -50,7 +50,7 @@ const config: Config = {
         sm: "0.25rem",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ["'Hubot Sans'", "system-ui", "sans-serif"],
       },
     },
   },

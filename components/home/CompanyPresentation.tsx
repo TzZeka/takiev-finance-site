@@ -4,6 +4,9 @@ import Image from "next/image";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { Award, Users, TrendingUp, Shield, CheckCircle, Sparkles } from "lucide-react";
+import { SectionBadge } from "@/components/shared/SectionBadge";
+import { PremiumCTA } from "@/components/ui/PremiumCTA";
+import { MaskReveal } from "@/components/effects/MaskReveal";
 
 const stats = [
   { label: "Години опит", value: 6, suffix: "+", icon: TrendingUp },
@@ -226,23 +229,35 @@ export function CompanyPresentation() {
       : {
           initial: { opacity: 0, y: 30 },
           animate: isInView ? { opacity: 1, y: 0 } : {},
-          transition: { duration: 0.6, delay },
+          transition: { type: "spring", stiffness: 200, damping: 30, mass: 1, delay },
         };
 
   return (
-    <section className="relative py-20 md:py-28 bg-slate-950 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-sm">
+    <motion.section
+      {...(prefersReducedMotion ? {} : {
+        initial: { opacity: 0, y: 50 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "-40px" },
+        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
+      })}
+      className="relative py-20 md:py-28 bg-slate-950 rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
+      style={{
+        borderTopLeftRadius: "50% 2rem",
+        borderTopRightRadius: "50% 2rem",
+        filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
+      }}
+    >
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]" />
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10" ref={ref}>
         {/* Header */}
         <motion.div {...anim(0)} className="text-center mb-16">
-          <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 text-primary text-sm font-semibold border border-primary/20 backdrop-blur-sm">
-            <Sparkles className="w-4 h-4" />
-            За нас
-          </span>
+          <SectionBadge>За нас</SectionBadge>
           <h2 className="mt-5 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-            Вашият доверен{" "}
-            <span className="text-primary">финансов партньор</span>
+            <MaskReveal>
+              Вашият доверен{" "}
+              <span className="text-primary text-4xl sm:text-5xl md:text-6xl lg:text-7xl">финансов партньор</span>
+            </MaskReveal>
           </h2>
           <p className="mt-4 text-lg text-white/50 max-w-2xl mx-auto">
             От 2019 г. предоставяме професионални счетоводни услуги с грижа към всеки клиент
@@ -284,17 +299,14 @@ export function CompanyPresentation() {
             <p className="text-white/50 mb-6">
               Присъединете се към стотиците компании, които вече се доверяват на нашата експертиза
             </p>
-            <a
-              href="/kontakti"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition-colors duration-300"
-            >
+            <PremiumCTA href="/kontakti">
               Свържете се с нас
               <CheckCircle className="w-5 h-5" />
-            </a>
+            </PremiumCTA>
           </div>
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
@@ -313,23 +325,33 @@ export function CompanyHistory() {
       : {
           initial: { opacity: 0, y: 30 },
           animate: isInView ? { opacity: 1, y: 0 } : {},
-          transition: { duration: 0.6, delay },
+          transition: { type: "spring", stiffness: 200, damping: 30, mass: 1, delay },
         };
 
   return (
-    <section className="relative py-20 md:py-28 bg-slate-950 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-sm">
+    <motion.section
+      {...(prefersReducedMotion ? {} : {
+        initial: { opacity: 0, y: 50 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "-40px" },
+        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
+      })}
+      className="relative py-20 md:py-28 bg-slate-950 rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
+      style={{
+        borderTopLeftRadius: "50% 2rem",
+        borderTopRightRadius: "50% 2rem",
+        filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
+      }}
+    >
       {/* Background gradient orb */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-primary/[0.03] rounded-full blur-[120px]" />
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10" ref={ref}>
         {/* Header */}
         <motion.div {...anim(0)} className="text-center mb-16">
-          <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 text-primary text-sm font-semibold border border-primary/20 backdrop-blur-sm">
-            <CheckCircle className="w-4 h-4" />
-            Нашият път
-          </span>
+          <SectionBadge>Нашият път</SectionBadge>
           <h2 className="mt-5 text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
-            Нашата <span className="text-primary">история</span>
+            Нашата <span className="text-primary text-4xl sm:text-5xl md:text-6xl">история</span>
           </h2>
           <p className="mt-4 text-lg text-white/50 max-w-2xl mx-auto">
             Ключовите моменти, които ни направиха лидер в счетоводните услуги
@@ -354,7 +376,7 @@ export function CompanyHistory() {
                       initial: { opacity: 0, y: 30 },
                       animate: isInView ? { opacity: 1, y: 0 } : {},
                     })}
-                transition={{ delay: 0.2 + index * 0.15, duration: 0.5 }}
+                transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1, delay: 0.2 + index * 0.15 }}
                 className="flex flex-col items-center text-center flex-1 group"
               >
                 {/* Timeline dot — larger with hover glow */}
@@ -413,7 +435,7 @@ export function CompanyHistory() {
                       initial: { opacity: 0, x: 20 },
                       animate: isInView ? { opacity: 1, x: 0 } : {},
                     })}
-                transition={{ delay: 0.2 + index * 0.12, duration: 0.4 }}
+                transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1, delay: 0.2 + index * 0.12 }}
                 className="relative"
               >
                 {/* Dot */}
@@ -451,7 +473,7 @@ export function CompanyHistory() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
@@ -473,23 +495,33 @@ export function CompanyValues() {
       : {
           initial: { opacity: 0, y: 30 },
           animate: isInView ? { opacity: 1, y: 0 } : {},
-          transition: { duration: 0.6, delay },
+          transition: { type: "spring", stiffness: 200, damping: 30, mass: 1, delay },
         };
 
   return (
-    <section className="relative py-20 md:py-28 bg-slate-950 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-sm">
+    <motion.section
+      {...(prefersReducedMotion ? {} : {
+        initial: { opacity: 0, y: 50 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "-40px" },
+        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
+      })}
+      className="relative py-20 md:py-28 bg-slate-950 rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
+      style={{
+        borderTopLeftRadius: "50% 2rem",
+        borderTopRightRadius: "50% 2rem",
+        filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
+      }}
+    >
       {/* Background gradient orb */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-primary/5 rounded-full blur-[100px]" />
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10" ref={ref}>
         {/* Header */}
         <motion.div {...anim(0)} className="text-center mb-14">
-          <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 text-primary text-sm font-semibold border border-primary/20 backdrop-blur-sm">
-            <Sparkles className="w-4 h-4" />
-            Ценности
-          </span>
+          <SectionBadge>Ценности</SectionBadge>
           <h2 className="mt-5 text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
-            Нашите <span className="text-primary">ценности</span>
+            Нашите <span className="text-primary text-4xl sm:text-5xl md:text-6xl">ценности</span>
           </h2>
           <p className="mt-4 text-lg text-white/50 max-w-2xl mx-auto">
             Принципите, които ръководят нашата работа всеки ден
@@ -537,6 +569,6 @@ export function CompanyValues() {
           </div>
         </div>
       </motion.div>
-    </section>
+    </motion.section>
   );
 }

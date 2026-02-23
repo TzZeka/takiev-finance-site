@@ -45,7 +45,7 @@ export function PartnersCarousel() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
+            transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1, delay: index * 0.1 }}
             className="group block h-full"
           >
             <div className="relative bg-slate-800/50 border border-white/5 rounded-xl sm:rounded-2xl overflow-hidden h-full transition-all duration-500 ease-out hover:border-white/10 hover:-translate-y-1">
@@ -96,7 +96,7 @@ export function PartnersCarousel() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: index * 0.08, ease: "easeOut" }}
+            transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1, delay: index * 0.08 }}
             className="group block"
           >
             <div className="relative bg-slate-800/50 border border-white/5 rounded-xl overflow-hidden transition-all duration-500 ease-out active:scale-[0.98]">
