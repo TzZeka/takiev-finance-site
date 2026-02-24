@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { motion, useInView, useReducedMotion, AnimatePresence } from "framer-motion";
+import { motion, useInView, useReducedMotion, AnimatePresence, type MotionProps } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
 import { SectionBadge } from "@/components/shared/SectionBadge";
 import { getImageUrl } from "@/lib/sanity/client";
@@ -27,7 +27,7 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
 
   const currentTestimonial = testimonials[currentIndex];
 
-  const anim = (delay: number) =>
+  const anim = (delay: number): MotionProps =>
     prefersReducedMotion
       ? {}
       : {

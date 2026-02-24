@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useInView, useReducedMotion, type MotionProps, type Variants } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { getImageUrl } from "@/lib/sanity/client";
 import type { Client } from "@/types";
@@ -33,7 +33,7 @@ const glowVariants = {
   hovered: { opacity: 1 },
 };
 
-const arrowVariants = {
+const arrowVariants: Variants = {
   rest: { x: 0, y: 0, opacity: 0.6, scale: 1 },
   hovered: {
     /* Phase 1 (0–28%): shoots out top-right, fades out          */
@@ -264,7 +264,7 @@ export function ClientsSection({ clients }: ClientsSectionProps) {
 
   if (clients.length === 0) return null;
 
-  const anim = (delay: number) =>
+  const anim = (delay: number): MotionProps =>
     prefersReducedMotion
       ? {}
       : {

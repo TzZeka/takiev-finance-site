@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useInView, useReducedMotion, type MotionProps } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { Award, Users, TrendingUp, Shield, CheckCircle, Sparkles } from "lucide-react";
 import { SectionBadge } from "@/components/shared/SectionBadge";
@@ -223,7 +223,7 @@ export function CompanyPresentation() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const prefersReducedMotion = useReducedMotion();
 
-  const anim = (delay: number) =>
+  const anim = (delay: number): MotionProps =>
     prefersReducedMotion
       ? {}
       : {
@@ -319,7 +319,7 @@ export function CompanyHistory() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const prefersReducedMotion = useReducedMotion();
 
-  const anim = (delay: number) =>
+  const anim = (delay: number): MotionProps =>
     prefersReducedMotion
       ? {}
       : {
@@ -489,7 +489,7 @@ export function CompanyValues() {
   // Duplicate items for infinite scroll effect
   const carouselItems = [...values, ...values, ...values, ...values];
 
-  const anim = (delay: number) =>
+  const anim = (delay: number): MotionProps =>
     prefersReducedMotion
       ? {}
       : {

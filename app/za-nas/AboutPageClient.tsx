@@ -159,7 +159,7 @@ const sectionReveal = {
   initial: { opacity: 0, y: 40 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: "-80px" },
-  transition: { type: "spring", stiffness: 200, damping: 30, mass: 1 },
+  transition: { type: "spring" as const, stiffness: 200, damping: 30, mass: 1 },
 };
 
 
@@ -484,7 +484,7 @@ function TeamSection({ teamMembers }: { teamMembers: TeamMemberDisplay[] }) {
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ type: "spring", stiffness: 280, damping: 24, delay: index * 0.15 }}
+        transition={{ type: "spring" as const, stiffness: 280, damping: 24, delay: index * 0.15 }}
       >
         <div className={`card-flip-container ${isLeaderCard ? "aspect-[3/4] sm:aspect-[2/3]" : "aspect-[3/4]"}`}>
           <div className={`card-flip-inner ${isFlipped ? "card-flipped" : ""}`}>
@@ -683,7 +683,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ type: "spring", stiffness: 280, damping: 24, delay: 0.2 }}
+              transition={{ type: "spring" as const, stiffness: 280, damping: 24, delay: 0.2 }}
               className="inline-block border border-white/20 text-white px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-medium tracking-wider uppercase mb-6 sm:mb-8"
             >
               От 2021 година
@@ -693,7 +693,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
             <motion.h1
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1, delay: 0.5 }}
+              transition={{ type: "spring" as const, stiffness: 200, damping: 30, mass: 1, delay: 0.5 }}
               className="text-fluid-hero font-bold text-white tracking-tight leading-[1.05] text-center"
             >
               За нас
@@ -703,7 +703,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1, delay: 1.0 }}
+              transition={{ type: "spring" as const, stiffness: 200, damping: 30, mass: 1, delay: 1.0 }}
               className="mt-4 sm:mt-6 text-white/50 text-sm sm:text-base md:text-lg max-w-md text-center"
             >
               Професионални счетоводни услуги и данъчни консултации
@@ -831,7 +831,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1 }}
+            transition={{ type: "spring" as const, stiffness: 200, damping: 30, mass: 1 }}
             className="mb-8 sm:mb-12 lg:mb-16 lg:ml-[40%]"
           >
             <SectionTitle
@@ -856,7 +856,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1 }}
+            transition={{ type: "spring" as const, stiffness: 200, damping: 30, mass: 1 }}
             className="lg:ml-[40%] lg:mt-12 xl:mt-16"
           >
             <div>
@@ -964,7 +964,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                 initial={{ opacity: 0, x: -40 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
-                transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1 }}
+                transition={{ type: "spring" as const, stiffness: 200, damping: 30, mass: 1 }}
                 className="order-2 lg:order-1"
               >
                 <div className="relative">
@@ -987,7 +987,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                 initial={{ opacity: 0, x: 40 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
-                transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1 }}
+                transition={{ type: "spring" as const, stiffness: 200, damping: 30, mass: 1 }}
                 className="order-1 lg:order-2"
               >
                 <div className="space-y-4 sm:space-y-5 lg:space-y-6">

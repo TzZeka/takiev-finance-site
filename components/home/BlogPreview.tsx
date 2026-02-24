@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useInView, useReducedMotion, type MotionProps } from "framer-motion";
 import { ArrowRight, Calendar, Clock } from "lucide-react";
 import { SectionBadge } from "@/components/shared/SectionBadge";
 import { formatDate } from "@/lib/utils";
@@ -23,7 +23,7 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
 
   if (posts.length === 0) return null;
 
-  const anim = (delay: number) =>
+  const anim = (delay: number): MotionProps =>
     prefersReducedMotion
       ? {}
       : {

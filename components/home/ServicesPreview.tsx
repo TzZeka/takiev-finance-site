@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useInView, useReducedMotion, type MotionProps } from "framer-motion";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import type { Service } from "@/types";
 import { SectionBadge } from "@/components/shared/SectionBadge";
@@ -90,7 +90,7 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
     return match ? `/uslugi/${match.slug.current}` : "/uslugi";
   };
 
-  const anim = (delay: number) =>
+  const anim = (delay: number): MotionProps =>
     prefersReducedMotion
       ? {}
       : {
