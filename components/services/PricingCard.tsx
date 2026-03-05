@@ -94,9 +94,12 @@ export function PricingCard({
           variant={popular ? "default" : "secondary"}
           className="w-full"
         >
-          Свържи се с нас
+          Заяви пакет
           <ArrowRight className="w-4 h-4" />
         </PremiumCTA>
+        <p className="text-center text-[11px] text-white/30 mt-2 tracking-wide">
+          Без ангажимент за плащане
+        </p>
       </div>
 
       {/* Glassmorphism Overlay */}
