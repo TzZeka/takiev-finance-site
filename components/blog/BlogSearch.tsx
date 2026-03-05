@@ -44,15 +44,24 @@ function highlightMatch(text: string, start: number, end: number) {
 
 function findBestMatch(text: string, query: string): { start: number; end: number; score: number } | null {
   if (!query || typeof text !== 'string') return null;
-  const q = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // Escape regex
-  const regex = new RegExp(`(^|[\\s\\-])(${q})`, "i");
-  const match = text.match(regex);
-  if (!match) return null;
+  const textLower = text.toLowerCase();
+  const queryLower = query.toLowerCase();
 
-  const startIdx = match.index! + match[1].length;
-  const score = match[1] === "" ? 3 : 2;
+  // Try word-start match first (higher score)
+  const wordStartIdx = textLower.search(new RegExp(`(^|[\\s\\-])${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`, "i"));
+  if (wordStartIdx !== -1) {
+    const isWordStart = wordStartIdx === 0 || /[\s\-]/.test(text[wordStartIdx]);
+    const start = isWordStart && wordStartIdx !== 0 ? wordStartIdx + 1 : wordStartIdx;
+    return { start, end: start + query.length, score: wordStartIdx === 0 ? 3 : 2 };
+  }
 
-  return { start: startIdx, end: startIdx + query.length, score };
+  // Fallback: substring match anywhere (lower score — important for Bulgarian)
+  const subIdx = textLower.indexOf(queryLower);
+  if (subIdx !== -1) {
+    return { start: subIdx, end: subIdx + query.length, score: 1 };
+  }
+
+  return null;
 }
 
 function scrollToPost(slug: string) {
@@ -122,7 +131,9 @@ export function BlogSearch({ onSearch, posts = [], placeholder = "Търсене
     }
 
     results.sort((a, b) => {
-      if (a.type !== b.type) return a.type === "tag" ? -1 : 1;
+      // Titles always before tags
+      if (a.type !== b.type) return a.type === "title" ? -1 : 1;
+      // Within same type: higher score first
       const aMatch = findBestMatch(a.text, q);
       const bMatch = findBestMatch(b.text, q);
       return (bMatch?.score || 0) - (aMatch?.score || 0);
@@ -208,14 +219,14 @@ export function BlogSearch({ onSearch, posts = [], placeholder = "Търсене
   };
 
   return (
-    <div ref={wrapperRef} className="w-full relative z-[100] h-[74px]">
+    <div ref={wrapperRef} className="w-full relative z-[100] min-h-[74px]">
       <div
         className={cn(
-          "bg-white rounded-2xl border shadow-sm overflow-hidden flex flex-col origin-top-left absolute top-0 left-0 min-w-full w-max",
+          "bg-white rounded-2xl border shadow-sm overflow-hidden flex flex-col absolute top-0 left-0 w-full",
           isFocused
             ? "border-primary/50 shadow-[0_8px_30px_rgb(0,0,0,0.08)] z-[100] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]"
             : "border-black/5 hover:border-black/10 z-[60] transition-all duration-300 ease-out",
-          showSuggestions ? "max-w-[calc(100vw-2rem)] lg:max-w-[800px]" : "max-w-full"
+          showSuggestions ? "lg:max-w-[800px]" : ""
         )}
       >
         {/* Input Area */}
@@ -236,7 +247,7 @@ export function BlogSearch({ onSearch, posts = [], placeholder = "Търсене
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             autoComplete="off"
-            className="w-full bg-slate-50 text-[#1b2b28] placeholder:text-slate-400 focus:placeholder-transparent pl-10 pr-10 py-2.5 text-sm rounded-xl focus:outline-none transition-all duration-300 placeholder:transition-colors placeholder:duration-300"
+            className="w-full bg-slate-50 text-[#1b2b28] placeholder:text-slate-400 focus:placeholder-transparent pl-10 pr-10 py-2.5 text-[16px] lg:text-sm rounded-xl focus:outline-none transition-all duration-300 placeholder:transition-colors placeholder:duration-300"
           />
           {query && (
             <button

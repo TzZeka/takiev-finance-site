@@ -37,15 +37,14 @@ export function BlogListClient({ posts }: BlogListClientProps) {
       }
 
       if (searchQuery) {
-        const q = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // Escape regex
-        const regex = new RegExp(`(^|[\\s\\-])(${q})`, "i");
+        const q = searchQuery.toLowerCase();
 
-        const matchesTitle = regex.test(post.title || "");
-        const matchesExcerpt = regex.test(post.excerpt || "");
-        const matchesAuthor = regex.test(post.author?.name || "");
-        const matchesTags = post.tags?.some((tag) => regex.test(tag));
+        const matchesTitle = (post.title || "").toLowerCase().includes(q);
+        const matchesExcerpt = (post.excerpt || "").toLowerCase().includes(q);
+        const matchesAuthor = (post.author?.name || "").toLowerCase().includes(q);
+        const matchesTags = post.tags?.some((tag) => tag.toLowerCase().includes(q));
 
-        return matchesTitle || matchesExcerpt || matchesAuthor || matchesTags;
+        return matchesTitle || matchesExcerpt || matchesAuthor || !!matchesTags;
       }
 
       return true;
@@ -181,8 +180,8 @@ export function BlogListClient({ posts }: BlogListClientProps) {
 
       {/* Main Content (Right) */}
       <main
-        className="flex-1 min-w-0 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] relative z-10 lg:mt-[var(--search-offset,0px)]"
-        style={{ "--search-offset": `${searchOverlayHeight}px` } as React.CSSProperties}
+        className="flex-1 min-w-0 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] relative z-10"
+        style={searchOverlayHeight > 0 ? { marginTop: `${searchOverlayHeight}px` } : undefined}
       >
         {/* Header line */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-4 border-b border-black/5 gap-4">
