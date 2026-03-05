@@ -11,6 +11,10 @@ export const resend = new Resend(API_KEY);
 
 export const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "office@takiev.bg";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://takiev.bg";
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+const FROM_ADDRESS = `Takiev Finance <${FROM_EMAIL}>`;
+
 export interface ContactFormData {
   name: string;
   email: string;
@@ -24,7 +28,7 @@ export interface ContactFormData {
 export async function sendAutoReplyEmail(data: ContactFormData) {
   try {
     const { error } = await resend.emails.send({
-      from: "Takiev Finance <onboarding@resend.dev>",
+      from: FROM_ADDRESS,
       to: [data.email],
       subject: "Благодарим Ви за запитването | Takiev Finance",
       html: `
@@ -36,7 +40,7 @@ export async function sendAutoReplyEmail(data: ContactFormData) {
         </head>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
           <div style="background: linear-gradient(135deg, #0f172a, #1e293b); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
-            <img src="https://takiev-finance-site.vercel.app/firm-logo/logo.png" alt="Takiev Finance" style="max-width: 200px; height: auto; margin-bottom: 10px;" />
+            <img src="${SITE_URL}/firm-logo/logo.png" alt="Takiev Finance" style="max-width: 200px; height: auto; margin-bottom: 10px;" />
             <p style="color: #94a3b8; margin: 0; font-size: 14px;">Счетоводна Кантора</p>
           </div>
 
@@ -96,7 +100,7 @@ export async function sendAutoReplyEmail(data: ContactFormData) {
 export async function sendContactEmail(data: ContactFormData) {
   try {
     const { data: result, error } = await resend.emails.send({
-      from: "Takiev Finance <onboarding@resend.dev>",
+      from: FROM_ADDRESS,
       to: [CONTACT_EMAIL],
       replyTo: data.email,
       subject: `[${data.subject}] Ново запитване от ${data.name}`,
@@ -109,7 +113,7 @@ export async function sendContactEmail(data: ContactFormData) {
         </head>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: linear-gradient(135deg, #0f172a, #1e293b); padding: 25px; border-radius: 8px 8px 0 0; text-align: center;">
-            <img src="https://takiev-finance-site.vercel.app/firm-logo/logo.png" alt="Takiev Finance" style="max-width: 180px; height: auto; margin-bottom: 15px;" />
+            <img src="${SITE_URL}/firm-logo/logo.png" alt="Takiev Finance" style="max-width: 180px; height: auto; margin-bottom: 15px;" />
             <h1 style="color: #19BFB7; margin: 0; font-size: 20px;">Ново запитване от сайта</h1>
           </div>
 
