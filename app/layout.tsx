@@ -8,6 +8,7 @@ import { ScrollToTop } from "@/components/shared/ScrollToTop";
 import { LocalBusinessJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -158,6 +159,7 @@ export default function RootLayout({
           <ScrollToTop />
         </SmoothScrollProvider>
         <SpeedInsights />
+        <Analytics />
         {/*
           Film grain overlay — fixed, full-viewport, non-interactive.
           Uses SVG feTurbulence (fractalNoise) tiled at 200 × 200 px.
