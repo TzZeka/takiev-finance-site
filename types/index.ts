@@ -2,6 +2,23 @@ export * from "./sanity";
 export * from "./blog";
 export * from "./service";
 
+// Contact Submission Type
+export interface ContactSubmission {
+  _id: string;
+  _type: "contactSubmission";
+  _createdAt: string;
+  name: string;
+  email: string;
+  phone?: string;
+  company?: string;
+  subject: string;
+  message: string;
+  submittedAt: string;
+  status: "нов" | "отговорен" | "архивиран";
+  emailSent: boolean;
+  notes?: string;
+}
+
 import { SanityImage, Slug } from "./sanity";
 
 // Team Member Type

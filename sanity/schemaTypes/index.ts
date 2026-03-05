@@ -12,6 +12,7 @@ import legalServicesContent from './legalServicesContent'
 import companyRegistrationContent from './companyRegistrationContent'
 import table from './table'
 import teamMember from './teamMember'
+import contactSubmission from './contactSubmission'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -31,5 +32,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     homeContent,
     table,
     teamMember,
+    contactSubmission,
   ],
 }

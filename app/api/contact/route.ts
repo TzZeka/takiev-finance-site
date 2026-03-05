@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { sendContactEmail, sendAutoReplyEmail } from "@/lib/email";
+import { writeClient } from "@/lib/sanity/writeClient";
 
 const contactSchema = z.object({
   name: z.string().min(2),
@@ -28,8 +29,28 @@ export async function POST(request: Request) {
       );
     }
 
-    // Remove honeypot from data before sending email
+    // Remove honeypot from data before processing
     const { honeypot, ...emailData } = validatedData;
+
+    // Save submission to Sanity (graceful degradation — don't fail if Sanity is unavailable)
+    let sanityDocId: string | null = null;
+    try {
+      const doc = await writeClient.create({
+        _type: "contactSubmission",
+        name: emailData.name,
+        email: emailData.email,
+        phone: emailData.phone,
+        company: emailData.company,
+        subject: emailData.subject,
+        message: emailData.message,
+        submittedAt: new Date().toISOString(),
+        status: "нов",
+        emailSent: false,
+      });
+      sanityDocId = doc._id;
+    } catch (sanityError) {
+      console.warn("Sanity write failed — continuing without saving:", sanityError);
+    }
 
     // Send email to office
     const result = await sendContactEmail(emailData);
@@ -39,6 +60,17 @@ export async function POST(request: Request) {
         { error: "Грешка при изпращане на email" },
         { status: 500 }
       );
+    }
+
+    // Update emailSent flag in Sanity (non-blocking)
+    if (sanityDocId) {
+      writeClient
+        .patch(sanityDocId)
+        .set({ emailSent: true })
+        .commit()
+        .catch((err) => {
+          console.warn("Failed to update emailSent in Sanity:", err);
+        });
     }
 
     // Send auto-reply to the user (non-blocking)
