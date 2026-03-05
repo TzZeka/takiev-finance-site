@@ -1,5 +1,4 @@
-'use client';
-
+// Server Component — JSON-LD must be SSR'd so crawlers see it in raw HTML
 interface ArticleJsonLdProps {
   title: string;
   description: string;
@@ -42,7 +41,7 @@ export function ArticleJsonLd({
 
   const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: title,
     description: description,
     author,
@@ -62,7 +61,10 @@ export function ArticleJsonLd({
       '@id': canonicalUrl,
     },
     inLanguage: 'bg-BG',
-    isAccessibleForFree: true,
+    // "True" as string — Google's Rich Results requires Schema.org Boolean
+    // value (string), NOT the JS boolean `true`. Using `true` causes the
+    // Rich Results Test to flag the article as paywalled content.
+    isAccessibleForFree: 'True',
   };
 
   if (imageUrl) {

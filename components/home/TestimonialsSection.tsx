@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, useInView, useReducedMotion, AnimatePresence, type MotionProps } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
 import { SectionBadge } from "@/components/shared/SectionBadge";
+
 import { getImageUrl } from "@/lib/sanity/client";
 import type { Testimonial } from "@/types";
 
@@ -40,12 +41,12 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
     <motion.section
       ref={ref}
       {...(prefersReducedMotion ? {} : {
-        initial: { opacity: 0, y: 50 },
-        whileInView: { opacity: 1, y: 0 },
+        initial: { y: 120 },
+        whileInView: { y: 0 },
         viewport: { once: true, margin: "-40px" },
-        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
+        transition: { type: "spring" as const, stiffness: 80, damping: 20 },
       })}
-      className="relative py-20 md:py-28 bg-white rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
+      className="relative py-20 md:py-28 bg-white overflow-hidden shadow-sm"
       style={{
         borderTopLeftRadius: "50% 2rem",
         borderTopRightRadius: "50% 2rem",
@@ -54,12 +55,12 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
     >
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}
-        <motion.div {...anim(0)} className="text-center mb-14">
+        <motion.div {...anim(0)} className="text-left md:text-center mb-14">
           <SectionBadge>Отзиви</SectionBadge>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-3 leading-tight">
-            Какво казват <span className="text-primary text-4xl sm:text-5xl md:text-6xl">нашите клиенти</span>
+          <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900">
+            Какво казват <span className="text-primary">нашите клиенти</span>
           </h2>
-          <p className="text-lg text-slate-500 max-w-2xl mx-auto">
+          <p className="text-lg text-slate-500 max-w-2xl md:mx-auto">
             Довери на опита на клиентите, които работят с нас
           </p>
         </motion.div>

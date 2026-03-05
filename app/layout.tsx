@@ -156,18 +156,42 @@ export default function RootLayout({
           <Footer />
           <ScrollToTop />
         </SmoothScrollProvider>
+        {/*
+          Film grain overlay — fixed, full-viewport, non-interactive.
+          Uses SVG feTurbulence (fractalNoise) tiled at 200 × 200 px.
+
+          Parameters:
+            baseFrequency 0.72 — medium-coarse grain; 0.9 was too fine
+              (like sand); 0.72 feels more like photographic film.
+            numOctaves 4 — enough complexity without extra render cost.
+            stitchTiles stitch — ensures seamless tiling so background-
+              position jumps leave no visible seams.
+
+          Animation:
+            .grain-animated steps through 9 background-position offsets
+            at 0.55 s / steps(1, end) → discrete frame jumps that mimic
+            analogue film grain.  Disabled via prefers-reduced-motion.
+
+          Blend mode soft-light:
+            Multiplies contrast gently; keeps dark and light sections
+            balanced without the harsh darkening of "overlay".
+
+          Opacity 0.13:
+            Visible without overwhelming — adjust ±0.02 to taste.
+        */}
         <div
           aria-hidden="true"
+          className="grain-animated"
           style={{
             position: "fixed",
             inset: 0,
             zIndex: 9999,
             pointerEvents: "none",
-            opacity: 0.038,
+            opacity: 0.15,
             mixBlendMode: "overlay",
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
             backgroundRepeat: "repeat",
-            backgroundSize: "256px 256px",
+            backgroundSize: "200px 200px",
           }}
         />
       </body>

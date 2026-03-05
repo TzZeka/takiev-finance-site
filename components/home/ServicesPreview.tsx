@@ -7,7 +7,7 @@ import { ArrowUpRight, ArrowRight } from "lucide-react";
 import type { Service } from "@/types";
 import { SectionBadge } from "@/components/shared/SectionBadge";
 import { PremiumCTA } from "@/components/ui/PremiumCTA";
-import { MaskReveal } from "@/components/effects/MaskReveal";
+
 
 interface ServicesPreviewProps {
   services: Service[];
@@ -103,12 +103,12 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
     <motion.section
       ref={ref}
       {...(prefersReducedMotion ? {} : {
-        initial: { opacity: 0, y: 50 },
-        whileInView: { opacity: 1, y: 0 },
+        initial: { y: 120 },
+        whileInView: { y: 0 },
         viewport: { once: true, margin: "-40px" },
-        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
+        transition: { type: "spring" as const, stiffness: 80, damping: 20 },
       })}
-      className="relative py-20 md:py-28 bg-slate-950 rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
+      className="relative py-20 md:py-28 bg-slate-950 overflow-hidden shadow-sm"
       style={{
         borderTopLeftRadius: "50% 2rem",
         borderTopRightRadius: "50% 2rem",
@@ -120,14 +120,12 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}
-        <motion.div {...anim(0)} className="text-center mb-14">
+        <motion.div {...anim(0)} className="text-left md:text-center mb-14">
           <SectionBadge>Какво предлагаме</SectionBadge>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
-            <MaskReveal>
-              Нашите <span className="text-primary text-4xl sm:text-5xl md:text-6xl">услуги</span>
-            </MaskReveal>
+          <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+            Нашите <span className="text-primary">услуги</span>
           </h2>
-          <div className="mt-4 h-1 w-16 bg-gradient-to-r from-primary to-emerald-400 mx-auto rounded-full" />
+          <div className="mt-4 h-1 w-16 bg-gradient-to-r from-primary to-emerald-400 md:mx-auto rounded-full" />
         </motion.div>
 
         {/* 2x2 Grid */}

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { servicesConfig } from "@/lib/services-config";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { PremiumCTA } from "@/components/ui/PremiumCTA";
+import { ServiceImageBlock } from "@/components/uslugi/ServiceImageBlock";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "Услуги | Takiev Finance - Счетоводна Кантора",
@@ -84,6 +85,9 @@ export default function ServicesPage() {
 
         {/* Content */}
         <div className="relative z-10 container mx-auto px-4 md:px-6 lg:px-8 text-center">
+          <div className="flex justify-center mb-6">
+            <Breadcrumbs />
+          </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight">
             Нашите услуги
           </h1>
@@ -110,17 +114,7 @@ export default function ServicesPage() {
               className="group relative grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 items-center bg-white/[0.03] border border-white/10 rounded-2xl md:rounded-3xl overflow-hidden hover:border-primary/40 hover:bg-white/[0.05] transition-all duration-500"
             >
               {/* Image */}
-              <div className={`relative h-64 md:h-80 lg:h-96 overflow-hidden ${isEven ? "md:order-1" : "md:order-2"}`}>
-                <Image
-                  src={image}
-                  alt={service.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className={`absolute inset-0 bg-gradient-to-${isEven ? "r" : "l"} from-transparent via-transparent to-slate-950/60 hidden md:block`} />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent md:hidden" />
-              </div>
+              <ServiceImageBlock src={image} alt={service.title} isEven={isEven} />
 
               {/* Text content */}
               <div className={`relative p-6 md:p-8 lg:p-12 ${isEven ? "md:order-2" : "md:order-1"}`}>

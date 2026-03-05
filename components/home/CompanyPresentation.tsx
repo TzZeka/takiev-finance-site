@@ -1,12 +1,14 @@
 "use client";
 
-import Image from "next/image";
-import { motion, useInView, useReducedMotion, type MotionProps } from "framer-motion";
+import { motion, AnimatePresence, useInView, useReducedMotion, type MotionProps } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import Image from "next/image";
 import { Award, Users, TrendingUp, Shield, CheckCircle, Sparkles } from "lucide-react";
 import { SectionBadge } from "@/components/shared/SectionBadge";
 import { PremiumCTA } from "@/components/ui/PremiumCTA";
-import { MaskReveal } from "@/components/effects/MaskReveal";
+import { FluidBackground } from "@/components/ui/FluidBackground";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+
 
 const stats = [
   { label: "Години опит", value: 6, suffix: "+", icon: TrendingUp },
@@ -43,18 +45,11 @@ const values = [
 ];
 
 const timeline = [
-  { year: "2019", event: "Основаване на Такиев Финанс (ЕИК: 206666484)", highlight: true },
+  { year: "2019", event: "Основаване на Такиев Финанс", highlight: true },
   { year: "2020", event: "Разширяване на екипа и клиентската база" },
   { year: "2022", event: "Дигитализация на всички процеси" },
   { year: "2024", event: "500+ доволни корпоративни клиенти", highlight: true },
   { year: "2025", event: "Лидер в счетоводни услуги" },
-];
-
-const teamMembers = [
-  { src: "/firm-logo/nikolay-takiev.jpg", alt: "Николай Такиев", name: "Николай Такиев" },
-  { src: "/firm-logo/team/Krisi.png", alt: "Криси", name: "Криси" },
-  { src: "/firm-logo/team/Rosi.png", alt: "Роси", name: "Роси" },
-  { src: "/firm-logo/team/Tedi.jpg", alt: "Теди", name: "Теди" },
 ];
 
 function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: string }) {
@@ -93,130 +88,9 @@ function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: strin
   );
 }
 
-function TeamCollage() {
-  return (
-    <div className="relative w-full max-w-[520px] mx-auto">
-      {/* Animated decorative lines behind the photos */}
-      <svg
-        className="absolute -inset-6 w-[calc(100%+48px)] h-[calc(100%+48px)] z-0"
-        viewBox="0 0 560 620"
-        fill="none"
-        preserveAspectRatio="xMidYMid meet"
-      >
-        <defs>
-          <linearGradient id="light1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="transparent" />
-            <stop offset="40%" stopColor="transparent" />
-            <stop offset="50%" stopColor="rgba(25,191,183,0.6)" />
-            <stop offset="60%" stopColor="transparent" />
-            <stop offset="100%" stopColor="transparent" />
-            <animateTransform
-              attributeName="gradientTransform"
-              type="translate"
-              values="-1 0;2 0;-1 0"
-              dur="6s"
-              repeatCount="indefinite"
-            />
-          </linearGradient>
-          <linearGradient id="light2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="transparent" />
-            <stop offset="40%" stopColor="transparent" />
-            <stop offset="50%" stopColor="rgba(255,255,255,0.35)" />
-            <stop offset="60%" stopColor="transparent" />
-            <stop offset="100%" stopColor="transparent" />
-            <animateTransform
-              attributeName="gradientTransform"
-              type="translate"
-              values="2 0;-1 0;2 0"
-              dur="8s"
-              repeatCount="indefinite"
-            />
-          </linearGradient>
-          <linearGradient id="light3" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="transparent" />
-            <stop offset="40%" stopColor="transparent" />
-            <stop offset="50%" stopColor="rgba(25,191,183,0.4)" />
-            <stop offset="60%" stopColor="transparent" />
-            <stop offset="100%" stopColor="transparent" />
-            <animateTransform
-              attributeName="gradientTransform"
-              type="translate"
-              values="0 -1;0 2;0 -1"
-              dur="7s"
-              repeatCount="indefinite"
-            />
-          </linearGradient>
-        </defs>
-
-        <path d="M40 100 C40 100 150 30 280 30 C410 30 520 100 520 100" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-        <path d="M20 310 C20 310 60 200 280 200 C500 200 540 310 540 310" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-        <path d="M60 520 C60 520 160 580 280 580 C400 580 500 520 500 520" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-        <ellipse cx="280" cy="310" rx="260" ry="280" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
-        <line x1="280" y1="10" x2="280" y2="610" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-
-        <path d="M40 100 C40 100 150 30 280 30 C410 30 520 100 520 100" stroke="url(#light1)" strokeWidth="1.5" />
-        <path d="M20 310 C20 310 60 200 280 200 C500 200 540 310 540 310" stroke="url(#light2)" strokeWidth="1.5" />
-        <path d="M60 520 C60 520 160 580 280 580 C400 580 500 520 500 520" stroke="url(#light1)" strokeWidth="1.5" />
-        <ellipse cx="280" cy="310" rx="260" ry="280" stroke="url(#light3)" strokeWidth="1" />
-      </svg>
-
-      {/* Photo grid */}
-      <div className="relative z-10 grid grid-cols-12 grid-rows-[auto] gap-3">
-        <div className="col-span-7 row-span-2 rounded-2xl overflow-hidden border border-white/[0.08]">
-          <div className="relative w-full" style={{ paddingBottom: "130%" }}>
-            <Image
-              src={teamMembers[0].src}
-              alt={teamMembers[0].alt}
-              fill
-              sizes="(max-width: 768px) 58vw, 290px"
-              className="object-cover object-top"
-            />
-          </div>
-        </div>
-
-        <div className="col-span-5 rounded-2xl overflow-hidden border border-white/[0.08]">
-          <div className="relative w-full" style={{ paddingBottom: "120%" }}>
-            <Image
-              src={teamMembers[1].src}
-              alt={teamMembers[1].alt}
-              fill
-              sizes="(max-width: 768px) 42vw, 210px"
-              className="object-cover object-top"
-            />
-          </div>
-        </div>
-
-        <div className="col-span-5 rounded-2xl overflow-hidden border border-white/[0.08]">
-          <div className="relative w-full" style={{ paddingBottom: "110%" }}>
-            <Image
-              src={teamMembers[3].src}
-              alt={teamMembers[3].alt}
-              fill
-              sizes="(max-width: 768px) 42vw, 210px"
-              className="object-cover object-top"
-            />
-          </div>
-        </div>
-
-        <div className="col-span-12 rounded-2xl overflow-hidden border border-white/[0.08]">
-          <div className="relative w-full" style={{ paddingBottom: "40%" }}>
-            <Image
-              src={teamMembers[2].src}
-              alt={teamMembers[2].alt}
-              fill
-              sizes="(max-width: 768px) 100vw, 500px"
-              className="object-cover object-top"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 /* ==========================================
    Section 1: CompanyPresentation
-   Header + Stats + TeamCollage + CTA
+   Header + Stats + CTA
    ========================================== */
 export function CompanyPresentation() {
   const ref = useRef(null);
@@ -235,12 +109,12 @@ export function CompanyPresentation() {
   return (
     <motion.section
       {...(prefersReducedMotion ? {} : {
-        initial: { opacity: 0, y: 50 },
-        whileInView: { opacity: 1, y: 0 },
+        initial: { y: 120 },
+        whileInView: { y: 0 },
         viewport: { once: true, margin: "-40px" },
-        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
+        transition: { type: "spring" as const, stiffness: 80, damping: 20 },
       })}
-      className="relative py-20 md:py-28 bg-slate-950 rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
+      className="relative py-20 md:py-28 bg-slate-950 overflow-hidden shadow-sm"
       style={{
         borderTopLeftRadius: "50% 2rem",
         borderTopRightRadius: "50% 2rem",
@@ -251,43 +125,34 @@ export function CompanyPresentation() {
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10" ref={ref}>
         {/* Header */}
-        <motion.div {...anim(0)} className="text-center mb-16">
+        <motion.div {...anim(0)} className="text-left md:text-center mb-16">
           <SectionBadge>За нас</SectionBadge>
-          <h2 className="mt-5 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-            <MaskReveal>
-              Вашият доверен{" "}
-              <span className="text-primary text-4xl sm:text-5xl md:text-6xl lg:text-7xl">финансов партньор</span>
-            </MaskReveal>
+          <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+            За <span className="text-primary">нас</span>
           </h2>
-          <p className="mt-4 text-lg text-white/50 max-w-2xl mx-auto">
-            От 2019 г. предоставяме професионални счетоводни услуги с грижа към всеки клиент
+          <p className="mt-4 text-lg text-white/50 max-w-2xl md:mx-auto">
+            От 2021 г. предоставяме професионални счетоводни услуги с грижа към всеки клиент
           </p>
         </motion.div>
 
-        {/* Stats + Team Collage */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 mb-20 items-center">
-          <motion.div {...anim(0.15)} className="grid grid-cols-2 gap-4">
-            {stats.map((stat) => {
-              const Icon = stat.icon;
-              return (
-                <div
-                  key={stat.label}
-                  className="group relative rounded-2xl bg-white/[0.04] border border-white/[0.08] p-6 hover:border-primary/30 hover:bg-white/[0.07] transition-all duration-300"
-                >
-                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Icon className="w-5 h-5 text-primary/30" />
-                  </div>
-                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                  <div className="text-sm text-white/50 mt-2 font-medium">{stat.label}</div>
+        {/* Stats */}
+        <motion.div {...anim(0.15)} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
+          {stats.map((stat) => {
+            const Icon = stat.icon;
+            return (
+              <div
+                key={stat.label}
+                className="group relative rounded-2xl bg-white/[0.04] border border-white/[0.08] p-6 hover:border-primary/30 hover:bg-white/[0.07] transition-all duration-300"
+              >
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Icon className="w-5 h-5 text-primary/30" />
                 </div>
-              );
-            })}
-          </motion.div>
-
-          <motion.div {...anim(0.3)}>
-            <TeamCollage />
-          </motion.div>
-        </div>
+                <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                <div className="text-sm text-white/50 mt-2 font-medium">{stat.label}</div>
+              </div>
+            );
+          })}
+        </motion.div>
 
         {/* CTA */}
         <motion.div {...anim(0.4)} className="text-center">
@@ -311,169 +176,317 @@ export function CompanyPresentation() {
 }
 
 /* ==========================================
-   Section 2: CompanyHistory
-   Stylish timeline with glow effects
+   MobileTimelineItem — used by CompanyHistory
    ========================================== */
-export function CompanyHistory() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+function MobileTimelineItem({
+  item,
+  index,
+  image,
+}: {
+  item: { year: string; event: string; highlight?: boolean };
+  index: number;
+  image: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
   const prefersReducedMotion = useReducedMotion();
 
-  const anim = (delay: number): MotionProps =>
-    prefersReducedMotion
-      ? {}
-      : {
-          initial: { opacity: 0, y: 30 },
-          animate: isInView ? { opacity: 1, y: 0 } : {},
-          transition: { type: "spring", stiffness: 200, damping: 30, mass: 1, delay },
-        };
+  return (
+    <motion.div
+      ref={ref}
+      initial={prefersReducedMotion ? {} : { opacity: 0, x: -20 }}
+      animate={isInView ? { opacity: 1, x: 0 } : {}}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="relative"
+    >
+      {/* Dot on the left line */}
+      <div
+        className={`absolute -left-6 top-3 w-3 h-3 rounded-full ${
+          item.highlight
+            ? "bg-primary shadow-[0_0_8px_rgba(25,191,183,0.5)]"
+            : "bg-slate-300"
+        }`}
+      />
+
+      {/* Card */}
+      <div
+        className={`rounded-2xl overflow-hidden ${
+          item.highlight
+            ? "border border-primary/30 bg-primary/5"
+            : "border border-slate-100 bg-slate-50/50"
+        }`}
+      >
+        {/* Thumbnail */}
+        <div className="relative h-36 overflow-hidden">
+          <Image
+            src={image}
+            alt={item.event}
+            fill
+            className="object-cover object-top"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40" />
+        </div>
+        {/* Text */}
+        <div className="p-4">
+          <div
+            className={`text-xs font-bold uppercase tracking-widest mb-1 ${
+              item.highlight ? "text-primary" : "text-slate-400"
+            }`}
+          >
+            {item.year}
+          </div>
+          <div className="text-sm font-semibold text-slate-700">{item.event}</div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ==========================================
+   Section 2: CompanyHistory
+   Premium scrollytelling — white bg + GSAP
+   ========================================== */
+export function CompanyHistory() {
+  // stickyRef is the element GSAP pins — no CSS sticky needed
+  const stickyRef = useRef<HTMLDivElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
+
+  const timelineImages = [
+    "/firm-logo/nikolay-takiev.jpg",
+    "/firm-logo/banners/banner-for-us.png",
+    "/firm-logo/messages-videos/дигитализирано-счетоводствто.png",
+    "/firm-logo/awards/certificate-carrer-show.jpg",
+    "/firm-logo/Takiev Finance Banner.png",
+  ];
+
+  useEffect(() => {
+    if (prefersReducedMotion || typeof window === "undefined") return;
+    if (!stickyRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // pin: true is more robust than CSS sticky — works regardless of
+      // ancestor transforms (e.g. Framer Motion template.tsx transition div)
+      ScrollTrigger.create({
+        trigger: stickyRef.current,
+        pin: true,
+        anticipatePin: 1,
+        start: "top top",
+        end: "+=400vh",
+        scrub: 0.5,
+        onUpdate: (self) => {
+          if (lineRef.current) {
+            lineRef.current.style.height = `${self.progress * 100}%`;
+          }
+          const idx = Math.min(4, Math.floor(self.progress * 5));
+          setActiveIndex((prev) => (prev !== idx ? idx : prev));
+        },
+      });
+    });
+
+    return () => ctx.revert();
+  }, [prefersReducedMotion]);
 
   return (
-    <motion.section
-      {...(prefersReducedMotion ? {} : {
-        initial: { opacity: 0, y: 50 },
-        whileInView: { opacity: 1, y: 0 },
-        viewport: { once: true, margin: "-40px" },
-        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
-      })}
-      className="relative py-20 md:py-28 bg-slate-950 rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
+    <section
+      className="relative bg-white"
       style={{
         borderTopLeftRadius: "50% 2rem",
         borderTopRightRadius: "50% 2rem",
-        filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
+        // boxShadow instead of filter:drop-shadow — drop-shadow creates a stacking context
+        // that breaks position:sticky on child elements
+        boxShadow: "0 -12px 40px rgba(0,0,0,0.12)",
       }}
     >
-      {/* Background gradient orb */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-primary/[0.03] rounded-full blur-[120px]" />
+      {/* Fluid teal/green orbs — absolute, no overflow:hidden on section */}
+      <FluidBackground baseOpacity={0.09} />
 
-      <div className="container mx-auto px-4 sm:px-6 relative z-10" ref={ref}>
-        {/* Header */}
-        <motion.div {...anim(0)} className="text-center mb-16">
-          <SectionBadge>Нашият път</SectionBadge>
-          <h2 className="mt-5 text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
-            Нашата <span className="text-primary text-4xl sm:text-5xl md:text-6xl">история</span>
-          </h2>
-          <p className="mt-4 text-lg text-white/50 max-w-2xl mx-auto">
-            Ключовите моменти, които ни направиха лидер в счетоводните услуги
-          </p>
-        </motion.div>
+      {/* ── Header (normal document flow) ── */}
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 pt-20 md:pt-28 pb-12 md:pb-16 text-left md:text-center">
+        <SectionBadge>Нашият път</SectionBadge>
+        <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900">
+          Нашата <span className="text-primary">история</span>
+        </h2>
+        <p className="mt-4 text-lg text-slate-500 max-w-2xl md:mx-auto">
+          Ключовите моменти, които ни направиха лидер в счетоводните услуги
+        </p>
+      </div>
 
-        {/* Desktop horizontal timeline */}
-        <div className="hidden md:block relative max-w-5xl mx-auto">
-          {/* Gradient accent line with animated glow */}
-          <div className="absolute top-[22px] left-[10%] right-[10%] h-[2px]">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent blur-sm animate-pulse" />
-          </div>
+      {/* ── Desktop scroll zone — GSAP pin (robust vs CSS sticky) ── */}
+      {/* stickyRef is the pinned element; GSAP adds the 400vh spacer automatically */}
+      <div className="hidden md:block">
+        <div
+          ref={stickyRef}
+          className="h-screen overflow-hidden grid bg-white"
+          style={{ gridTemplateColumns: "2fr 3fr" }}
+        >
 
-          <div className="flex justify-between">
-            {timeline.map((item, index) => (
-              <motion.div
-                key={item.year}
-                {...(prefersReducedMotion
-                  ? {}
-                  : {
-                      initial: { opacity: 0, y: 30 },
-                      animate: isInView ? { opacity: 1, y: 0 } : {},
-                    })}
-                transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1, delay: 0.2 + index * 0.15 }}
-                className="flex flex-col items-center text-center flex-1 group"
+            {/* LEFT — Timeline */}
+            <div className="relative flex flex-col justify-center px-10 md:px-16 py-8">
+              {/* Year watermark — teal tint so it reads on white background */}
+              <div
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-[9rem] font-black select-none pointer-events-none leading-none transition-all duration-500"
+                style={{ color: "rgba(25, 191, 183, 0.13)" }}
+                aria-hidden="true"
               >
-                {/* Timeline dot — larger with hover glow */}
-                <div className="relative mb-6">
-                  <div
-                    className={`w-5 h-5 rounded-full transition-all duration-300 group-hover:scale-125 ${
-                      item.highlight
-                        ? "bg-primary shadow-[0_0_16px_rgba(25,191,183,0.5)]"
-                        : "bg-white/30 group-hover:bg-primary/60 group-hover:shadow-[0_0_12px_rgba(25,191,183,0.3)]"
-                    }`}
+                {timeline[activeIndex].year}
+              </div>
+
+              {/* Track + items container */}
+              <div className="relative z-10 h-[360px] md:h-[420px]">
+                {/* Track background — full height */}
+                <div className="absolute left-1.5 inset-y-0 w-px bg-slate-200" />
+                {/* Progress fill — height driven directly by GSAP */}
+                <div
+                  ref={lineRef}
+                  className="absolute left-1.5 top-0 w-px bg-gradient-to-b from-primary to-emerald-400"
+                  style={{ height: "0%" }}
+                />
+
+                {/* Items spread across container height */}
+                <div className="absolute inset-0 flex flex-col justify-between py-2">
+                  {timeline.map((item, i) => {
+                    const isPast = i < activeIndex;
+                    const isActive = i === activeIndex;
+                    return (
+                      <div key={item.year} className="flex items-center gap-5">
+                        {/* Dot — centered on the track line (left-1.5 = 6px) */}
+                        <div className="relative flex-shrink-0 w-3 flex justify-center">
+                          <div
+                            className={`rounded-full transition-all duration-500 ${
+                              isActive
+                                ? "w-4 h-4 bg-primary shadow-[0_0_14px_rgba(25,191,183,0.7)]"
+                                : isPast
+                                ? "w-3 h-3 bg-primary/60"
+                                : "w-3 h-3 bg-slate-300"
+                            }`}
+                          />
+                          {isActive && (
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-primary/30 animate-ping" />
+                          )}
+                        </div>
+
+                        {/* Text */}
+                        <div
+                          className={`transition-all duration-500 ${
+                            isActive ? "opacity-100" : isPast ? "opacity-50" : "opacity-30"
+                          }`}
+                        >
+                          <div
+                            className={`text-xs font-bold tracking-widest uppercase mb-0.5 ${
+                              isActive ? "text-primary" : "text-slate-400"
+                            }`}
+                          >
+                            {item.year}
+                          </div>
+                          <div
+                            className={`text-sm md:text-base font-medium leading-snug ${
+                              isActive ? "text-slate-800" : "text-slate-500"
+                            }`}
+                          >
+                            {item.event}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT — Image panel */}
+            <div className="relative overflow-hidden">
+              {/* Decorative corner frames */}
+              <div className="absolute top-8 right-8 z-20 pointer-events-none">
+                <div className="w-8 h-8 border-t-2 border-r-2 border-primary/60" />
+              </div>
+              <div className="absolute bottom-8 left-8 z-20 pointer-events-none">
+                <div className="w-8 h-8 border-b-2 border-l-2 border-primary/60" />
+              </div>
+
+              {/* All 5 images mounted — crossfade via opacity/scale */}
+              {timelineImages.map((src, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute inset-0"
+                  animate={{
+                    opacity: activeIndex === i ? 1 : 0,
+                    scale: activeIndex === i ? 1 : 1.04,
+                  }}
+                  transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
+                  style={{ zIndex: activeIndex === i ? 2 : 1 }}
+                >
+                  <Image
+                    src={src}
+                    alt={timeline[i].event}
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 768px) 60vw, 100vw"
+                    priority={i === 0}
                   />
-                  {item.highlight && (
-                    <div className="absolute inset-0 w-5 h-5 rounded-full bg-primary/30 animate-ping" />
-                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                </motion.div>
+              ))}
+
+              {/* Caption overlay */}
+              <div className="absolute bottom-0 left-0 right-0 z-10 p-8">
+                {/* Step-dots indicator */}
+                <div className="flex gap-2 mb-4">
+                  {timeline.map((_, i) => (
+                    <div
+                      key={i}
+                      className={`h-0.5 rounded-full transition-all duration-500 ${
+                        i === activeIndex ? "w-8 bg-primary" : "w-2 bg-white/40"
+                      }`}
+                    />
+                  ))}
                 </div>
 
-                {/* Content card */}
-                <div
-                  className={`rounded-xl p-4 transition-all duration-300 ${
-                    item.highlight
-                      ? "bg-primary/[0.08] border border-primary/20 shadow-[0_0_20px_rgba(25,191,183,0.08)]"
-                      : "bg-white/[0.03] border border-transparent group-hover:border-white/[0.08] group-hover:bg-white/[0.05]"
-                  }`}
-                >
-                  <div className={`text-xl font-bold mb-1.5 ${item.highlight ? "text-primary" : "text-white group-hover:text-primary/80"} transition-colors`}>
-                    {item.year}
-                  </div>
-                  <div className="text-sm text-white/50 max-w-[160px] leading-relaxed">{item.event}</div>
-                  {item.highlight && (
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary mt-2">
-                      <CheckCircle className="w-3 h-3" />
-                      Ключов момент
-                    </span>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                {/* Animated text swap */}
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeIndex}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="text-primary text-xs tracking-widest uppercase font-semibold">
+                      {timeline[activeIndex].year}
+                    </div>
+                    <div className="text-white font-bold text-xl md:text-2xl mt-1">
+                      {timeline[activeIndex].event}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+
         </div>
+      </div>
 
-        {/* Mobile vertical timeline */}
-        <div className="md:hidden relative pl-8 max-w-sm mx-auto">
-          {/* Gradient vertical line with glow */}
-          <div className="absolute left-[9px] top-2 bottom-2 w-[2px]">
-            <div className="absolute inset-0 bg-gradient-to-b from-primary/50 via-primary/25 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-primary/10 to-transparent blur-sm" />
-          </div>
-
-          <div className="space-y-6">
-            {timeline.map((item, index) => (
-              <motion.div
+      {/* ── Mobile layout — no sticky, no GSAP ── */}
+      <div className="md:hidden container mx-auto px-4 pb-12">
+        <div className="relative pl-6">
+          {/* Gradient left line */}
+          <div className="absolute left-[9px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-primary/50 via-primary/25 to-transparent" />
+          <div className="space-y-4">
+            {timeline.map((item, i) => (
+              <MobileTimelineItem
                 key={item.year}
-                {...(prefersReducedMotion
-                  ? {}
-                  : {
-                      initial: { opacity: 0, x: 20 },
-                      animate: isInView ? { opacity: 1, x: 0 } : {},
-                    })}
-                transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1, delay: 0.2 + index * 0.12 }}
-                className="relative"
-              >
-                {/* Dot */}
-                <div className="absolute -left-8 top-1.5">
-                  <div
-                    className={`w-[12px] h-[12px] rounded-full ${
-                      item.highlight
-                        ? "bg-primary shadow-[0_0_10px_rgba(25,191,183,0.5)]"
-                        : "bg-white/30"
-                    }`}
-                  />
-                </div>
-
-                {/* Content */}
-                <div
-                  className={`rounded-xl p-3 ${
-                    item.highlight
-                      ? "bg-primary/[0.08] border border-primary/20"
-                      : "bg-transparent"
-                  }`}
-                >
-                  <div className={`text-base font-bold ${item.highlight ? "text-primary" : "text-white"}`}>
-                    {item.year}
-                  </div>
-                  <div className="text-sm text-white/50">{item.event}</div>
-                  {item.highlight && (
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary mt-1">
-                      <CheckCircle className="w-3 h-3" />
-                      Ключов момент
-                    </span>
-                  )}
-                </div>
-              </motion.div>
+                item={item}
+                index={i}
+                image={timelineImages[i]}
+              />
             ))}
           </div>
         </div>
       </div>
-    </motion.section>
+
+      <div className="pb-20" />
+    </section>
   );
 }
 
@@ -501,12 +514,12 @@ export function CompanyValues() {
   return (
     <motion.section
       {...(prefersReducedMotion ? {} : {
-        initial: { opacity: 0, y: 50 },
-        whileInView: { opacity: 1, y: 0 },
+        initial: { y: 120 },
+        whileInView: { y: 0 },
         viewport: { once: true, margin: "-40px" },
-        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
+        transition: { type: "spring" as const, stiffness: 80, damping: 20 },
       })}
-      className="relative py-20 md:py-28 bg-slate-950 rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
+      className="relative py-20 md:py-28 bg-slate-950 overflow-hidden shadow-sm"
       style={{
         borderTopLeftRadius: "50% 2rem",
         borderTopRightRadius: "50% 2rem",
@@ -518,12 +531,12 @@ export function CompanyValues() {
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10" ref={ref}>
         {/* Header */}
-        <motion.div {...anim(0)} className="text-center mb-14">
+        <motion.div {...anim(0)} className="text-left md:text-center mb-14">
           <SectionBadge>Ценности</SectionBadge>
-          <h2 className="mt-5 text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
-            Нашите <span className="text-primary text-4xl sm:text-5xl md:text-6xl">ценности</span>
+          <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+            Нашите <span className="text-primary">ценности</span>
           </h2>
-          <p className="mt-4 text-lg text-white/50 max-w-2xl mx-auto">
+          <p className="mt-4 text-lg text-white/50 max-w-2xl md:mx-auto">
             Принципите, които ръководят нашата работа всеки ден
           </p>
         </motion.div>

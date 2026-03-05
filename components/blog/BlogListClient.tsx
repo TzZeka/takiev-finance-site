@@ -18,6 +18,7 @@ interface BlogListClientProps {
 export function BlogListClient({ posts }: BlogListClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [searchOverlayHeight, setSearchOverlayHeight] = useState(0);
 
   // Extract all unique tags from posts
   const allTags = useMemo(() => {
@@ -36,13 +37,14 @@ export function BlogListClient({ posts }: BlogListClientProps) {
       }
 
       if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        const matchesTitle = post.title.toLowerCase().includes(query);
-        const matchesExcerpt = post.excerpt?.toLowerCase().includes(query);
-        const matchesAuthor = post.author?.name.toLowerCase().includes(query);
-        const matchesTags = post.tags?.some((tag) =>
-          tag.toLowerCase().includes(query)
-        );
+        const q = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // Escape regex
+        const regex = new RegExp(`(^|[\\s\\-])(${q})`, "i");
+
+        const matchesTitle = regex.test(post.title || "");
+        const matchesExcerpt = regex.test(post.excerpt || "");
+        const matchesAuthor = regex.test(post.author?.name || "");
+        const matchesTags = post.tags?.some((tag) => regex.test(tag));
+
         return matchesTitle || matchesExcerpt || matchesAuthor || matchesTags;
       }
 
@@ -60,188 +62,176 @@ export function BlogListClient({ posts }: BlogListClientProps) {
   // Recent posts for sidebar (first 3 from all posts, not filtered)
   const recentPosts = posts.slice(0, 3);
 
-  return (
+  const sidebarWidgets = (
     <>
-      {/* Search - glass effect, only search field */}
-      <div className="bg-white/[0.03] backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl p-6 md:p-8 mb-12 max-w-3xl mx-auto">
-        <BlogSearch
-          onSearch={setSearchQuery}
-          posts={posts.map((p) => ({ title: p.title, slug: p.slug.current, tags: p.tags }))}
-        />
-      </div>
-
-      {/* Results count when filtering */}
-      {isFiltering && (
-        <div className="flex items-center gap-2 mb-6 px-2">
-          <Search className="w-4 h-4 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">
-            {filteredPosts.length === 0
-              ? "Няма намерени статии"
-              : `${filteredPosts.length} ${filteredPosts.length === 1 ? "статия" : "статии"}`}
-          </p>
+      {/* Featured posts */}
+      {featuredPosts.length > 0 && (
+        <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-5 lg:p-6">
+          <h3 className="text-[13px] font-bold text-[#1b2b28] uppercase tracking-wider mb-4 border-b border-black/5 pb-3">
+            Предложени
+          </h3>
+          <div className="space-y-5">
+            {featuredPosts.map((post) => (
+              <Link
+                key={post._id}
+                href={`/blog/${post.slug.current}`}
+                className="flex gap-4 group items-center"
+              >
+                {post.mainImage?.asset && (
+                  <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100 shadow-sm border border-black/5">
+                    <Image
+                      src={getImageUrl(post.mainImage)}
+                      alt={post.mainImage.alt || post.title}
+                      fill
+                      sizes="64px"
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <h4 className="text-[13px] font-semibold text-[#1b2b28] leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                    {post.title}
+                  </h4>
+                  <div className="flex items-center gap-1.5 mt-1.5 text-[11px] text-slate-500 font-medium">
+                    <Calendar className="h-3 w-3" />
+                    {formatDate(post.publishedAt)}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       )}
 
-      {filteredPosts.length > 0 ? (
-        <>
-          {/* All Articles Section with Sidebar */}
-          <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 rounded-2xl md:rounded-3xl p-6 md:p-10 border border-white/5">
-            {/* Background decorations */}
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute -top-32 -right-32 w-96 h-96 bg-teal-500/[0.04] rounded-full blur-3xl" />
-              <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-indigo-500/[0.03] rounded-full blur-3xl" />
-              <div className="absolute top-1/2 right-1/4 w-72 h-72 bg-cyan-500/[0.02] rounded-full blur-3xl" />
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(45,212,191,0.03),transparent_60%)]" />
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(99,102,241,0.03),transparent_60%)]" />
-            </div>
-            {/* Decorative feather pen */}
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="absolute right-5 top-5 w-6 h-6 text-teal-400/50"
-              style={{ animation: "drawPen 1.5s ease-out forwards", opacity: 0 }}
+      {/* Recent posts */}
+      <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-5 lg:p-6">
+        <h3 className="text-[13px] font-bold text-[#1b2b28] uppercase tracking-wider mb-4 border-b border-black/5 pb-3">
+          Последни
+        </h3>
+        <div className="space-y-5">
+          {recentPosts.map((post) => (
+            <Link
+              key={post._id}
+              href={`/blog/${post.slug.current}`}
+              className="flex gap-4 group items-center"
             >
-              <path
-                d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5l6.74-6.76z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <line x1="16" y1="8" x2="2" y2="22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              <line x1="17.5" y1="15" x2="9" y2="15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-            {/* Dynamic title */}
-            <h2 className="text-2xl font-bold text-foreground mb-4 transition-all duration-300">
-              {selectedTag ? `Статии свързани с ${selectedTag}` : "Всички статии"}
-            </h2>
+              {post.mainImage?.asset && (
+                <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100 shadow-sm border border-black/5">
+                  <Image
+                    src={getImageUrl(post.mainImage)}
+                    alt={post.mainImage.alt || post.title}
+                    fill
+                    sizes="64px"
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <h4 className="text-[13px] font-semibold text-[#1b2b28] leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                  {post.title}
+                </h4>
+                <div className="flex items-center gap-1.5 mt-1.5 text-[11px] text-slate-500 font-medium">
+                  <Calendar className="h-3 w-3" />
+                  {formatDate(post.publishedAt)}
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </>
+  );
 
-            {/* Tags filters moved here */}
-            <div className="mb-8">
+  return (
+    <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 xl:gap-12 relative z-0">
+      {/* Sidebar (Left on Desktop) */}
+      <aside className="w-full lg:w-[320px] xl:w-[350px] flex-shrink-0 space-y-6 lg:sticky lg:top-28 lg:self-start relative z-[60]">
+
+        {/* Search */}
+        <div className="relative z-[100]">
+          <BlogSearch
+            onSearch={setSearchQuery}
+            posts={posts.map((p) => ({ title: p.title, slug: p.slug.current, tags: p.tags, mainImage: p.mainImage }))}
+            onExpandedHeightChange={(height) => setSearchOverlayHeight(height)}
+          />
+        </div>
+
+        {/* Categories, Featured & Recent - Slide down when Search expands */}
+        <div
+          className="space-y-6 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] relative z-40"
+          style={searchOverlayHeight > 0 ? { marginTop: `calc(1.5rem + ${searchOverlayHeight}px)` } : {}}
+        >
+          {/* Categories / Filters */}
+          <div className="bg-white rounded-2xl border border-black/5 shadow-sm p-5 lg:p-6">
+            <h3 className="text-[13px] font-bold text-[#1b2b28] uppercase tracking-wider mb-4 border-b border-black/5 pb-3">Категории</h3>
+            <div className="max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
               <BlogFilters
                 tags={allTags}
                 selectedTag={selectedTag}
                 onTagSelect={setSelectedTag}
               />
             </div>
-
-
-            {/* Main content + Sidebar grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8">
-              {/* Main column - article cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {filteredPosts.map((post) => (
-                  <BlogCard key={post._id} post={post} />
-                ))}
-              </div>
-
-              {/* Sidebar */}
-              <aside className="lg:sticky lg:top-24 lg:self-start space-y-6">
-                {/* Featured posts */}
-                {featuredPosts.length > 0 && (
-                  <div className="bg-slate-900/50 border border-white/5 rounded-xl p-5">
-                    <h3 className="flex items-center gap-3 text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
-                      Предложени
-                      <span className="flex-1 h-px bg-white/10" />
-                    </h3>
-                    <div className="space-y-3">
-                      {featuredPosts.map((post) => (
-                        <Link
-                          key={post._id}
-                          href={`/blog/${post.slug.current}`}
-                          className="flex gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors group/sidebar"
-                        >
-                          {post.mainImage && (
-                            <div className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-                              <Image
-                                src={getImageUrl(post.mainImage)}
-                                alt={post.mainImage.alt || post.title}
-                                fill
-                                sizes="80px"
-                                className="object-cover"
-                              />
-                            </div>
-                          )}
-                          <div className="min-w-0 flex-1">
-                            <h4 className="text-xs font-medium text-foreground leading-snug group-hover/sidebar:text-primary transition-colors">
-                              {post.title}
-                            </h4>
-                            <div className="flex items-center gap-1 mt-1.5 text-[11px] text-muted-foreground">
-                              <Calendar className="h-3 w-3" />
-                              {formatDate(post.publishedAt)}
-                            </div>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Recent posts */}
-                <div className="bg-slate-900/50 border border-white/5 rounded-xl p-5">
-                  <h3 className="flex items-center gap-3 text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
-                    Последни
-                    <span className="flex-1 h-px bg-white/10" />
-                  </h3>
-                  <div className="space-y-3">
-                    {recentPosts.map((post) => (
-                      <Link
-                        key={post._id}
-                        href={`/blog/${post.slug.current}`}
-                        className="flex gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors group/sidebar"
-                      >
-                        {post.mainImage && (
-                          <div className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-                            <Image
-                              src={getImageUrl(post.mainImage)}
-                              alt={post.mainImage.alt || post.title}
-                              fill
-                              sizes="80px"
-                              className="object-cover"
-                            />
-                          </div>
-                        )}
-                        <div className="min-w-0 flex-1">
-                          <h4 className="text-xs font-medium text-foreground leading-snug group-hover/sidebar:text-primary transition-colors">
-                            {post.title}
-                          </h4>
-                          <div className="flex items-center gap-1 mt-1.5 text-[11px] text-muted-foreground">
-                            <Calendar className="h-3 w-3" />
-                            {formatDate(post.publishedAt)}
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </aside>
-            </div>
-          </section>
-        </>
-      ) : (
-        <div className="text-center py-16 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 rounded-2xl md:rounded-3xl border border-white/5">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
-            <Search className="w-7 h-7 text-muted-foreground" />
           </div>
-          <p className="text-lg text-muted-foreground mb-2">
-            {isFiltering
-              ? "Няма намерени статии по зададените критерии."
-              : "Статиите ще бъдат добавени скоро."}
-          </p>
+
+          <div className="hidden lg:flex flex-col space-y-6">
+            {sidebarWidgets}
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Content (Right) */}
+      <main
+        className="flex-1 min-w-0 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] relative z-10 lg:mt-[var(--search-offset,0px)]"
+        style={{ "--search-offset": `${searchOverlayHeight}px` } as React.CSSProperties}
+      >
+        {/* Header line */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-4 border-b border-black/5 gap-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#1b2b28] tracking-tight relative z-20">
+            {selectedTag ? `Статии свързани с ${selectedTag}` : "Всички статии"}
+          </h2>
           {isFiltering && (
-            <button
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedTag(null);
-              }}
-              className="text-primary hover:underline text-sm font-medium mt-2"
-            >
-              Изчисти филтрите
-            </button>
+            <div className="flex items-center gap-2 text-[13px] text-slate-500 font-medium bg-white px-3 py-1.5 rounded-full border border-black/5 shadow-sm whitespace-nowrap">
+              <Search className="w-3.5 h-3.5" />
+              <span>{filteredPosts.length} резултата</span>
+            </div>
           )}
         </div>
-      )}
-    </>
+
+        {filteredPosts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 xl:gap-8">
+            {filteredPosts.map((post) => (
+              <BlogCard key={post._id} post={post} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 bg-white rounded-3xl border border-black/5 shadow-sm">
+            <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-slate-50 flex items-center justify-center border border-black/5">
+              <Search className="w-6 h-6 text-slate-400" />
+            </div>
+            <p className="text-lg text-[#1b2b28] font-semibold mb-2">
+              {isFiltering
+                ? "Няма намерени статии по зададените критерии."
+                : "Статиите ще бъдат добавени скоро."}
+            </p>
+            {isFiltering && (
+              <button
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedTag(null);
+                }}
+                className="text-primary hover:text-[#14a39d] hover:underline text-sm font-medium mt-2 transition-colors"
+              >
+                Изчисти филтрите
+              </button>
+            )}
+          </div>
+        )}
+      </main>
+
+      {/* Mobile Widgets (Below Grid) */}
+      <div className="flex lg:hidden flex-col space-y-6 mt-2 relative z-0">
+        {sidebarWidgets}
+      </div>
+    </div>
   );
 }

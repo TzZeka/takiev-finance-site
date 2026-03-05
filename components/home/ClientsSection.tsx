@@ -6,6 +6,8 @@ import { motion, useInView, useReducedMotion, type MotionProps, type Variants } 
 import { ArrowUpRight } from "lucide-react";
 import { getImageUrl } from "@/lib/sanity/client";
 import type { Client } from "@/types";
+import { useImageParallax, useZoomReveal } from "@/hooks/useScrollAnim";
+
 
 interface ClientsSectionProps {
   clients: Client[];
@@ -76,6 +78,10 @@ function PartnerCard({
   reduced: boolean;
 }) {
   const hasCard = !!partner.cardImage?.asset?._ref;
+  const imgContainerRef = useRef<HTMLDivElement>(null);
+  const imgInnerRef = useRef<HTMLDivElement>(null);
+  useZoomReveal(imgContainerRef, imgInnerRef);
+  useImageParallax(imgContainerRef, imgInnerRef);
 
   const spring = reduced
     ? { duration: 0 }
@@ -110,16 +116,22 @@ function PartnerCard({
          * the scale() animation wrapper needing absolute positioning.
          */
         <motion.div
+          ref={imgContainerRef}
           variants={imageVariants}
           transition={spring}
           className="absolute inset-0 overflow-hidden"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={getImageUrl(partner.cardImage!)}
-            alt={partner.name}
-            className="w-full h-full object-cover"
-          />
+          <div
+            ref={imgInnerRef}
+            style={{ position: "absolute", inset: "-15%", willChange: "transform" }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={getImageUrl(partner.cardImage!)}
+              alt={partner.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
         </motion.div>
       ) : (
         /*
@@ -277,12 +289,12 @@ export function ClientsSection({ clients }: ClientsSectionProps) {
     <motion.section
       ref={ref}
       {...(prefersReducedMotion ? {} : {
-        initial: { opacity: 0, y: 50 },
-        whileInView: { opacity: 1, y: 0 },
+        initial: { y: 120 },
+        whileInView: { y: 0 },
         viewport: { once: true, margin: "-40px" },
-        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
+        transition: { type: "spring" as const, stiffness: 80, damping: 20 },
       })}
-      className="relative py-20 md:py-28 bg-slate-950 rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
+      className="relative py-20 md:py-28 bg-slate-950 overflow-hidden shadow-sm"
       style={{
         borderTopLeftRadius: "50% 2rem",
         borderTopRightRadius: "50% 2rem",
@@ -294,11 +306,11 @@ export function ClientsSection({ clients }: ClientsSectionProps) {
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}
-        <motion.div {...(anim(0) as object)} className="text-center mb-12 md:mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 leading-tight">
-            Нашите <span className="text-primary text-4xl sm:text-5xl md:text-6xl">партньори</span>
+        <motion.div {...(anim(0) as object)} className="text-left md:text-center mb-12 md:mb-16">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+            Нашите <span className="text-primary">партньори</span>
           </h2>
-          <p className="text-lg text-white/50 max-w-2xl mx-auto">
+          <p className="text-lg text-white/50 max-w-2xl md:mx-auto">
             Сътрудничим с водещи компании за цялостни решения на Вашия бизнес
           </p>
         </motion.div>

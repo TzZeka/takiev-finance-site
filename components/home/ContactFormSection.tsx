@@ -24,16 +24,34 @@ export function ContactFormSection({ ctaText }: ContactFormSectionProps) {
         };
 
   return (
-    <section ref={ref} className="relative py-20 md:py-28 bg-slate-950 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-sm">
+    <motion.section
+      ref={ref}
+      {...(prefersReducedMotion ? {} : {
+        initial: { y: 120 },
+        whileInView: { y: 0 },
+        viewport: { once: true, margin: "-40px" },
+        transition: { type: "spring" as const, stiffness: 80, damping: 20 },
+      })}
+      className="relative py-20 md:py-28 bg-slate-950 overflow-hidden shadow-sm"
+      style={{
+        borderTopLeftRadius: "50% 2rem",
+        borderTopRightRadius: "50% 2rem",
+        filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
+      }}
+    >
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="max-w-5xl mx-auto">
           {/* Header */}
-          <motion.div {...anim(0)} className="text-center mb-12">
+          <motion.div {...anim(0)} className="text-left md:text-center mb-12">
             <span className="text-sm font-semibold text-primary tracking-wider uppercase">
               Свържете се с нас
             </span>
             <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3">
-              {ctaText || "Готови ли сте да "}<span className="text-primary">започнете?</span>
+              {ctaText ? (
+                ctaText
+              ) : (
+                <>Готови ли сте да <span className="text-primary">започнете?</span></>
+              )}
             </h2>
             <p className="text-lg text-white/50 max-w-2xl mx-auto">
               Свържете се с нас днес и нека обсъдим как можем да помогнем на Вашия бизнес да расте и да успява
@@ -67,15 +85,15 @@ export function ContactFormSection({ ctaText }: ContactFormSectionProps) {
                     </div>
                   </a>
 
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
+                  <a href="https://www.google.com/maps/place/Takiev+Finance+EOOD/@42.697707877149,23.319877890847863,17z" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
+                    <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/25 transition-colors">
                       <MapPin className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <div className="text-xs uppercase tracking-wide text-white/40 mb-0.5">Адрес</div>
-                      <span className="text-white font-medium text-sm">бул. Ал. Стамболийски 30Б, 1000 София</span>
+                      <span className="text-white font-medium text-sm group-hover:text-primary transition-colors">бул. Ал. Стамболийски 30Б, 1000 София</span>
                     </div>
-                  </div>
+                  </a>
 
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
@@ -125,6 +143,6 @@ export function ContactFormSection({ ctaText }: ContactFormSectionProps) {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

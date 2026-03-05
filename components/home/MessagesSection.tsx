@@ -7,6 +7,8 @@ import * as Icons from "lucide-react";
 import { getImageUrl } from "@/lib/sanity/client";
 import type { SanityImage } from "@/types";
 import { SectionBadge } from "@/components/shared/SectionBadge";
+import { useImageParallax, useContainerMorph } from "@/hooks/useScrollAnim";
+
 
 interface Message {
   _key: string;
@@ -43,6 +45,10 @@ function MessageCard({
   const hasImage = !!message.image;
   const cardRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const imgContainerRef = useRef<HTMLDivElement>(null);
+  const imgInnerRef = useRef<HTMLDivElement>(null);
+  useImageParallax(imgContainerRef, imgInnerRef);
+  useContainerMorph(imgContainerRef);
   const isInView = useInView(cardRef, { once: false, margin: "-20%" });
   const hasTriggeredRef = useRef(false);
   const sweepingRef = useRef(false);
@@ -136,7 +142,7 @@ function MessageCard({
   return (
     <div
       ref={cardRef}
-      className="relative rounded-2xl overflow-hidden min-h-[380px] md:min-h-[420px]"
+      className="relative rounded-2xl overflow-hidden min-h-[380px] md:min-h-[420px] shadow-[0_16px_48px_rgba(0,0,0,0.45)]"
     >
       {/* Video background */}
       {messageVideos[index] && (
@@ -189,16 +195,6 @@ function MessageCard({
               {number}
             </span>
             <div className="pt-2">
-              <div
-                className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
-                style={{
-                  backgroundColor: isDarkText ? "rgba(25,191,183,0.1)" : "rgba(255,255,255,0.1)",
-                  transition: "background-color 0.5s ease-in-out",
-                }}
-              >
-                {/* @ts-ignore */}
-                <IconComponent className="h-6 w-6 text-primary" />
-              </div>
               <h3
                 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-3"
                 style={{
@@ -230,6 +226,7 @@ function MessageCard({
         >
           {hasImage && (
             <div
+              ref={imgContainerRef}
               className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-2xl"
               style={{
                 borderColor: isDarkText ? "rgba(15,23,42,0.1)" : "rgba(255,255,255,0.1)",
@@ -237,13 +234,18 @@ function MessageCard({
                 transition: "border-color 0.5s ease-in-out",
               }}
             >
-              <Image
-                src={getImageUrl(message.image!)}
-                alt={message.title}
-                fill
-                sizes="(max-width: 768px) 100vw, 40vw"
-                className="object-cover"
-              />
+              <div
+                ref={imgInnerRef}
+                style={{ position: "absolute", inset: "-15%", willChange: "transform" }}
+              >
+                <Image
+                  src={getImageUrl(message.image!)}
+                  alt={message.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 40vw"
+                  className="object-cover"
+                />
+              </div>
             </div>
           )}
         </motion.div>
@@ -268,47 +270,48 @@ export function MessagesSection({ messages }: MessagesSectionProps) {
     <motion.section
       ref={ref}
       {...(prefersReducedMotion ? {} : {
-        initial: { y: 60 },
+        initial: { y: 120 },
         whileInView: { y: 0 },
         viewport: { once: true, margin: "-40px" },
-        transition: { type: "spring", stiffness: 220, damping: 35, mass: 1 },
+        transition: { type: "spring" as const, stiffness: 80, damping: 20 },
       })}
-      className="relative py-16 md:py-24 lg:py-32 bg-white rounded-b-[2rem] md:rounded-b-[2.5rem] overflow-hidden shadow-sm"
-      style={{
-        borderTopLeftRadius: "50% 2rem",
-        borderTopRightRadius: "50% 2rem",
-        filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
-      }}
+      className="relative py-16 md:py-24 lg:py-32 bg-white overflow-hidden shadow-sm"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
           {...fadeInUp}
           transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 200, damping: 30, mass: 1 }}
-          className="text-center mb-16 md:mb-20"
+          className="text-left md:text-center mb-16 md:mb-20"
         >
           <SectionBadge>Защо Такиев Финанс</SectionBadge>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
-            Защо да изберете <span className="text-primary text-4xl sm:text-5xl md:text-6xl">нас?</span>
+          <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900">
+            Решения за <span className="text-primary">вашия бизнес</span>
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-2xl md:mx-auto leading-relaxed">
             Нашият екип се отличава с професионализъм, иновативност и грижа към всеки клиент.
             Предоставяме цялостни счетоводни решения, които помагат на бизнеса Ви да расте и да се развива.
           </p>
         </motion.div>
 
         {/* Messages with video backgrounds */}
-        <div className="space-y-10 md:space-y-16 max-w-6xl mx-auto">
+        <div className="space-y-16 md:space-y-28 max-w-6xl mx-auto">
           {messages.map((message, index) => {
             const isReversed = index % 2 !== 0;
 
             return (
-              <MessageCard
+              <div
                 key={message._key}
-                message={message}
-                index={index}
-                isReversed={isReversed}
-              />
+                className={`w-[92%] md:w-[85%] ${
+                  index % 2 === 0 ? "mr-auto" : "ml-auto"
+                }`}
+              >
+                <MessageCard
+                  message={message}
+                  index={index}
+                  isReversed={isReversed}
+                />
+              </div>
             );
           })}
         </div>

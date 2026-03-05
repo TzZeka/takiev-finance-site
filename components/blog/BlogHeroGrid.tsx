@@ -217,20 +217,20 @@ export function BlogHeroGrid() {
         if (!latEl || !bgEl) continue;
 
         // Latin text
-        const latAlpha = 0.03 + intensity * 0.97;
+        const latAlpha = 0.05 + intensity * 0.95;
         if (intensity > 0.25) {
-          latEl.style.color = `rgba(215, 195, 145, ${0.25 + intensity * 0.75})`;
-          latEl.style.textShadow = `0 0 ${10 * intensity}px rgba(215, 195, 145, ${intensity * 0.25})`;
+          latEl.style.color = `rgba(27, 43, 40, ${0.25 + intensity * 0.75})`;
+          latEl.style.textShadow = `0 0 ${8 * intensity}px rgba(27, 43, 40, ${intensity * 0.15})`;
         } else {
-          latEl.style.color = `rgba(80, 95, 100, ${latAlpha})`;
+          latEl.style.color = `rgba(220, 230, 225, ${latAlpha})`;
           latEl.style.textShadow = "none";
         }
         latEl.style.opacity = `${latAlpha}`;
 
-        // Bulgarian translation - appears together with latin, slightly softer
+        // Bulgarian translation - appears together with latin, slightly softer (brand teal)
         const bgAlpha = Math.max(0, intensity * 1.1 - 0.08);
         bgEl.style.opacity = `${bgAlpha}`;
-        bgEl.style.color = `rgba(185, 175, 155, ${bgAlpha})`;
+        bgEl.style.color = `rgba(25, 191, 183, ${bgAlpha})`;
         bgEl.style.transform = `translateY(${(1 - Math.min(1, intensity * 1.3)) * 5}px)`;
       }
 
@@ -268,22 +268,22 @@ export function BlogHeroGrid() {
           }}
         >
           <div
-            className="tracking-[0.15em] whitespace-nowrap font-semibold"
+            className="tracking-[0.15em] whitespace-nowrap font-bold"
             style={{
               fontSize: `${s.size}px`,
-              opacity: 0.03,
-              color: "rgba(80, 95, 100, 0.03)",
+              opacity: 0.05,
+              color: "rgba(220, 230, 225, 0.05)",
               transition: "color 0.25s, opacity 0.25s, text-shadow 0.3s",
             }}
           >
             {s.lat}
           </div>
           <div
-            className="italic"
+            className="italic font-medium"
             style={{
               fontSize: `${Math.max(10, s.size - 3)}px`,
               opacity: 0,
-              color: "rgba(185, 175, 155, 0)",
+              color: "rgba(25, 191, 183, 0)",
               transition: "color 0.2s, opacity 0.2s, transform 0.25s",
               transform: "translateY(5px)",
             }}

@@ -214,7 +214,7 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                   <div className="space-y-2">
                     <ContactCard icon={Phone} label="Телефон" value="+359 89 908 0016" href="tel:+359899080016" />
                     <ContactCard icon={Mail} label="Имейл" value="office@takiev.bg" href="mailto:office@takiev.bg" />
-                    <ContactCard icon={MapPin} label="Адрес" value={'бул. „Ал. Стамболийски" 30Б, 1000 София'} />
+                    <ContactCard icon={MapPin} label="Адрес" value={'бул. „Ал. Стамболийски" 30Б, 1000 София'} href="https://www.google.com/maps/place/Takiev+Finance+EOOD/@42.697707877149,23.319877890847863,17z" />
                   </div>
                   <div className="p-3 bg-white/[0.02] rounded-xl border border-white/[0.05]">
                     <p className="text-xs text-white/40 flex items-center gap-2">

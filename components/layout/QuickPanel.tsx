@@ -285,9 +285,14 @@ export function QuickPanel() {
                     <div className="p-1.5 bg-white/5 rounded-lg border border-white/10 group-hover:border-primary transition-all duration-300 flex-shrink-0">
                       <MapPin className="h-3.5 w-3.5 text-primary" />
                     </div>
-                    <span className="text-sm text-white/70 leading-relaxed">
+                    <a
+                      href="https://www.google.com/maps/place/Takiev+Finance+EOOD/@42.697707877149,23.319877890847863,17z"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-white/70 leading-relaxed hover:text-primary transition-colors"
+                    >
                       бул. „Александър Стамболийски" 30Б, 1000 София
-                    </span>
+                    </a>
                   </li>
                 </ul>
               </div>

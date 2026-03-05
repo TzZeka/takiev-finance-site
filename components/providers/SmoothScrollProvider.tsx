@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Lenis from "lenis";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -12,14 +13,16 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     });
-    let rafId: number;
-    const raf = (time: number) => {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    };
-    rafId = requestAnimationFrame(raf);
+
+    // Feed Lenis into GSAP ticker so ScrollTrigger stays in sync
+    const tickerFn = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(tickerFn);
+    gsap.ticker.lagSmoothing(0);
+    lenis.on("scroll", ScrollTrigger.update);
+
     return () => {
-      cancelAnimationFrame(rafId);
+      gsap.ticker.remove(tickerFn);
+      ScrollTrigger.getAll().forEach((t) => t.kill());
       lenis.destroy();
     };
   }, [pathname]);

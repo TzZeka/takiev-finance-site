@@ -20,9 +20,8 @@ function FooterAccordion({ title, children }: { title: string; children: React.R
           {title}
         </span>
         <ChevronDown
-          className={`w-4 h-4 text-white/25 transition-transform duration-300 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-4 h-4 text-white/25 transition-transform duration-300 ${isOpen ? "rotate-180" : ""
+            }`}
         />
       </button>
 
@@ -33,9 +32,8 @@ function FooterAccordion({ title, children }: { title: string; children: React.R
 
       {/* Content */}
       <div
-        className={`overflow-hidden transition-all duration-300 ease-out md:!max-h-none md:!opacity-100 md:!mt-0 ${
-          isOpen ? "max-h-96 opacity-100 mt-4" : "max-h-0 opacity-0 mt-0"
-        }`}
+        className={`overflow-hidden transition-all duration-300 ease-out md:!max-h-none md:!opacity-100 md:!mt-0 ${isOpen ? "max-h-96 opacity-100 mt-4" : "max-h-0 opacity-0 mt-0"
+          }`}
       >
         {children}
       </div>
@@ -52,16 +50,14 @@ export function Footer() {
       {/* ── Top accent line ── */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-[#19BFB7]/50 to-transparent" />
 
-      {/* ── Logo banner — full width, no padding ── */}
-      <div className="relative w-full bg-[#06100e] border-b border-white/[0.05]" style={{ height: "clamp(72px, 10vw, 120px)" }}>
-        <Image
-          src="/firm-logo/logo.png"
-          alt="Takiev Finance"
-          fill
-          className="object-contain object-center px-8 sm:px-16 md:px-24 lg:px-32"
-          sizes="100vw"
-          priority
-        />
+      {/* ── Stylized Text Logo banner (Replacing Image) ── */}
+      <div className="relative w-full bg-[#06100e] border-b border-white/[0.05] flex items-center justify-center overflow-hidden py-12 md:py-20">
+        <h2
+          className="text-white/[0.04] text-[14vw] sm:text-[11vw] md:text-[9vw] leading-none select-none whitespace-nowrap italic pointer-events-none transition-colors duration-700 hover:text-white/[0.08]"
+          style={{ fontFamily: "'Berkslung', 'Berkslund', serif", fontWeight: 400 }}
+        >
+          Takiev Finance
+        </h2>
       </div>
 
       {/* ── Main columns ── */}
@@ -246,9 +242,14 @@ export function Footer() {
                   </a>
                 </li>
                 <li>
-                  <span className="text-sm text-white/35 leading-relaxed block">
+                  <a
+                    href="https://www.google.com/maps/place/Takiev+Finance+EOOD/@42.697707877149,23.319877890847863,17z"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-white/35 leading-relaxed block hover:text-primary transition-colors"
+                  >
                     бул. „Александър Стамболийски" 30Б, 1000 София
-                  </span>
+                  </a>
                 </li>
               </ul>
             </FooterAccordion>

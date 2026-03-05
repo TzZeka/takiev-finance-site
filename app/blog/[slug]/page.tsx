@@ -49,7 +49,6 @@ export async function generateMetadata({
       publishedTime: post.publishedAt,
       modifiedTime: post._updatedAt,
       authors: post.author ? [post.author.name] : [],
-      images: post.mainImage ? [getImageUrl(post.mainImage)] : [],
       locale: "bg_BG",
       siteName: "Takiev Finance",
     },
@@ -57,7 +56,6 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: post.title,
       description: post.excerpt,
-      images: post.mainImage ? [getImageUrl(post.mainImage)] : [],
     },
   };
 }

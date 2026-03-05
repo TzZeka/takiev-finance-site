@@ -1,1072 +1,860 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SplitType from "split-type";
 import {
-  CheckCircle,
-  ArrowRight,
-  ExternalLink,
-  ChevronDown,
-  LayoutGrid,
-  Play,
-  Facebook,
-  Linkedin,
-  Youtube
+    ArrowRight,
+    ExternalLink,
+    ChevronLeft,
+    ChevronRight,
+    Facebook,
+    Linkedin,
+    Youtube,
 } from "lucide-react";
 import { PartnersCarousel } from "@/components/about/PartnersCarousel";
 import { PremiumCTA } from "@/components/ui/PremiumCTA";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 export interface TeamMemberDisplay {
-  name: string;
-  role: string;
-  education: string;
-  image: string;
-  bio: string;
-  isLeader: boolean;
+    name: string;
+    role: string;
+    education: string;
+    image: string;
+    bio: string;
+    isLeader: boolean;
 }
 
-// Section Title Component — premium editorial style
+// ============================================================================
+// REUSABLE COMPONENTS
+// ============================================================================
+
 function SectionTitle({
-  title,
-  subtitle,
-  accent,
-  center = true,
-  light = false,
+    title,
+    subtitle,
+    accent,
+    center = true,
+    className = "",
+    darkText = false,
+    titleClass = "",
+    subtitleClass = "",
 }: {
-  title: string;
-  subtitle?: string;
-  accent?: string;
-  center?: boolean;
-  light?: boolean;
+    title: string;
+    subtitle?: string;
+    accent?: string;
+    center?: boolean;
+    className?: string;
+    darkText?: boolean;
+    titleClass?: string;
+    subtitleClass?: string;
 }) {
-  return (
-    <div className={center ? "text-center" : ""}>
-      {/* Short primary accent line */}
-      <div className={`mb-5 sm:mb-6 ${center ? "flex justify-center" : ""}`}>
-        <div className="w-10 h-[2px] bg-primary" />
-      </div>
+    const containerRef = useRef<HTMLDivElement>(null);
 
-      {/* Main title — large serif */}
-      <h2
-        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-3 sm:mb-4 tracking-tight leading-[1.1]"
-      >
-        {accent ? (
-          <>
-            {title.split(accent)[0]}
-            <span className="text-primary">{accent}</span>
-            {title.split(accent)[1]}
-          </>
-        ) : (
-          title
-        )}
-      </h2>
+    useGSAP(() => {
+        if (!containerRef.current) return;
 
-      {/* Subtitle */}
-      {subtitle && (
-        <p className={`text-sm sm:text-base md:text-lg max-w-2xl ${center ? "mx-auto" : ""} px-4 ${light ? "text-white/70" : "text-white/60"}`}>
-          {subtitle}
-        </p>
-      )}
-    </div>
-  );
+        const textRef = containerRef.current.querySelector(".split-title");
+        if (textRef) {
+            const split = new SplitType(textRef as HTMLElement, { types: 'words,chars' });
+            gsap.from(split.chars, {
+                scrollTrigger: {
+                    trigger: containerRef.current,
+                    start: "top 85%",
+                },
+                y: 30,
+                opacity: 0,
+                rotationX: -20,
+                stagger: 0.015,
+                duration: 0.8,
+                ease: "power3.out"
+            });
+        }
+
+        const lineRef = containerRef.current.querySelector(".accent-line");
+        if (lineRef) {
+            gsap.from(lineRef, {
+                scrollTrigger: { trigger: containerRef.current, start: "top 85%" },
+                width: 0,
+                duration: 0.8,
+                ease: "power3.inOut"
+            });
+        }
+
+        const subRef = containerRef.current.querySelector(".subtitle-text");
+        if (subRef) {
+            gsap.from(subRef, {
+                scrollTrigger: { trigger: containerRef.current, start: "top 85%" },
+                y: 20,
+                opacity: 0,
+                duration: 0.8,
+                delay: 0.3,
+                ease: "power3.out"
+            });
+        }
+    }, { scope: containerRef });
+
+    return (
+        <div ref={containerRef} className={`${center ? "text-left md:text-center" : ""} ${className}`}>
+            <div className={`mb-5 sm:mb-6 ${center ? "flex md:justify-center" : ""}`}>
+                <div className="w-12 h-[3px] bg-primary accent-line rounded-full" />
+            </div>
+
+            <h2
+                className={`split-title text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight leading-[1.1] ${darkText ? "text-[#101b1a]" : "text-white"} ${titleClass}`}
+                style={{ perspective: "1000px" }}
+            >
+                {accent ? (
+                    <>
+                        {title.split(accent)[0]}
+                        <span className="text-primary">{accent}</span>
+                        {title.split(accent)[1]}
+                    </>
+                ) : (
+                    title
+                )}
+            </h2>
+
+            {subtitle && (
+                <p className={`subtitle-text text-sm sm:text-base md:text-lg max-w-2xl ${center ? "mx-auto" : ""} px-4 font-medium ${darkText ? "text-[#1b2b28]" : "text-white/80"} ${subtitleClass}`}>
+                    {subtitle}
+                </p>
+            )}
+        </div>
+    );
 }
 
-// Business sectors organized in 3 rows for carousel
-const businessSectorsRows = [
-  // Row 1 - moves left
-  [
-    "Електронна търговия и дропшипинг бизнес",
-    "Технологичен сектор (ИТ сектор)",
-    "Творчески индустрии",
-  ],
-  // Row 2 - moves right
-  [
-    "Маркетингови и консултантски услуги",
-    "Строителство и инвестиции в недвижими имоти",
-    "Фрийлансъри на свободна практика",
-  ],
-  // Row 3 - moves left (slower)
-  [
-    "Краткосрочно отдаване под наем през Airbnb и Booking",
-    "Лечебни заведения за извънболнична помощ",
-    "Търговия с финансови инструменти – акции, облигации, криптовалути, деривати и други видове инвестиции",
-  ],
-];
+// Parallax Image Wrapper for consistent parallax across the site
+function ParallaxImage({ src, alt, className = "", imgClassName = "" }: { src: string, alt: string, className?: string, imgClassName?: string }) {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const imgRef = useRef<HTMLImageElement>(null);
 
-// Expertise items for the Founder subtitle rotator
-const founderExpertise = [
-  "Данъчни консултации",
-  "Бизнес анализ",
-  "Финансово планиране",
-  "Обучения",
-  "Публикации",
-];
+    useGSAP(() => {
+        if (!containerRef.current || !imgRef.current) return;
+
+        // Symmetric parallax to keep image centered and avoid gaps
+        gsap.fromTo(imgRef.current,
+            { yPercent: -15 },
+            {
+                yPercent: 15,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: containerRef.current,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true
+                }
+            }
+        );
+
+        // Reveal animation
+        gsap.from(containerRef.current, {
+            scrollTrigger: { trigger: containerRef.current, start: "top 85%" },
+            clipPath: "inset(10% 10% 10% 10% round 30px)",
+            scale: 0.95,
+            duration: 1.5,
+            ease: "power3.inOut"
+        });
+
+    }, { scope: containerRef });
+
+    return (
+        <div ref={containerRef} className={`relative overflow-hidden clip-path-container ${className}`}>
+            <Image
+                ref={imgRef}
+                src={src}
+                alt={alt}
+                fill
+                className={`object-cover scale-[1.3] ${imgClassName}`}
+                sizes="(max-width: 1024px) 100vw, 50vw"
+            />
+        </div>
+    );
+}
+
+// ============================================================================
+// DATA ARRAYS
+// ============================================================================
+
+const founderExpertise = ["Данъчни консултации", "Бизнес анализ", "Финансово планиране", "Обучения", "Публикации"];
 
 const globalTeamMembers = [
-  {
-    name: "Кристина Тодорова",
-    role: "Ръководител Счетоводен отдел",
-    education: "Бакалавър по счетоводство",
-    image: "/firm-logo/team/Krisi.png",
-    bio: "Кристина Тодорова е завършила бакалавър по Счетоводство в УНСС и в момента следва магистратура в Стопанска академия Димитър А. Ценов - Свищов. Има над 2 години опит като оперативен счетоводител, а от една година ръководи счетоводния отдел на Такиев Финанс. Интересите ѝ са в областта на счетоводството, данъчното планиране и оптимизацията на счетоводните процеси.",
-    isLeader: true,
-  },
-  {
-    name: "Теодора Кръстева",
-    role: "Оперативен счетоводител",
-    education: "Студент в УНСС, специалност Счетоводство",
-    image: "/firm-logo/team/Tedi.jpg",
-    bio: "Теодора Кръстева е студент в УНСС, специалност Счетоводство. Завършила е Националната търговско-банкова гимназия, специалност Банково дело. Има интереси в различни области като икономика и технологии.",
-    isLeader: false,
-  },
-  {
-    name: "Роса Пантева",
-    role: "Оперативен счетоводител",
-    education: "Студент в УНСС, специалност Счетоводство",
-    image: "/firm-logo/team/Rosi.png",
-    bio: "Роса Пантева е студент в УНСС, специалност Счетоводство. Завършила е ЕГ Акад. Л. Стоянов в гр. Благоевград. Има интереси към света на финансите и притежава мотивация за професионално развитие.",
-    isLeader: false,
-  },
+    {
+        name: "Кристина Тодорова",
+        role: "Ръководител Счетоводен отдел",
+        education: "Бакалавър по счетоводство",
+        image: "/firm-logo/team/Krisi.png",
+        bio: "Кристина Тодорова е завършила бакалавър по Счетоводство в УНСС и в момента следва магистратура в Стопанска академия Димитър А. Ценов - Свищов. Има над 2 години опит като оперативен счетоводител, а от една година ръководи счетоводния отдел на Такиев Финанс. Интересите ѝ са в областта на счетоводството, данъчното планиране и оптимизацията на счетоводните процеси.",
+        isLeader: true,
+    },
+    {
+        name: "Теодора Кръстева",
+        role: "Оперативен счетоводител",
+        education: "Студент в УНСС, специалност Счетоводство",
+        image: "/firm-logo/team/Tedi.jpg",
+        bio: "Теодора Кръстева е студент в УНСС, специалност Счетоводство. Завършила е Националната търговско-банкова гимназия, специалност Банково дело. Има интереси в различни области като икономика и технологии.",
+        isLeader: false,
+    },
+    {
+        name: "Роса Пантева",
+        role: "Оперативен счетоводител",
+        education: "Студент в УНСС, специалност Счетоводство",
+        image: "/firm-logo/team/Rosi.png",
+        bio: "Роса Пантева е студент в УНСС, специалност Счетоводство. Завършила е ЕГ Акад. Л. Стоянов в гр. Благоевград. Има интереси към света на финансите и притежава мотивация за професионално развитие.",
+        isLeader: false,
+    },
 ];
 
 const values = [
-  {
-    image: "/firm-logo/our-values/nadejdnost.png",
-    title: "Надеждност",
-    description: "Гарантираме сигурност и точност във всяка операция. Вашият бизнес заслужава партньор, на когото може да разчита безусловно.",
-  },
-  {
-    image: "/firm-logo/our-values/rastej.png",
-    title: "Растеж",
-    description: "Помагаме на бизнеса ви да се развива устойчиво. Нашата цел е вашият успех и дългосрочно финансово здраве.",
-  },
-  {
-    image: "/firm-logo/our-values/ekspertiza.png",
-    title: "Експертиза",
-    description: "Дълбочинни познания и доказан практически опит. Професионализъм, изграден през годините работа с разнообразни клиенти.",
-  },
-  {
-    image: "/firm-logo/our-values/partniorstvo.png",
-    title: "Партньорство",
-    description: "Дългосрочни взаимоотношения, базирани на доверие. Ние не сме просто счетоводители – ние сме вашият бизнес партньор.",
-  },
+    {
+        image: "/firm-logo/our-values/nadejdnost.png",
+        title: "Надеждност",
+        description: "Гарантираме сигурност и точност във всяка операция. Вашият бизнес заслужава партньор, на когото може да разчита безусловно.",
+    },
+    {
+        image: "/firm-logo/our-values/rastej.png",
+        title: "Растеж",
+        description: "Помагаме на бизнеса ви да се развива устойчиво. Нашата цел е вашият успех и дългосрочно финансово здраве.",
+    },
+    {
+        image: "/firm-logo/our-values/ekspertiza.png",
+        title: "Експертиза",
+        description: "Дълбочинни познания и доказан практически опит. Професионализъм, изграден през годините работа с разнообразни клиенти.",
+    },
+    {
+        image: "/firm-logo/our-values/partniorstvo.png",
+        title: "Партньорство",
+        description: "Дългосрочни взаимоотношения, базирани на доверие. Ние не сме просто счетоводители – ние сме вашият бизнес партньор.",
+    },
 ];
 
-// Shared animation config
-const sectionReveal = {
-  initial: { opacity: 0, y: 40 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-80px" },
-  transition: { type: "spring" as const, stiffness: 200, damping: 30, mass: 1 },
-};
+// ============================================================================
+// PAGE SECTIONS
+// ============================================================================
 
-
-// Values Section — Tab-based interactive design with auto-rotation + progress bar
+// VALUES SECTION - Premium Carousel Slider
 function ValuesSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [isPaused, setIsPaused] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (isPaused) return;
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % values.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [isPaused, activeIndex]);
-
-  return (
-    <div
-      className="max-w-6xl mx-auto"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-    >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center">
-        {/* Left — Value tabs */}
-        <div className="space-y-1 order-2 lg:order-1">
-          {values.map((value, index) => (
-            <button
-              key={value.title}
-              role="tab"
-              aria-selected={index === activeIndex}
-              aria-controls={`values-panel-${index}`}
-              onClick={() => { setActiveIndex(index); setIsPaused(true); }}
-              className={`w-full text-left p-4 sm:p-5 transition-all duration-500 ${
-                index === activeIndex
-                  ? "bg-white/[0.05]"
-                  : "hover:bg-white/[0.02]"
-              }`}
-            >
-              <div className="flex items-start gap-4">
-                <span
-                  className={`text-2xl sm:text-3xl font-bold tracking-tight transition-colors duration-500 ${
-                    index === activeIndex ? "text-primary" : "text-white/15"
-                  }`}
-                >
-                  0{index + 1}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <h3
-                    className={`text-lg sm:text-xl font-bold tracking-tight transition-colors duration-500 ${
-                      index === activeIndex ? "text-white" : "text-white/40"
-                    }`}
-                  >
-                    {value.title}
-                  </h3>
-                  <AnimatePresence mode="wait">
-                    {index === activeIndex && (
-                      <motion.p
-                        initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                        animate={{ opacity: 1, height: "auto", marginTop: 8 }}
-                        exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                        transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-                        className="text-white/60 text-sm leading-relaxed overflow-hidden"
-                      >
-                        {value.description}
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
-                  {/* Progress bar */}
-                  <div className="relative h-[2px] bg-white/[0.06] mt-3 overflow-hidden">
-                    {index === activeIndex && (
-                      <div
-                        className="absolute inset-y-0 left-0 bg-primary"
-                        style={{
-                          animation: "progress-fill 5s linear forwards",
-                          animationPlayState: isPaused ? "paused" : "running",
-                        }}
-                        key={activeIndex}
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
-
-        {/* Right — Active value image */}
-        <div id={`values-panel-${activeIndex}`} role="tabpanel" className="relative aspect-[4/3] rounded-2xl overflow-hidden order-1 lg:order-2">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeIndex}
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-              className="absolute inset-0"
-            >
-              <Image
-                src={values[activeIndex].image}
-                alt={values[activeIndex].title}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
-                <span
-                  className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white/10 block mb-1"
-                >
-                  0{activeIndex + 1}
-                </span>
-                <h3
-                  className="text-2xl sm:text-3xl font-bold text-white tracking-tight"
-                >
-                  {values[activeIndex].title}
-                </h3>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Infinite Scroll Row Component with CSS animation
-function InfiniteScrollRow({
-  items,
-  direction = "left",
-  duration = 60
-}: {
-  items: string[];
-  direction?: "left" | "right";
-  duration?: number;
-}) {
-  const rowRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
-      { threshold: 0, rootMargin: "100px" }
-    );
-
-    if (rowRef.current) {
-      observer.observe(rowRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  const duplicatedItems = [...items, ...items, ...items, ...items];
-
-  return (
-    <div ref={rowRef} className="group/row relative overflow-hidden py-1">
-      <div
-        className={`flex gap-3 sm:gap-4 w-max ${
-          direction === "left" ? "animate-scroll-left" : "animate-scroll-right"
-        } group-hover/row:[animation-play-state:paused]`}
-        style={{
-          animationDuration: `${duration}s`,
-          animationPlayState: isVisible ? "running" : "paused",
-        }}
-      >
-        {duplicatedItems.map((sector, index) => (
-          <div
-            key={index}
-            className="flex-shrink-0 flex items-center gap-2 sm:gap-2.5 lg:gap-3 bg-white/[0.04] border border-white/[0.08] px-3 sm:px-4 lg:px-5 py-2.5 sm:py-3 lg:py-3.5 transition-colors duration-300 hover:border-primary/40 hover:bg-white/[0.07]"
-          >
-            <div className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 bg-primary/10 flex items-center justify-center">
-              <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4 text-primary" />
-            </div>
-            <span className="text-white/90 text-xs sm:text-sm lg:text-base font-medium whitespace-nowrap">
-              {sector}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// Grid Card Component for business sectors — clean flat card
-function SectorGridCard({ sector, index }: { sector: string; index: number }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -15 }}
-      transition={{ duration: 0.5, delay: index * 0.04, ease: [0.25, 0.1, 0.25, 1] }}
-      className="group relative h-full"
-    >
-      <div className="relative h-full bg-white/[0.04] border border-white/[0.08] transition-all duration-500 ease-out group-hover:bg-white/[0.07] group-hover:border-primary/25">
-        <div className="relative h-full flex items-center px-5 sm:px-6 py-4 sm:py-5">
-          <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 mt-0.5 w-5 h-5 bg-primary/10 border border-primary/20 flex items-center justify-center">
-              <CheckCircle className="w-3 h-3 text-primary" />
-            </div>
-            <span className="text-white/80 text-sm sm:text-base font-medium leading-relaxed transition-colors duration-500 ease-out group-hover:text-white/95">
-              {sector}
-            </span>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-// Business Sectors Section with toggle between carousel and grid
-function BusinessSectorsSection() {
-  const [viewMode, setViewMode] = useState<"carousel" | "grid">("carousel");
-  const allSectors = businessSectorsRows.flat();
-
-  return (
-    <section className="relative py-16 sm:py-20 lg:py-24 xl:py-28 overflow-hidden bg-gradient-to-b from-[#263d39] to-[#1e332f]">
-      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          {...sectionReveal}
-          className="text-center mb-8 sm:mb-10 lg:mb-12"
-        >
-          <SectionTitle
-            title="Експертиза в разнообразни сектори"
-            subtitle="Богат практически опит в множество области на икономиката"
-          />
-
-          <div className="mt-6 sm:mt-8">
-            <div className="inline-flex items-center gap-0 border border-white/10">
-              <button
-                onClick={() => setViewMode("carousel")}
-                title="Автоматично превъртане"
-                className={`group relative flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 transition-all duration-500 ease-out ${
-                  viewMode === "carousel"
-                    ? "bg-primary text-white"
-                    : "text-white/60 hover:text-white hover:bg-white/10"
-                }`}
-              >
-                <Play className="w-4 h-4 sm:w-5 sm:h-5" />
-              </button>
-              <button
-                onClick={() => setViewMode("grid")}
-                title="Покажи всички"
-                className={`group relative flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 transition-all duration-500 ease-out ${
-                  viewMode === "grid"
-                    ? "bg-primary text-white"
-                    : "text-white/60 hover:text-white hover:bg-white/10"
-                }`}
-              >
-                <LayoutGrid className="w-4 h-4 sm:w-5 sm:h-5" />
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      <AnimatePresence mode="wait">
-        {viewMode === "carousel" ? (
-          <motion.div
-            key="carousel"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
-            <div className="relative space-y-3 sm:space-y-4 lg:space-y-5">
-              <InfiniteScrollRow items={businessSectorsRows[0]} direction="left" duration={90} />
-              <InfiniteScrollRow items={businessSectorsRows[1]} direction="right" duration={100} />
-              <InfiniteScrollRow items={businessSectorsRows[2]} direction="left" duration={110} />
-            </div>
-
-            <div
-              className="absolute left-0 top-0 bottom-0 w-12 sm:w-20 lg:w-28 pointer-events-none z-10"
-              style={{
-                background: 'linear-gradient(to right, #263d39 0%, transparent 100%)',
-                maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
-                WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
-              }}
-            />
-            <div
-              className="absolute right-0 top-0 bottom-0 w-12 sm:w-20 lg:w-28 pointer-events-none z-10"
-              style={{
-                background: 'linear-gradient(to left, #1e332f 0%, transparent 100%)',
-                maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
-                WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
-              }}
-            />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="grid"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="relative container mx-auto px-4 sm:px-6 lg:px-8"
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 max-w-5xl mx-auto auto-rows-fr">
-              {allSectors.map((sector, index) => (
-                <SectorGridCard key={sector} sector={sector} index={index} />
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </section>
-  );
-}
-
-// Team Section — Photo cards with 3D flip reveal, leader card bigger
-function TeamSection({ teamMembers }: { teamMembers: TeamMemberDisplay[] }) {
-  const [flippedCard, setFlippedCard] = useState<string | null>(null);
-  const leader = teamMembers.find((m) => m.isLeader);
-  const members = teamMembers.filter((m) => !m.isLeader);
-
-  const renderCard = (member: TeamMemberDisplay, isLeaderCard: boolean, index: number) => {
-    const isFlipped = flippedCard === member.name;
+    useEffect(() => {
+        if (isPaused) return;
+        const interval = setInterval(() => {
+            setActiveIndex((prev) => (prev + 1) % values.length);
+        }, 6000);
+        return () => clearInterval(interval);
+    }, [isPaused]);
 
     return (
-      <motion.div
-        key={member.name}
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ type: "spring" as const, stiffness: 280, damping: 24, delay: index * 0.15 }}
-      >
-        <div className={`card-flip-container ${isLeaderCard ? "aspect-[3/4] sm:aspect-[2/3]" : "aspect-[3/4]"}`}>
-          <div className={`card-flip-inner ${isFlipped ? "card-flipped" : ""}`}>
-            {/* FRONT — Photo card */}
-            <div className="card-flip-front rounded-2xl overflow-hidden">
-              <div className="relative w-full h-full">
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  fill
-                  className="object-cover object-top"
-                  sizes={isLeaderCard
-                    ? "(max-width: 640px) 100vw, 448px"
-                    : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
-                  }
-                />
-
-                {/* Bottom gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-                {/* Leader badge */}
-                {member.isLeader && (
-                  <div className="absolute top-4 left-4">
-                    <span className="inline-block bg-primary text-white text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-md tracking-widest uppercase">
-                      Ръководител
-                    </span>
-                  </div>
-                )}
-
-                {/* "Read more" button — top right */}
-                <button
-                  onClick={() => setFlippedCard(member.name)}
-                  className="absolute top-4 right-4 bg-black/30 border border-white/20 rounded-md text-white/80 text-[10px] sm:text-xs font-medium px-3 py-1.5 tracking-wide uppercase hover:bg-white/10 transition-colors duration-300"
-                >
-                  Прочети повече
-                </button>
-
-                {/* Name + role at bottom */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
-                  <h3
-                    className={`font-bold text-white mb-1 tracking-tight ${isLeaderCard ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"}`}
-                  >
-                    {member.name}
-                  </h3>
-                  <p className="text-primary text-sm font-medium">{member.role}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* BACK — Bio card */}
-            <div className="card-flip-back rounded-2xl overflow-hidden">
-              <div className="relative w-full h-full bg-[#1a2b28] border border-white/[0.08] rounded-2xl p-5 sm:p-6 flex flex-col overflow-y-auto">
-                {/* Accent line */}
-                <div className="w-10 h-[2px] bg-primary mb-4" />
-
-                <h3
-                  className={`font-bold text-white mb-1 tracking-tight ${isLeaderCard ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"}`}
-                >
-                  {member.name}
-                </h3>
-                <p className="text-primary font-semibold text-sm mb-1">{member.role}</p>
-                <p className="text-white/40 text-xs sm:text-sm mb-4">{member.education}</p>
-
-                <p className="text-white/70 text-sm leading-relaxed flex-1">
-                  {member.bio}
-                </p>
-
-                {/* "Back" button */}
-                <button
-                  onClick={() => setFlippedCard(null)}
-                  className="mt-4 self-start bg-transparent border border-white/20 rounded-md text-white/80 text-[10px] sm:text-xs font-medium px-3 py-1.5 tracking-wide uppercase hover:bg-white/10 transition-colors duration-300"
-                >
-                  Обратно
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    );
-  };
-
-  return (
-    <section className="relative py-16 sm:py-20 lg:py-24 xl:py-28 bg-gradient-to-b from-[#243b37] to-[#2a413d] overflow-hidden">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          {...sectionReveal}
-          className="mb-10 sm:mb-12 lg:mb-16"
+        <div
+            ref={containerRef}
+            className="max-w-6xl mx-auto mt-16 group"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
         >
-          <SectionTitle
-            title="Нашият екип"
-            subtitle="Професионалисти с богат опит и страст към счетоводството"
-          />
-        </motion.div>
+            <div className="relative rounded-[2.5rem] overflow-hidden bg-black/20 border border-white/20 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] transform translate-z-0">
+                <div className="relative h-[650px] sm:h-[500px] w-full">
+                    <AnimatePresence initial={false} mode="wait">
+                        <motion.div
+                            key={activeIndex}
+                            initial={{ opacity: 0, scale: 1.05 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, transition: { duration: 0.8 } }}
+                            transition={{ duration: 1, ease: "easeInOut" }}
+                            className="absolute inset-0"
+                        >
+                            <Image src={values[activeIndex].image} fill alt="bg" className="object-cover" />
+                            {/* Dark overlay for text readability */}
+                            <div className="absolute inset-x-0 bottom-0 h-[80%] bg-gradient-to-t from-[#1b2b28] via-[#1b2b28]/80 to-transparent" />
+                            {/* Overall subtle darkening */}
+                            <div className="absolute inset-0 bg-black/20" />
+                        </motion.div>
+                    </AnimatePresence>
 
-        <div className="max-w-5xl mx-auto space-y-8 sm:space-y-10">
-          {/* Leader — centered, bigger card */}
-          {leader && (
-            <div className="sm:max-w-md mx-auto">
-              {renderCard(leader, true, 0)}
+                    <div className="absolute inset-0 flex flex-col justify-end p-8 sm:p-12 z-20">
+                        <div className="flex flex-col sm:flex-row gap-8 items-end justify-between">
+                            <div className="max-w-2xl">
+                                <motion.div
+                                    key={"text-" + activeIndex}
+                                    initial={{ y: 20, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    transition={{ duration: 0.6, delay: 0.3 }}
+                                >
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <span className="text-4xl font-bold text-primary drop-shadow-lg">0{activeIndex + 1}</span>
+                                        <h3 className="text-3xl sm:text-4xl font-extrabold text-white drop-shadow-md">{values[activeIndex].title}</h3>
+                                    </div>
+                                    <p className="text-lg text-white/95 leading-relaxed font-medium drop-shadow-md">
+                                        {values[activeIndex].description}
+                                    </p>
+                                </motion.div>
+                            </div>
+
+                            <div className="flex flex-col items-end gap-6 shrink-0">
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => setActiveIndex(prev => prev === 0 ? values.length - 1 : prev - 1)}
+                                        className="w-12 h-12 rounded-full bg-white/20 hover:bg-white/30 hover:scale-110 transition-all flex items-center justify-center backdrop-blur-md border border-white/30 text-white"
+                                    >
+                                        <ChevronLeft className="w-6 h-6" />
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveIndex(prev => (prev + 1) % values.length)}
+                                        className="w-12 h-12 rounded-full bg-white/20 hover:bg-white/30 hover:scale-110 transition-all flex items-center justify-center backdrop-blur-md border border-white/30 text-white"
+                                    >
+                                        <ChevronRight className="w-6 h-6" />
+                                    </button>
+                                </div>
+
+                                <div className="flex gap-2 bg-black/20 p-2 rounded-full backdrop-blur-sm border border-white/10">
+                                    {values.map((_, i) => (
+                                        <div key={i} className="relative h-1.5 bg-white/30 rounded-full overflow-hidden transition-all duration-300" style={{ width: i === activeIndex ? "40px" : "20px" }}>
+                                            {i === activeIndex && (
+                                                <motion.div
+                                                    key={`progress-${activeIndex}`}
+                                                    className="absolute inset-y-0 left-0 bg-primary shadow-[0_0_10px_#19BFB7]"
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: "100%" }}
+                                                    transition={{ duration: isPaused ? 0 : 6, ease: "linear" }}
+                                                />
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          )}
-
-          {/* Members — side by side */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-3xl mx-auto">
-            {members.map((member, index) => renderCard(member, false, index + 1))}
-          </div>
         </div>
-      </div>
-    </section>
-  );
+    );
 }
 
-// TikTok SVG icon used in social links
+function BusinessSectorsSection() {
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useGSAP(() => {
+        gsap.from(".bento-item", {
+            scrollTrigger: { trigger: containerRef.current, start: "top 80%" },
+            y: 50,
+            opacity: 0,
+            stagger: 0.1,
+            duration: 1,
+            ease: "expo.out"
+        });
+    }, { scope: containerRef });
+
+    return (
+        <div ref={containerRef} className="relative z-10 w-full mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 max-w-7xl mx-auto">
+                {/* Row 1 */}
+                <div className="bento-item lg:col-span-2 md:col-span-2 relative group bg-white/[0.12] backdrop-blur-md p-8 sm:p-10 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform overflow-hidden shadow-2xl">
+                    <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-3 relative z-10">Електронна търговия</h3>
+                    <p className="text-white/80 max-w-md text-base leading-relaxed relative z-10 font-medium">Пълно счетоводно обслужване на онлайн магазини, Amazon, Shopify и дропшипинг бизнеси.</p>
+                </div>
+
+                <div className="bento-item relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform flex flex-col justify-end overflow-hidden shadow-2xl">
+                    <h3 className="text-xl font-extrabold text-white mb-2 relative z-10">ИТ Сектор</h3>
+                    <p className="text-white/80 text-sm relative z-10 font-medium">ИТ компании и софтуерни решения.</p>
+                </div>
+
+                <div className="bento-item relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform flex flex-col justify-end overflow-hidden shadow-2xl">
+                    <h3 className="text-xl font-extrabold text-white mb-2 relative z-10">Криптовалути</h3>
+                    <p className="text-white/80 text-sm relative z-10 font-medium">Счетоводство и данъчно облагане.</p>
+                </div>
+
+                {/* Row 2 */}
+                <div className="bento-item lg:col-span-1 md:col-span-1 relative group bg-primary/10 p-6 sm:p-8 rounded-3xl border border-primary/20 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
+                    <h3 className="text-xl font-extrabold text-primary mb-2 relative z-10">Фрийлансъри</h3>
+                    <p className="text-white/80 text-sm relative z-10 font-medium">Цялостно обслужване на свободни професии.</p>
+                </div>
+
+                <div className="bento-item lg:col-span-2 md:col-span-2 relative group bg-white/[0.12] backdrop-blur-md p-8 sm:p-10 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform overflow-hidden shadow-2xl flex flex-col justify-center">
+                    <div className="absolute right-0 bottom-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none group-hover:bg-primary/20 transition-colors duration-700" />
+                    <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-3 relative z-10">Строителство и Имоти</h3>
+                    <p className="text-white/80 max-w-sm text-base leading-relaxed relative z-10 font-medium">Специфично счетоводно отчитане за инвеститори и строителни фирми.</p>
+                </div>
+
+                <div className="bento-item lg:col-span-1 md:col-span-3 relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
+                    <h3 className="text-xl font-extrabold text-white mb-2 relative z-10">Маркетинг</h3>
+                    <p className="text-white/80 text-sm relative z-10 font-medium">Агенции и дигитални услуги.</p>
+                </div>
+
+                {/* Row 3 */}
+                <div className="bento-item lg:col-span-2 md:col-span-1 relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
+                    <h3 className="text-xl font-extrabold text-white mb-2 relative z-10">Airbnb & Booking</h3>
+                    <p className="text-white/80 text-sm relative z-10 font-medium">Оптимизация за краткосрочни наеми.</p>
+                </div>
+
+                <div className="bento-item lg:col-span-1 md:col-span-1 relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
+                    <h3 className="text-xl font-extrabold text-white mb-2 relative z-10">Медицина</h3>
+                    <p className="text-white/80 text-sm relative z-10 font-medium">Лечебни заведения.</p>
+                </div>
+
+                <div className="bento-item lg:col-span-1 md:col-span-1 relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
+                    <h3 className="text-xl font-extrabold text-white mb-2 relative z-10">Изкуство</h3>
+                    <p className="text-white/80 text-sm relative z-10 font-medium">Творчески индустрии.</p>
+                </div>
+
+            </div>
+        </div>
+    );
+}
+
+function TeamSection({ teamMembers }: { teamMembers: TeamMemberDisplay[] }) {
+    const [activeId, setActiveId] = useState<number | null>(0);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useGSAP(() => {
+        gsap.from(".team-member", {
+            scrollTrigger: { trigger: containerRef.current, start: "top 80%" },
+            y: 60,
+            opacity: 0,
+            stagger: 0.15,
+            duration: 1.2,
+            ease: "power3.out"
+        });
+    }, { scope: containerRef });
+
+    return (
+        <div ref={containerRef} className="relative z-10 mt-10">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-4 h-auto md:h-[650px] px-4 md:px-0">
+                {teamMembers.map((member, index) => {
+                    const isActive = activeId === index;
+                    const flexValue = isActive ? "45%" : "18%";
+
+                    return (
+                        <div
+                            key={index}
+                            className="team-member relative overflow-hidden rounded-[2.5rem] cursor-pointer group will-change-[width,flex] min-h-[450px] md:min-h-0 shadow-2xl border border-white/10"
+                            style={{
+                                flexBasis: flexValue,
+                                flexGrow: isActive ? 1 : 0,
+                                transition: "flex-basis 0.8s cubic-bezier(0.25, 1, 0.5, 1), flex-grow 0.8s cubic-bezier(0.25, 1, 0.5, 1)"
+                            }}
+                            onMouseEnter={() => window.innerWidth >= 768 && setActiveId(index)}
+                            onClick={() => setActiveId(index === activeId ? null : index)}
+                        >
+                            <Image
+                                src={member.image}
+                                alt={member.name}
+                                fill
+                                className="object-cover object-top transition-transform duration-[1.5s] ease-out group-hover:scale-105"
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                            />
+
+                            <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-[#1b2b28] via-[#1b2b28]/60 to-transparent pointer-events-none transition-opacity duration-700 opacity-90 group-hover:opacity-100" />
+
+                            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 flex flex-col justify-end h-full">
+                                <div className="w-full">
+                                    <div className="transform transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]" style={{ transform: isActive ? "translateY(0)" : "translateY(15px)" }}>
+                                        {member.isLeader && (
+                                            <span className="inline-block bg-primary text-white text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider mb-4 shadow-[0_0_15px_rgba(25,191,183,0.5)]">
+                                                Ръководител
+                                            </span>
+                                        )}
+
+                                        <h3 className={`text-2xl sm:text-3xl font-extrabold text-white tracking-tight whitespace-nowrap overflow-hidden text-ellipsis mb-1 transition-all duration-700 ${isActive ? "drop-shadow-lg" : ""}`}>
+                                            {member.name}
+                                        </h3>
+                                        <p className="text-primary text-[15px] font-bold whitespace-nowrap overflow-hidden text-ellipsis uppercase tracking-wide">{member.role}</p>
+                                    </div>
+
+                                    <div
+                                        className="overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                                        style={{
+                                            opacity: isActive ? 1 : 0,
+                                            maxHeight: isActive ? "300px" : "0",
+                                            marginTop: isActive ? "20px" : "0"
+                                        }}
+                                    >
+                                        <div className="border-t border-white/20 pt-5 w-full">
+                                            <p className="text-white/90 text-xs sm:text-sm mb-3 font-bold uppercase tracking-wider">
+                                                {member.education}
+                                            </p>
+                                            <p className="text-white/80 text-sm sm:text-[15px] leading-relaxed line-clamp-4 md:line-clamp-none font-medium">
+                                                {member.bio}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+
 function TikTokIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
-    </svg>
-  );
+    return (
+        <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+        </svg>
+    );
 }
 
-// Social link data
 const socialLinks = [
-  { href: "https://www.facebook.com/n.takiev", label: "Facebook", icon: Facebook, bg: "bg-[#1877F2]" },
-  { href: "https://www.linkedin.com/company/takiev-finance/", label: "LinkedIn", icon: Linkedin, bg: "bg-[#0A66C2]" },
-  { href: "https://www.youtube.com/@nikolaytakiev6221", label: "YouTube", icon: Youtube, bg: "bg-[#FF0000]" },
-  { href: "https://www.tiktok.com/@n.takiev", label: "TikTok", icon: TikTokIcon, bg: "bg-black" },
+    { href: "https://www.facebook.com/n.takiev", label: "Facebook", icon: Facebook },
+    { href: "https://www.linkedin.com/company/takiev-finance/", label: "LinkedIn", icon: Linkedin },
+    { href: "https://www.youtube.com/@nikolaytakiev6221", label: "YouTube", icon: Youtube },
+    { href: "https://www.tiktok.com/@n.takiev", label: "TikTok", icon: TikTokIcon },
 ];
 
 export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDisplay[] }) {
-  const displayMembers = teamMembers && teamMembers.length > 0 ? teamMembers : globalTeamMembers;
+    const displayMembers = teamMembers && teamMembers.length > 0 ? teamMembers : globalTeamMembers;
 
-  // Parallax hero
-  const heroContainerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroContainerRef,
-    offset: ["start start", "end start"],
-  });
+    const mainRef = useRef<HTMLDivElement>(null);
+    const heroImgRef = useRef<HTMLDivElement>(null);
 
-  // Spacer 180vh → content enters at 80vh scroll, banner fully revealed by ~62vh
-  // This guarantees ~18vh of banner alone before content appears
-  const titleScale = useTransform(scrollYProgress, [0, 0.15], [1, 0.4]);
-  const titleOpacity = useTransform(scrollYProgress, [0.03, 0.15], [1, 0]);
-  // Curtains complete by ~62vh, content enters at ~80vh — clear gap
-  const overlayTopH = useTransform(scrollYProgress, [0.05, 0.33], ["50%", "0%"]);
-  const overlayBottomH = useTransform(scrollYProgress, [0.07, 0.35], ["50%", "0%"]);
-  // Fixed hero fades out once content has scrolled over it — prevents banner showing behind all sections
-  const heroOpacity = useTransform(scrollYProgress, [0.52, 0.62], [1, 0]);
+    useGSAP(() => {
+        // Top hero reveal
+        gsap.fromTo(heroImgRef.current,
+            { clipPath: "inset(100% 0% 0% 0%)", scale: 1.1 },
+            { clipPath: "inset(0% 0% 0% 0%)", scale: 1, duration: 1.8, ease: "power4.inOut" }
+        );
 
-  return (
-    <div className="relative">
-      {/* ===== HERO — Fixed banner, title shrinks to reveal it ===== */}
+        // Hero inner parallax
+        gsap.fromTo(".hero-parallax-img",
+            { yPercent: -10 },
+            {
+                yPercent: 15,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: ".hero-container",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: 1
+                }
+            }
+        );
 
-      {/* Scroll spacer — controls how long the hero stays */}
-      <div ref={heroContainerRef} className="relative h-[180vh]" />
+        // Founder 3D Image Parallax (Pop-out effect)
+        gsap.fromTo(".founder-parallax-img",
+            { y: 30 },
+            {
+                y: -30,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: ".founder-section",
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: 1
+                }
+            }
+        );
 
-      {/* Fixed hero — stays behind everything, fades out once content covers it */}
-      <motion.div className="fixed inset-x-0 top-0 h-screen overflow-hidden" style={{ zIndex: 0, opacity: heroOpacity }}>
-        {/* Banner — always present, background layer */}
-        <div className="absolute inset-0">
-          <Image
-            src="/firm-logo/banners/banner-for-us.png"
-            alt="Takiev Finance Team"
-            fill
-            className="object-cover object-center"
-            priority
-            sizes="100vw"
-          />
-        </div>
+    }, { scope: mainRef });
 
-        {/* Split-curtain overlay — gradient edges for smooth blend */}
-        <motion.div
-          className="absolute top-0 left-0 right-0 origin-top"
-          style={{
-            height: overlayTopH,
-            background: "linear-gradient(to bottom, #40514E 55%, rgba(64,81,78,0.6) 82%, rgba(64,81,78,0) 100%)",
-          }}
-        />
-        <motion.div
-          className="absolute bottom-0 left-0 right-0 origin-bottom"
-          style={{
-            height: overlayBottomH,
-            background: "linear-gradient(to top, #40514E 55%, rgba(64,81,78,0.6) 82%, rgba(64,81,78,0) 100%)",
-          }}
-        />
+    return (
+        <div ref={mainRef} className="min-h-screen font-sans bg-[#F8FAFC]">
+            {/* 
+        GLOBAL BACKGROUND GRADIENT
+      */}
+            <div className="fixed inset-0 pointer-events-none z-[-2]">
+                <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAFC] via-[#344541] to-[#122220]" />
 
-        {/* Title layer — entrance animation on load, shrinks and fades on scroll */}
-        <motion.div
-          className="absolute inset-0 flex items-center justify-center px-4"
-          style={{ opacity: titleOpacity, scale: titleScale }}
-        >
-          {/* Text content — centered */}
-          <div className="flex flex-col items-center">
-            {/* "От 2021 година" badge — appears first */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: "spring" as const, stiffness: 280, damping: 24, delay: 0.2 }}
-              className="inline-block border border-white/20 text-white px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-medium tracking-wider uppercase mb-6 sm:mb-8"
-            >
-              От 2021 година
-            </motion.div>
+                {/* Grain Noise Overlay */}
+                <div
+                    className="absolute inset-0 opacity-[0.035] mix-blend-overlay"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
+                />
 
-            {/* Title — appears second */}
-            <motion.h1
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: "spring" as const, stiffness: 200, damping: 30, mass: 1, delay: 0.5 }}
-              className="text-fluid-hero font-bold text-white tracking-tight leading-[1.05] text-center"
-            >
-              За нас
-            </motion.h1>
-
-            {/* Subtitle — appears third */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: "spring" as const, stiffness: 200, damping: 30, mass: 1, delay: 1.0 }}
-              className="mt-4 sm:mt-6 text-white/50 text-sm sm:text-base md:text-lg max-w-md text-center"
-            >
-              Професионални счетоводни услуги и данъчни консултации
-            </motion.p>
-          </div>
-
-          {/* Arrow — far right, appears last, from center moving down */}
-          <motion.div
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1], delay: 1.5 }}
-            className="absolute right-6 sm:right-10 lg:right-16 xl:right-24 top-[44%]"
-          >
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 2.8 }}
-              className="flex flex-col items-center gap-2"
-            >
-              <div className="w-px h-10 sm:h-14 lg:h-20 bg-gradient-to-b from-transparent via-white/20 to-white/50" />
-              <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-white/50" />
-            </motion.div>
-          </motion.div>
-        </motion.div>
-      </motion.div>
-
-      {/* ===== PAGE CONTENT — scrolls over the fixed hero ===== */}
-      <div className="relative z-10">
-
-      {/* Subtitle section */}
-      <section className="relative bg-[#40514E] pt-16 sm:pt-24 lg:pt-40 pb-12 sm:pb-16 lg:pb-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            {...sectionReveal}
-            className="text-center max-w-4xl mx-auto"
-          >
-            <h2
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight tracking-tight"
-            >
-              Изграждаме{" "}
-              <span className="text-primary">финансово бъдеще</span>
-            </h2>
-
-            <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-white/70 leading-relaxed max-w-3xl mx-auto px-4">
-              Такиев Финанс предлага професионални счетоводни услуги и данъчни консултации
-              за различни бизнеси и физически лица. В нашата практика обслужваме широка гама
-              от клиенти, които успешно изграждат своя бизнес в различни сектори на икономиката.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ===== SOCIAL LINKS — rounded coin-flip buttons ===== */}
-      <section className="relative py-6 sm:py-8 lg:py-10 bg-gradient-to-b from-[#40514E] to-[#344541]">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            {...sectionReveal}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6"
-          >
-            <p className="text-white/60 text-sm sm:text-base text-center">
-              Последвайте ни за полезни съвети и актуални новини
-            </p>
-            <div className="flex items-center gap-3 sm:gap-4">
-              {socialLinks.map((social) => {
-                const Icon = social.icon;
-                return (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="social-flip relative w-10 h-10 sm:w-11 sm:h-11 block"
-                  >
-                    <div className="social-flip-inner relative w-full h-full">
-                      <div className="social-flip-front border border-white/10 text-white/70">
-                        <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
-                      </div>
-                      <div className={`social-flip-back ${social.bg} text-white`}>
-                        <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
-                      </div>
-                    </div>
-                  </a>
-                );
-              })}
+                {/* Organic glowing background blobs for premium feel */}
+                <div className="absolute top-[20%] right-[-10%] w-[50vw] h-[50vw] bg-primary/10 rounded-full blur-[150px]" />
+                <div className="absolute bottom-[20%] left-[-10%] w-[60vw] h-[60vw] bg-[#2d3d3a]/60 rounded-full blur-[150px]" />
             </div>
-          </motion.div>
-        </div>
-      </section>
 
-      {/* ===== VALUES — Tab-based interactive design ===== */}
-      <section className="relative py-16 sm:py-20 lg:py-24 xl:py-28 bg-gradient-to-b from-[#344541] to-[#2d3d3a] overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            {...sectionReveal}
-            className="mb-10 sm:mb-12 lg:mb-14"
-          >
-            <SectionTitle
-              title="Нашите ценности"
-              subtitle="Принципите, които направляват всяко наше действие"
-            />
-          </motion.div>
+            <style dangerouslySetInnerHTML={{
+                __html: `
+        .clip-slant {
+           clip-path: polygon(0 4vw, 100% 0, 100% calc(100% - 4vw), 0 100%);
+        }
+        .clip-slant-reverse {
+           clip-path: polygon(0 0, 100% 4vw, 100% 100%, 0 calc(100% - 4vw));
+        }
+        .founder-name-gradient {
+           color: #c8d5d3;
+        }
+        .section-inset {
+           box-shadow: inset 0 12px 40px -10px rgba(0,0,0,0.5), inset 0 -12px 40px -10px rgba(0,0,0,0.5), 0 0 100px rgba(0,0,0,0.4);
+        }
+        .stylish-divider {
+           height: 1px;
+           background: linear-gradient(90deg, transparent 0%, rgba(25,191,183,0.5) 25%, rgba(25,191,183,0.8) 50%, rgba(25,191,183,0.5) 75%, transparent 100%);
+        }
+      `}} />
 
-          <ValuesSection />
-        </div>
-      </section>
-
-      {/* ===== FOUNDER SECTION ===== */}
-      <section className="relative bg-gradient-to-b from-[#2d3d3a] to-[#1a2b28] overflow-hidden">
-        {/* Photo — absolute, full section height (desktop only) */}
-        <div className="hidden lg:block absolute top-0 bottom-0 left-0 w-[38%] h-full group/photo">
-          <div className="relative w-full h-full">
-            <Image
-              src="/firm-logo/Nikolay-Takiev–no-bgd.png"
-              alt="Николай Такиев - Основател и Управител"
-              fill
-              className="object-contain object-bottom transition-transform duration-700 ease-out group-hover/photo:scale-[1.03]"
-              sizes="38vw"
-            />
-          </div>
-        </div>
-
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 xl:py-28">
-          {/* Section Title */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ type: "spring" as const, stiffness: 200, damping: 30, mass: 1 }}
-            className="mb-8 sm:mb-12 lg:mb-16 lg:ml-[40%]"
-          >
-            <SectionTitle
-              title="Основател и Управител"
-              subtitle="Водещ експерт в данъчното консултиране и счетоводството"
-              center={false}
-            />
-          </motion.div>
-
-          {/* Mobile photo */}
-          <div className="lg:hidden relative min-h-[380px] sm:min-h-[440px] mb-6 sm:mb-8 group/photo">
-            <Image
-              src="/firm-logo/Nikolay-Takiev–no-bgd.png"
-              alt="Николай Такиев - Основател и Управител"
-              fill
-              className="object-contain object-bottom"
-              sizes="100vw"
-            />
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ type: "spring" as const, stiffness: 200, damping: 30, mass: 1 }}
-            className="lg:ml-[40%] lg:mt-12 xl:mt-16"
-          >
-            <div>
-              {/* Name + title */}
-              <h3
-                className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1 sm:mb-2 tracking-tight"
-              >
-                Николай Такиев
-              </h3>
-              <p className="text-primary font-semibold text-sm sm:text-base lg:text-lg mb-5 sm:mb-6 lg:mb-8">
-                Магистър по счетоводство, финанси и бизнес анализ
-              </p>
-
-              {/* Bio text */}
-              <div className="space-y-3 sm:space-y-4 lg:space-y-5">
-                <p className="text-white/75 text-sm sm:text-base lg:text-lg leading-relaxed">
-                  <span className="text-white font-semibold">Николай Такиев</span> е с <span className="text-white font-medium">богат професионален опит</span> в областта на <span className="text-primary font-semibold">данъчното консултиране</span> и <span className="text-primary font-semibold">счетоводството</span>. Той е автор на редица <span className="text-white font-medium">книги, статии и публикации</span>, които подпомагат по-доброто познаване на <span className="text-white/90 font-medium">данъчното законодателство</span> от предприемачите.
-                </p>
-                <p className="text-white/75 text-sm sm:text-base lg:text-lg leading-relaxed">
-                  От началото на <span className="text-white font-medium">2020 година</span> успешно развива дейност като <span className="text-primary font-semibold">лектор</span> на множество професионални <span className="text-white font-medium">обучения и семинари</span>, а през <span className="text-white font-medium">2021 година</span> става <span className="text-primary font-semibold">основател</span> на цялостната професионална програма за обучение по данъци и счетоводство към счетоводната академия на <span className="text-primary font-semibold">Finance Academy</span>.
-                </p>
-                <p className="text-white/75 text-sm sm:text-base lg:text-lg leading-relaxed">
-                  Николай е активен външен <span className="text-primary font-semibold">данъчен консултант</span> на една от водещите <span className="text-white font-medium">одиторски компании</span> в страната. Той е автор и на редица статии за данъци и счетоводство в професионалния блог на единствената платформа за онлайн счетоводен софтуер в България –{" "}
-                  <a
-                    href="https://nula.bg/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary font-semibold hover:underline inline-flex items-center gap-1 transition-colors duration-300"
-                  >
-                    NulaBG
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </p>
-                <p className="text-white/75 text-sm sm:text-base lg:text-lg leading-relaxed">
-                  Компанията работи в <span className="text-white font-medium">партньорски взаимоотношения</span> с високо квалифицирани <span className="text-primary font-semibold">юристи</span> в областта на <span className="text-white/90 font-medium">гражданското, търговското и трудовото право</span>.
-                </p>
-              </div>
-
-              {/* Expertise — square tags */}
-              <div className="mt-6 sm:mt-8 lg:mt-10 pt-5 sm:pt-6 border-t border-white/10">
-                <div className="flex flex-wrap gap-2 sm:gap-3">
-                  {founderExpertise.map((item) => (
-                    <span
-                      key={item}
-                      className="px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium text-primary border border-primary/20 bg-primary/[0.06] tracking-wide uppercase"
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ===== TOP 100 AWARD SECTION ===== */}
-      <section className="relative py-16 sm:py-20 lg:py-24 xl:py-28 bg-gradient-to-b from-[#1a2b28] via-[#1e332f] to-[#243b37] overflow-hidden">
-        {/* Subtle background pattern */}
-        <div className="absolute inset-0 opacity-[0.02]">
-          <div className="absolute inset-0" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="1"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
-        </div>
-
-        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-6xl mx-auto">
-            {/* Header */}
-            <motion.div
-              {...sectionReveal}
-              className="text-center mb-10 sm:mb-12 lg:mb-16"
-            >
-              {/* Award Badges — square */}
-              <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6 sm:mb-8">
-                {["Top 100 Bulgaria", "2025", "Finance & Accounting", "Award Winner"].map((badge, index) => (
-                  <motion.span
-                    key={badge}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: index * 0.1, ease: "easeOut" }}
-                    className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-white/[0.04] border border-white/10 text-[10px] sm:text-xs font-medium text-white/80 tracking-wider uppercase"
-                  >
-                    {badge}
-                  </motion.span>
-                ))}
-              </div>
-
-              {/* Main Title */}
-              <h2
-                className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-4 sm:mb-6 leading-tight tracking-tight"
-              >
-                Николай Такиев –{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-400">
-                  BULGARIA&apos;S TOP 100 TALENTS
-                </span>
-                <span className="block sm:inline sm:ml-2 text-white/90">
-                  in Finance & Accounting 2025
-                </span>
-              </h2>
-            </motion.div>
-
-            {/* Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 xl:gap-16 items-center">
-              {/* Certificate Image */}
-              <motion.div
-                initial={{ opacity: 0, x: -40 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ type: "spring" as const, stiffness: 200, damping: 30, mass: 1 }}
-                className="order-2 lg:order-1"
-              >
-                <div className="relative">
-                  <div className="relative border border-white/10 p-3 sm:p-4 lg:p-5 transition-all duration-500 ease-out hover:border-white/20">
-                    <div className="relative aspect-[4/3] overflow-hidden">
-                      <Image
-                        src="/firm-logo/awards/certificate-carrer-show.jpg"
-                        alt="Bulgaria's Top 100 Talents - Finance & Accounting 2025 Certificate"
+            {/* ===== HERO SECTION ===== */}
+            <section className="hero-container relative h-[95vh] w-full flex flex-col items-center justify-center pt-24 pb-32">
+                <div ref={heroImgRef} className="absolute inset-4 sm:inset-6 lg:inset-x-12 lg:inset-y-8 rounded-[3rem] overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)]">
+                    <Image
+                        src="/firm-logo/banners/banner-for-us.png"
+                        alt="Takiev Finance Team"
                         fill
-                        className="object-contain bg-white"
-                        sizes="(max-width: 1024px) 100vw, 50vw"
-                      />
+                        className="hero-parallax-img object-cover object-center scale-[1.25] "
+                        priority
+                        sizes="100vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60" />
+
+                    <div className="absolute top-8 left-6 sm:left-10 md:top-12 md:left-12 z-20">
+                        <Breadcrumbs />
                     </div>
-                  </div>
                 </div>
-              </motion.div>
+            </section>
 
-              {/* Description */}
-              <motion.div
-                initial={{ opacity: 0, x: 40 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ type: "spring" as const, stiffness: 200, damping: 30, mass: 1 }}
-                className="order-1 lg:order-2"
-              >
-                <div className="space-y-4 sm:space-y-5 lg:space-y-6">
-                  <p className="text-base sm:text-lg lg:text-xl text-white/80 leading-relaxed">
-                    През 2025 г. Николай Такиев е официално отличен в националния индекс{" "}
-                    <span className="text-white font-semibold">Bulgaria&apos;s Top 100 Talents</span>{" "}
-                    на Career Show – инициатива, която ежегодно награждава най-изявените професионалисти в България.
-                  </p>
+            {/* ===== INTRO HERO TEXT ===== */}
+            <section className="relative py-16 mt-10 z-10 px-4">
+                <div className="container mx-auto max-w-5xl text-center">
+                    <SectionTitle
+                        title="Лично отношение. Професионален подход."
+                        subtitle="Такиев Финанс предлага първокласни счетоводни услуги и данъчни консултации, адаптирани за успеха на вашия бизнес."
+                        darkText={true}
+                        titleClass="!text-[#2d3d3a]"
+                        subtitleClass="!text-[#2d3d3a]/80"
+                    />
+                </div>
+            </section>
 
-                  <p className="text-base sm:text-lg lg:text-xl text-white/80 leading-relaxed">
-                    Той е избран в категория{" "}
-                    <span className="text-amber-400 font-semibold">Finance & Accounting</span>{" "}
-                    като признание за висок професионализъм, експертиза в областта на счетоводството и данъчното консултиране, както и значим принос към развитието на бизнеса.
-                  </p>
+            {/* ===== FOUNDER ===== */}
+            <section className="founder-section relative py-28 sm:py-36 z-10 clip-slant-reverse bg-[#1b2b28] section-inset border-y border-white/5 mt-40">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-                  {/* Achievement highlights */}
-                  <div className="pt-4 sm:pt-6 border-t border-white/10">
-                    <div className="grid grid-cols-2 gap-4 sm:gap-6">
-                      <div className="text-center sm:text-left">
-                        <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-amber-400 mb-1">Top 100</div>
-                        <div className="text-xs sm:text-sm text-white/50">Най-изявени професионалисти</div>
-                      </div>
-                      <div className="text-center sm:text-left">
-                        <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1">2025</div>
-                        <div className="text-xs sm:text-sm text-white/50">Career Show България</div>
-                      </div>
+                    {/* Title — extracted above the grid */}
+                    <SectionTitle title="Основател и Управител" className="mb-8" />
+
+                    {/* Stylish divider below title */}
+                    <div className="stylish-divider w-full max-w-xl mx-auto mb-14" />
+
+                    {/* Two-column grid: text + image */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+
+                        {/* Text column */}
+                        <div className="lg:col-span-7">
+                            <h3 className="founder-name-gradient text-5xl sm:text-6xl lg:text-8xl font-black mb-2 tracking-tighter leading-[0.95]">Николай<br />Такиев</h3>
+                            <p className="text-lg sm:text-xl text-primary font-bold mb-10 uppercase tracking-widest">Магистър по счетоводство, финанси и бизнес анализ</p>
+
+                            <div className="space-y-5 text-white/90 leading-relaxed text-[17px] max-w-2xl font-medium">
+                                <p><span className="text-white font-bold">Николай Такиев</span> има надсетилетен професионален опит в областта на данъчното консултиране и счетоводството. Автор е на редица книги, статии и публикации, които подпомагат бизнес развитието.</p>
+                                <p>От 2020 г. е лектор на множество обучения и семинари, а през 2021 г. основава професионалната програма за обучение към академията на <span className="font-bold text-white bg-[#19BFB7]/20 px-2 py-0.5 rounded">Finance Academy</span>.</p>
+                                <p>Активен външен данъчен консултант на водещи одиторски компании. Автор в блога на единствената платформа за онлайн счетоводен софтуер – <a href="https://blog.nula.bg/author/nikolai/" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-white transition-colors duration-300 font-bold inline-flex items-center">NulaBG <ExternalLink className="w-4 h-4 ml-1" /></a></p>
+                                <div className="border-l-4 border-primary pl-6 py-2 bg-gradient-to-r from-[#19BFB7]/10 to-transparent rounded-r-xl">
+                                    <p className="italic text-white">Компанията работи в тесни партньорски взаимоотношения с високо квалифицирани юристи в областта на гражданското, търговското и трудовото право.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Image column — 3D Pop-out Portrait */}
+                        <div className="lg:col-span-5 relative flex items-end justify-center pt-20 pb-0">
+                            <div className="relative w-[300px] sm:w-[380px] h-[400px] sm:h-[450px]">
+                                {/* 3D Portal Base (Circle at bottom) */}
+                                <div className="absolute bottom-0 w-[300px] sm:w-[380px] h-[300px] sm:h-[380px] rounded-full border border-white/10 bg-gradient-to-b from-[#2d3d3a] to-[#122220] shadow-[inset_0_-20px_60px_rgba(0,0,0,0.8),inset_0_10px_30px_rgba(25,191,183,0.15),0_30px_50px_rgba(0,0,0,0.5)] flex items-center justify-center overflow-hidden">
+                                    {/* Inner grid/glow for depth */}
+                                    <div className="absolute inset-x-0 bottom-0 h-[60%] opacity-30 bg-[linear-gradient(rgba(25,191,183,1)_1px,transparent_1px),linear-gradient(90deg,rgba(25,191,183,1)_1px,transparent_1px)] bg-[size:20px_20px] [mask-image:linear-gradient(to_bottom,transparent,black)]" />
+                                    <div className="absolute bottom-0 w-[80%] h-[50%] bg-[#19BFB7]/20 blur-[50px] rounded-full" />
+                                </div>
+
+                                {/* Image Wrapper clipped precisely to circle bottom but open at top */}
+                                <div className="absolute bottom-0 w-[300px] sm:w-[380px] h-[550px] sm:h-[600px] overflow-hidden rounded-b-full z-10 pointer-events-none">
+                                    <div className="founder-parallax-img absolute bottom-0 w-full h-full pointer-events-auto drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]">
+                                        <Image
+                                            src="/firm-logo/Nikolay-Takiev–no-bgd.png"
+                                            alt="Николай Такиев"
+                                            fill
+                                            className="object-contain object-bottom"
+                                            sizes="(max-width: 1024px) 100vw, 400px"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* LinkedIn Social Badge */}
+                            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 z-20">
+                                <motion.a
+                                    initial={{ opacity: 0, scale: 0 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.5, type: 'spring' }}
+                                    href="https://www.linkedin.com/company/takiev-finance/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-14 h-14 rounded-full bg-[#1b2b28] border-2 border-[#19BFB7] flex items-center justify-center text-[#19BFB7] hover:bg-[#19BFB7] hover:text-[#1b2b28] transition-all duration-300 hover:-translate-y-1"
+                                >
+                                    <Linkedin className="w-6 h-6" />
+                                </motion.a>
+                            </div>
+                        </div>
                     </div>
-                  </div>
+
+                    {/* Stylish divider above badges */}
+                    <div className="stylish-divider w-full max-w-3xl mx-auto mt-14 mb-8" />
+
+                    {/* Badges — full-width single row */}
+                    <div className="flex flex-wrap lg:flex-nowrap justify-center gap-3">
+                        {founderExpertise.map(exp => (
+                            <div key={exp} className="px-5 py-2.5 rounded-full bg-white/5 border border-white/10 text-white shadow-lg text-[15px] font-semibold hover:border-primary/50 hover:bg-[#19BFB7]/20 transition-all cursor-default whitespace-nowrap">
+                                {exp}
+                            </div>
+                        ))}
+                    </div>
                 </div>
-              </motion.div>
-            </div>
-          </div>
-        </div>
-      </section>
+            </section>
 
-      {/* ===== TEAM SECTION ===== */}
-      <TeamSection teamMembers={displayMembers} />
+            {/* ===== SOCIAL LINKS ===== */}
+            <section className="relative py-8 bg-transparent z-20">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <p className="text-[#1b2b28] text-[13px] tracking-widest uppercase font-bold">Последвайте ни</p>
+                        <div className="flex items-center gap-4">
+                            {socialLinks.map((social) => {
+                                const Icon = social.icon;
+                                return (
+                                    <a
+                                        key={social.label}
+                                        href={social.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-12 h-12 rounded-full border border-[#1b2b28]/15 flex items-center justify-center text-[#1b2b28]/60 hover:text-[#19BFB7] hover:border-[#19BFB7]/80 hover:bg-[#19BFB7]/10 transition-all duration-300"
+                                    >
+                                        <span className="sr-only">{social.label}</span>
+                                        <Icon className="w-5 h-5" />
+                                    </a>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            </section >
 
-      {/* ===== PARTNERS SECTION ===== */}
-      <section className="relative py-16 sm:py-20 lg:py-24 xl:py-28 bg-gradient-to-b from-[#2a413d] to-[#263d39] overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            {...sectionReveal}
-            className="mb-8 sm:mb-10 lg:mb-16"
-          >
-            <SectionTitle
-              title="Нашите партньори"
-              subtitle="Работим съвместно с водещи организации в сектора"
-            />
-          </motion.div>
+            {/* ===== AWARD ====== */}
+            < section className="relative py-24 sm:py-32 z-10 clip-slant bg-[#1E2F2C] section-inset border-y border-white/5 mt-40" >
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl pt-12 pb-12">
+                    <SectionTitle title="Отличия и Признания" />
 
-          <PartnersCarousel />
-        </div>
-      </section>
 
-      {/* ===== BUSINESS SECTORS ===== */}
-      <BusinessSectorsSection />
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mt-16">
+                        <div className="order-2 lg:order-1 relative aspect-[4/3] rounded-3xl p-6 bg-white/5 border border-white/10 shadow-2xl">
+                            <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-inner bg-white">
+                                <Image
+                                    src="/firm-logo/awards/certificate-carrer-show.jpg"
+                                    alt="Certificate"
+                                    fill
+                                    className="object-contain"
+                                    sizes="(max-width: 1024px) 100vw, 50vw"
+                                />
+                            </div>
+                        </div>
+                        <div className="order-1 lg:order-2">
+                            <div className="flex flex-wrap gap-2 mb-8">
+                                {["Top 100 Bulgaria", "2025", "Finance & Accounting"].map((badge) => (
+                                    <span key={badge} className="px-4 py-1.5 bg-[#19BFB7]/20 border border-[#19BFB7]/50 text-sm font-bold text-white uppercase tracking-wider rounded-full">
+                                        {badge}
+                                    </span>
+                                ))}
+                            </div>
+                            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-6 leading-tight">
+                                Отличен в <br /><span className="text-amber-400">Bulgaria&apos;s Top 100 Talents</span>
+                            </h2>
+                            <div className="space-y-6 text-white/90 text-lg leading-relaxed font-medium">
+                                <p>През 2025 г. Николай Такиев е официално отличен в националния индекс <span className="text-white font-bold bg-white/10 px-2 rounded">Bulgaria&apos;s Top 100 Talents</span> на Career Show – инициатива, която ежегодно награждава най-изявените професионалисти в страната.</p>
+                                <p>Той е избран в категория <span className="text-amber-400 font-bold">Finance & Accounting</span> като абсолютно признание за висок професионализъм, експертиза в областта на счетоводството и данъчното консултиране, както и безспорен принос към развитието на бизнеса в България.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section >
 
-      {/* ===== CTA SECTION ===== */}
-      <section className="relative py-16 sm:py-20 lg:py-24 xl:py-28 bg-gradient-to-b from-[#1e332f] to-[#40514E] overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            {...sectionReveal}
-          >
-            <SectionTitle
-              title="Готови сте да започнете?"
-              subtitle="Свържете се с нас днес и нека заедно изградим финансовото бъдеще на вашия бизнес."
-            />
-            <div className="mt-8 sm:mt-10">
-              <PremiumCTA href="/kontakti">
-                Свържете се с нас
-                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-              </PremiumCTA>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+            {/* ===== VALUES ===== */}
+            < section className="relative py-24 sm:py-32 z-10" >
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+                    <div className="absolute inset-x-0 inset-y-0 bg-[#2d3d3a] rounded-[3rem] border border-white/5 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] -z-10" />
+                    <div className="py-16">
+                        <SectionTitle title="Нашите ценности" subtitle="Принципите, които направляват всяко наше действие и създават доверие" />
+                        <ValuesSection />
+                    </div>
+                </div>
+            </section >
 
-      </div>{/* end content wrapper */}
-    </div>
-  );
+            {/* ===== EXPERTISE BENTO ===== */}
+            < section className="relative py-24 sm:py-32 z-10 clip-slant-reverse bg-[#2d3d3a] section-inset border-y border-white/5 mt-40" >
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <SectionTitle title="Експертиза в разнообразни сектори" subtitle="Изключителен практически опит в разнообразни области на икономиката" />
+                    <BusinessSectorsSection />
+                </div>
+            </section >
+
+            {/* ===== MID-PAGE INFO TEXT ===== */}
+            < section className="relative py-16 mt-20 mb-10 z-10 px-4" >
+                <div className="container mx-auto max-w-5xl text-center">
+                    <SectionTitle
+                        title="Изграждаме финансово бъдеще"
+                        subtitle="Такиев Финанс предлага експертни счетоводни услуги и данъчни консултации за различни бизнеси и физически лица. В нашата практика обслужваме широка гама от клиенти, които успешно изграждат своя бизнес в различни сектори на икономиката."
+                        darkText={true}
+                        titleClass="!text-[#2d3d3a]"
+                        subtitleClass="!text-[#2d3d3a]/80 font-medium"
+                    />
+                </div>
+            </section>
+
+            {/* ===== TEAM ACCORDION ===== */}
+            <section className="relative py-24 sm:py-32 z-10 clip-slant bg-[#2d3d3a] section-inset border-y border-white/5 mt-40">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <SectionTitle title="Нашият екип" subtitle="Експерти с богат опит и безкомпромисен стандарт на работа" />
+                    <TeamSection teamMembers={displayMembers} />
+                </div>
+            </section>
+
+            {/* ===== PARTNERS SECTION ===== */}
+            <section className="relative py-24 sm:py-32 z-10 overflow-hidden mt-40">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+                    <div className="max-w-7xl mx-auto text-center">
+                        <SectionTitle
+                            title="Нашите партньори"
+                            subtitle="Заедно постигаме повече и работим с водещи организации в сектора"
+                            center={true}
+                            titleClass="!text-[#2d3d3a]"
+                            subtitleClass="!text-[#2d3d3a]/80"
+                        />
+                    </div>
+                </div>
+
+                <div className="relative mt-16 w-full max-w-[100rem] mx-auto px-4 sm:px-8">
+                    <PartnersCarousel />
+                </div>
+            </section>
+
+            {/* ===== CTA ===== */}
+            <section className="relative py-40 z-10 -mt-10 overflow-hidden bg-[#101b1a] rounded-t-[4rem] border-t border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.2)]">
+
+                {/* Diagonal Lines Background */}
+                <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+                    {/* White line (thinner) */}
+                    <div className="absolute -top-[50%] right-[5%] sm:right-[15%] w-16 sm:w-24 h-[200%] bg-white/10 rotate-[35deg] transform origin-center transition-transform" />
+
+                    {/* Turquoise line (thicker, overlapping white, casting shadow) */}
+                    <div className="absolute -top-[50%] right-[10%] sm:right-[calc(15%+40px)] w-24 sm:w-36 h-[200%] bg-gradient-to-b from-[#19BFB7] to-[#128a84] rotate-[35deg] transform origin-center shadow-[-20px_0_30px_rgba(0,0,0,0.6)]" />
+                </div>
+
+                <div className="container mx-auto px-4 text-center relative z-20">
+                    <SectionTitle title="Готови ли сте за старт?" subtitle="Свържете се с нас днес и нека заедно изградим финансовото бъдеще на вашия бизнес." />
+                    <div className="mt-16 flex justify-center">
+                        <PremiumCTA href="/kontakti">
+                            Свържете се с нас <ArrowRight className="w-5 h-5 ml-2" />
+                        </PremiumCTA>
+                    </div>
+                </div>
+            </section>
+
+        </div >
+    );
 }

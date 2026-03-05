@@ -50,6 +50,11 @@ export function PremiumLoader() {
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
+    if (typeof window !== "undefined" && sessionStorage.getItem("takiev-loader")) {
+      setIsLoading(false);
+      return;
+    }
+
     document.body.classList.add("loader-active");
 
     timers.current.push(setTimeout(() => setPhase("text"), 580));
@@ -57,6 +62,7 @@ export function PremiumLoader() {
       setTimeout(() => {
         setIsLoading(false);
         document.body.classList.remove("loader-active");
+        sessionStorage.setItem("takiev-loader", "1");
       }, TOTAL_MS)
     );
 

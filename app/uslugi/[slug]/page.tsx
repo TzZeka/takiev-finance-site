@@ -11,6 +11,8 @@ import { CompanyRegistrationTab } from "@/components/services/tabs/CompanyRegist
 import { ContactModal } from "@/components/shared/ContactModal";
 import { ServiceNavigation } from "@/components/services/ServiceNavigation";
 import { motion } from "framer-motion";
+import type { Metadata } from "next";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 const serviceBanners: Record<string, string> = {
   schetovodstvo: "/firm-logo/uslugi/счетоводни-услуги.png",
@@ -21,6 +23,30 @@ const serviceBanners: Record<string, string> = {
 
 interface ServicePageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const service = getServiceBySlug(slug);
+
+  if (!service) {
+    return {
+      title: "Услугата не е намерена - Takiev Finance",
+    };
+  }
+
+  return {
+    title: `${service.title} | Takiev Finance - Счетоводна Кантора`,
+    description: service.description,
+    alternates: {
+      canonical: `https://takiev.bg/uslugi/${slug}`,
+    },
+    openGraph: {
+      title: `${service.title} | Takiev Finance`,
+      description: service.description,
+      url: `https://takiev.bg/uslugi/${slug}`,
+    },
+  };
 }
 
 // Map service IDs to their components
@@ -80,6 +106,9 @@ export default function ServicePage({ params }: ServicePageProps) {
             animate={{ opacity: 1, y: 0 }}
             className="relative z-10 text-center px-4"
           >
+            <div className="flex justify-center mb-6">
+              <Breadcrumbs />
+            </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 drop-shadow-lg">
               {service.title}
             </h1>

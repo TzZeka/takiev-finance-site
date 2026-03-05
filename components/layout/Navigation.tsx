@@ -154,20 +154,16 @@ export function Navigation({ scrolled = false }: NavigationProps) {
                   onMouseLeave={handleDropdownLeave}
                 >
                   <div className="py-2">
-                    {servicesConfig.map((service) => {
-                      const Icon = service.icon;
-                      return (
-                        <Link
-                          key={service.id}
-                          href={`/uslugi/${service.slug}`}
-                          className="flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 transition-colors"
-                          onClick={() => setDropdownOpen(false)}
-                        >
-                          <Icon className="w-4 h-4 text-primary" />
-                          <span className="text-sm">{service.label}</span>
-                        </Link>
-                      );
-                    })}
+                    {servicesConfig.map((service) => (
+                      <Link
+                        key={service.id}
+                        href={`/uslugi/${service.slug}`}
+                        className="block px-4 py-3 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        {service.label}
+                      </Link>
+                    ))}
                   </div>
                 </div>
               )}
