@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { getAllBlogPosts } from "@/lib/sanity/queries";
+import { getAllBlogPosts, getAllNews } from "@/lib/sanity/queries";
 import { BlogListClient } from "@/components/blog/BlogListClient";
 import { BlogHeroGrid } from "@/components/blog/BlogHeroGrid";
 import { QuoteCarousel } from "@/components/blog/QuoteCarousel";
+import { FirmNewsDashboard } from "@/components/blog/FirmNewsDashboard";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 // Revalidate every 60 seconds so new/updated posts appear without rebuilding
@@ -52,7 +53,7 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  const posts = await getAllBlogPosts();
+  const [posts, news] = await Promise.all([getAllBlogPosts(), getAllNews()]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -85,8 +86,12 @@ export default async function BlogPage() {
       </div>
 
       {/* Blog Content Container (Sidebar + List) */}
-      <div className="px-4 md:px-8 relative z-20 py-12 md:py-16 bg-slate-50 rounded-t-[2.5rem] md:rounded-t-[3rem] border-t border-black/5">
+      <div className="px-4 md:px-8 relative z-20 pt-12 pb-28 md:pt-16 md:pb-32 bg-slate-50 rounded-t-[2.5rem] md:rounded-t-[3rem] border-t border-black/5">
         <h2 className="sr-only">Съдържание на блога</h2>
+
+        {/* Firm News Dashboard — shown only if news exist */}
+        <FirmNewsDashboard news={news} />
+
         <BlogListClient posts={posts} />
       </div>
     </div>

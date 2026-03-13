@@ -2,6 +2,7 @@ import { client } from "./client";
 import type {
   Service,
   BlogPost,
+  NewsItem,
   Testimonial,
   Client,
   Video,
@@ -98,7 +99,9 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
       body,
       nulaBgUrl,
       tags,
-      featured
+      featured,
+      readingTime,
+      accentColor
     }`
   );
 }
@@ -128,7 +131,9 @@ export async function getFeaturedBlogPosts(
       body,
       nulaBgUrl,
       tags,
-      featured
+      featured,
+      readingTime,
+      accentColor
     }`
   );
 }
@@ -158,7 +163,9 @@ export async function getBlogPostBySlug(
       body,
       nulaBgUrl,
       tags,
-      featured
+      featured,
+      readingTime,
+      accentColor
     }`,
     { slug }
   );
@@ -329,6 +336,22 @@ export async function getHomeContent(): Promise<HomeContent | null> {
       messages,
       ctaText,
       ctaButtonText
+    }`
+  );
+}
+
+// Firm News
+export async function getAllNews(): Promise<NewsItem[]> {
+  return client.fetch(
+    `*[_type == "news"] | order(priority asc, publishedAt desc) {
+      _id,
+      _type,
+      _createdAt,
+      title,
+      summary,
+      publishedAt,
+      tag,
+      priority
     }`
   );
 }

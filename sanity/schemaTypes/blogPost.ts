@@ -135,6 +135,23 @@ export default defineType({
       type: "boolean",
       initialValue: false,
     }),
+    defineField({
+      name: "readingTime",
+      title: "Време за четене (минути)",
+      type: "number",
+      description: "Приблизително време за четене в минути, напр. 5",
+      validation: (Rule) => Rule.min(1).max(60),
+    }),
+    defineField({
+      name: "accentColor",
+      title: "Акцентен цвят (hex)",
+      type: "string",
+      description: "Hex цвят за hover ефект на картата, напр. #19BFB7",
+      validation: (Rule) =>
+        Rule.regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).warning(
+          "Въведете валиден hex цвят, напр. #19BFB7"
+        ),
+    }),
   ],
   preview: {
     select: {

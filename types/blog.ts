@@ -25,4 +25,17 @@ export interface BlogPost {
   nulaBgUrl?: string;
   tags: string[];
   featured?: boolean;
+  readingTime?: number;
+  accentColor?: string;
+}
+
+export interface NewsItem {
+  _id: string;
+  _type: "news";
+  _createdAt: string;
+  title: string;
+  summary?: string;
+  publishedAt: string;
+  tag?: string;
+  priority?: "high" | "medium" | "low";
 }
