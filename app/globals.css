@@ -524,17 +524,26 @@ body:has(.loader-active) {
     transform: translateY(0);
   }
 
-  /* Override browser autofill background */
+  /* Override browser autofill background — dark forms (ContactSection transparent inputs) */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   textarea:-webkit-autofill,
   textarea:-webkit-autofill:hover,
   textarea:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0 1000px rgb(15 23 42 / 0.8) inset !important;
+    -webkit-box-shadow: 0 0 0 1000px rgb(2 6 23) inset !important;
     -webkit-text-fill-color: white !important;
     caret-color: white !important;
-    transition: background-color 5000s ease-in-out 0s;
+    transition: background-color 600000s ease-in-out 0s !important;
+  }
+
+  /* Light bg inputs override (ContactModal — bg-slate-50) */
+  .autofill-light:-webkit-autofill,
+  .autofill-light:-webkit-autofill:hover,
+  .autofill-light:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px rgb(248 250 252) inset !important;
+    -webkit-text-fill-color: rgb(15 23 42) !important;
+    caret-color: rgb(15 23 42) !important;
   }
 }
 

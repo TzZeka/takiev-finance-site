@@ -1,15 +1,18 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ArrowUp } from "lucide-react";
+import { motion, useAnimation } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isNearFooter, setIsNearFooter] = useState(false);
+  const controls = useAnimation();
+  // Track hover state so hover-end doesn't fight a mid-flight animation
+  const isHoveringRef = useRef(false);
 
-  // Calculate scroll progress and visibility
   const handleScroll = useCallback(() => {
     const scrollTop = window.scrollY;
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -18,11 +21,9 @@ export function ScrollToTop() {
     setScrollProgress(progress);
     setIsVisible(scrollTop > 400);
 
-    // Check if near footer
     const footer = document.querySelector("footer");
     if (footer) {
-      const footerRect = footer.getBoundingClientRect();
-      setIsNearFooter(footerRect.top < window.innerHeight + 100);
+      setIsNearFooter(footer.getBoundingClientRect().top < window.innerHeight + 100);
     }
   }, []);
 
@@ -32,11 +33,46 @@ export function ScrollToTop() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
+  // ── Hover: pull arrow down — rubber-band loading tension ─────────────────
+  const onHoverStart = () => {
+    isHoveringRef.current = true;
+    controls.start({
+      y: 6,
+      transition: {
+        type: "spring",
+        stiffness: 160,
+        damping: 12,
+        mass: 1.4,
+      },
     });
+  };
+
+  // ── Hover end: snap back to neutral ──────────────────────────────────────
+  const onHoverEnd = () => {
+    if (!isHoveringRef.current) return;
+    isHoveringRef.current = false;
+    controls.start({
+      y: 0,
+      transition: { type: "spring", stiffness: 420, damping: 26 },
+    });
+  };
+
+  // ── Click: slingshot release — explosive upward launch, spring settle ─────
+  // Clamped to ±11px so arrow stays within the 48px container at all times.
+  const onFire = () => {
+    isHoveringRef.current = false;
+    controls.start({
+      y: [null, -11, 0],
+      transition: {
+        duration: 0.52,
+        times: [0, 0.28, 1],
+        ease: [
+          [0.95, 0.05, 0.08, 0.94], // launch — explosive release
+          [0.22, 1, 0.36, 1],        // settle — spring-like return
+        ],
+      },
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // SVG circle parameters
@@ -48,29 +84,28 @@ export function ScrollToTop() {
 
   return (
     <button
-      onClick={scrollToTop}
+      onClick={onFire}
+      onMouseEnter={onHoverStart}
+      onMouseLeave={onHoverEnd}
       aria-label="Върни се в началото"
       className={cn(
         "fixed z-50 group transition-all duration-500 ease-out",
-        // Position - moves up when near footer
         isNearFooter ? "bottom-24 sm:bottom-28" : "bottom-6 sm:bottom-8",
         "right-4 sm:right-6 lg:right-8",
-        // Visibility
         isVisible
           ? "opacity-100 translate-y-0 pointer-events-auto"
           : "opacity-0 translate-y-4 pointer-events-none"
       )}
     >
-      {/* Background with blur */}
-      <div className="absolute inset-0 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/10 transition-all duration-300 group-hover:bg-slate-800 group-hover:border-primary/30 group-hover:shadow-lg group-hover:shadow-primary/20" />
+      {/* Background glass pill */}
+      <div className="absolute inset-0 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/10 transition-all duration-300 group-hover:bg-slate-800 group-hover:border-primary/30" />
 
-      {/* Progress circle */}
+      {/* Scroll progress ring */}
       <svg
         width={size}
         height={size}
         className="absolute inset-0 -rotate-90 transition-transform duration-300 group-hover:scale-110"
       >
-        {/* Background circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -80,7 +115,6 @@ export function ScrollToTop() {
           strokeWidth={strokeWidth}
           className="text-white/10"
         />
-        {/* Progress circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -95,9 +129,15 @@ export function ScrollToTop() {
         />
       </svg>
 
-      {/* Arrow icon */}
-      <div className="relative w-12 h-12 flex items-center justify-center">
-        <ArrowUp className="w-5 h-5 text-white/70 transition-all duration-300 group-hover:text-white group-hover:-translate-y-0.5" />
+      {/* Arrow — slingshot animation target, clipped to container bounds */}
+      <div className="relative w-12 h-12 flex items-center justify-center overflow-hidden">
+        <motion.div
+          animate={controls}
+          initial={{ y: 0 }}
+          style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+        >
+          <ArrowUp className="w-5 h-5 text-white/70 group-hover:text-white transition-colors duration-300" />
+        </motion.div>
       </div>
 
       {/* Tooltip */}

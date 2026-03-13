@@ -243,7 +243,7 @@ export function Footer() {
                 </li>
                 <li>
                   <a
-                    href="https://www.google.com/maps/place/Takiev+Finance+EOOD/@42.697707877149,23.319877890847863,17z"
+                    href="https://maps.app.goo.gl/K4z9hmq1RbuuUfQy6"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-white/35 leading-relaxed block hover:text-primary transition-colors"
@@ -273,7 +273,7 @@ export function Footer() {
               href="/terms"
               className="text-xs text-white/25 hover:text-white/55 transition-colors duration-200"
             >
-              Условия за ползване
+              Общи условия
             </Link>
           </div>
         </div>

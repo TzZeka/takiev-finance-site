@@ -269,12 +269,6 @@ export function MessagesSection({ messages }: MessagesSectionProps) {
   return (
     <motion.section
       ref={ref}
-      {...(prefersReducedMotion ? {} : {
-        initial: { y: 120 },
-        whileInView: { y: 0 },
-        viewport: { once: true, margin: "-40px" },
-        transition: { type: "spring" as const, stiffness: 80, damping: 20 },
-      })}
       className="relative py-16 md:py-24 lg:py-32 bg-white overflow-hidden shadow-sm"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">

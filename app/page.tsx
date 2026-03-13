@@ -101,7 +101,7 @@ export default async function HomePage() {
     <>
       <HeroSection motto={motto} />
       <div className="pb-3 md:pb-4">
-        <div className="-mt-24 md:-mt-36 relative" style={{ zIndex: 1 }}>
+        <div className="relative" style={{ zIndex: 1 }}>
           <MessagesSection messages={messages} />
         </div>
         <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 2 }}>

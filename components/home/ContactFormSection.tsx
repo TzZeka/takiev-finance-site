@@ -85,7 +85,7 @@ export function ContactFormSection({ ctaText }: ContactFormSectionProps) {
                     </div>
                   </a>
 
-                  <a href="https://www.google.com/maps/place/Takiev+Finance+EOOD/@42.697707877149,23.319877890847863,17z" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
+                  <a href="https://maps.app.goo.gl/K4z9hmq1RbuuUfQy6" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
                     <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/25 transition-colors">
                       <MapPin className="h-5 w-5 text-primary" />
                     </div>

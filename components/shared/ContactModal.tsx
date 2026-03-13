@@ -36,6 +36,9 @@ const contactFormSchema = z.object({
     .min(10, "Съобщението трябва да е поне 10 символа")
     .refine((val) => hasLetters(val), "Съобщението трябва да съдържа букви"),
   honeypot: z.string().max(0, "Spam detected").optional(),
+  termsAccepted: z.boolean().refine((val) => val === true, {
+    message: "Необходимо е да приемете условията",
+  }),
 });
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
@@ -46,14 +49,14 @@ interface ContactModalProps {
   defaultSubject?: string;
 }
 
-/* ── shared input classes ── */
+/* ── light-theme input classes (white form column) ── */
 const inputClass =
-  "bg-white/[0.05] border-white/[0.08] text-white placeholder:text-white/30 h-9 sm:h-10 text-base sm:text-sm shadow-none focus:border-primary/40 focus:ring-0 focus:placeholder:text-transparent rounded-xl transition-all duration-150 pr-9";
+  "autofill-light bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 h-9 sm:h-10 text-base sm:text-sm shadow-none focus:border-primary/50 focus:ring-0 focus:placeholder:text-transparent rounded-xl transition-all duration-150 pr-9";
 
 const textareaClass =
-  "bg-white/[0.05] border-white/[0.08] text-white placeholder:text-white/30 resize-none text-base sm:text-sm min-h-[90px] sm:min-h-[110px] shadow-none focus:border-primary/40 focus:ring-0 focus:placeholder:text-transparent rounded-xl transition-all duration-150 pr-9";
+  "autofill-light bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 resize-none text-base sm:text-sm min-h-[90px] sm:min-h-[110px] shadow-none focus:border-primary/50 focus:ring-0 focus:placeholder:text-transparent rounded-xl transition-all duration-150 pr-9";
 
-/* ── info card (left column) ── */
+/* ── info card (left dark column) ── */
 function InfoCard({
   icon: Icon,
   label,
@@ -84,6 +87,7 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [closeAngle, setCloseAngle] = useState(0);
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
@@ -95,6 +99,7 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
       subject: defaultSubject,
       message: "",
       honeypot: "",
+      termsAccepted: false,
     },
   });
 
@@ -147,27 +152,26 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
           />
 
           {/* ═══════════════════════════════════════════════════════════════
-              SIDE PANEL
+              SIDE PANEL — wider, white form column
               Mobile:  full-screen, slides in from right
-              lg+:     max-w-[660px] right panel, two columns
+              lg+:     max-w-[760px] right panel, two columns
           ═══════════════════════════════════════════════════════════════ */}
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%", transition: { duration: 0.3, ease: [0.36, 0, 0.66, -0.4] } }}
             transition={{ type: "spring", stiffness: 320, damping: 36 }}
-            className="fixed inset-y-0 right-0 z-[101] w-full lg:max-w-[660px] flex overflow-hidden"
-            style={{ background: "#0b1814" }}
+            className="fixed inset-y-0 right-0 z-[101] w-full lg:max-w-[760px] flex overflow-hidden"
           >
-            {/* ── LEFT INFO COLUMN (lg+ only) ── */}
+            {/* ── LEFT INFO COLUMN (lg+ only) — dark ── */}
             <div
-              className="hidden lg:flex flex-col w-[240px] flex-shrink-0 border-r border-white/[0.05] overflow-y-auto"
+              className="hidden lg:flex flex-col w-[280px] flex-shrink-0 border-r border-white/[0.05] overflow-y-auto"
               style={{ background: "#0e2019" }}
             >
               {/* Logo */}
               <div className="p-7 pb-6 border-b border-white/[0.05]">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-9 h-9 relative flex-shrink-0">
+                  <div className="w-10 h-10 relative flex-shrink-0">
                     <Image src="/icon.svg" alt="Takiev Finance" fill className="object-contain" />
                   </div>
                   <div>
@@ -181,7 +185,7 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                       className="text-[9px] font-bold tracking-widest uppercase bg-gradient-to-r from-[#147d6c] to-[#1effff] bg-clip-text text-transparent opacity-70"
                       style={{ fontFamily: "'Avenir', sans-serif" }}
                     >
-                      Accounting & Tax
+                      Accounting & Tax Company
                     </span>
                   </div>
                 </div>
@@ -198,8 +202,9 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                 <InfoCard
                   icon={MapPin}
                   label="Адрес"
-                  value="бул. Стамболийски 30Б, София"
-                  href="https://www.google.com/maps/place/Takiev+Finance+EOOD/@42.697707877149,23.319877890847863,17z"
+                  value="София център, бул. „Александър Стамболийски“ 30Б,"
+                  href="https://maps.app.goo.gl/K4z9hmq1RbuuUfQy6"
+                  target="_blank"
                 />
               </div>
 
@@ -212,28 +217,35 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
               </div>
             </div>
 
-            {/* ── FORM COLUMN ── */}
-            <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+            {/* ── FORM COLUMN — white background ── */}
+            <div className="flex-1 flex flex-col overflow-hidden min-w-0 bg-white">
               {/* Panel header */}
-              <div className="flex-shrink-0 flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
+              <div className="flex-shrink-0 flex items-center justify-between px-5 py-4 border-b border-slate-200/80">
                 {/* Mobile: logo */}
                 <div className="lg:hidden flex items-center gap-2.5">
                   <div className="w-7 h-7 relative flex-shrink-0">
                     <Image src="/icon.svg" alt="Takiev Finance" fill className="object-contain" />
                   </div>
-                  <span className="text-sm font-semibold text-white">Свържете се с нас</span>
+                  <span className="text-sm font-semibold text-slate-900">Свържете се с нас</span>
                 </div>
                 {/* Desktop: heading */}
                 <div className="hidden lg:block">
-                  <h2 className="text-lg font-bold text-white tracking-tight">Изпратете запитване</h2>
-                  <p className="text-xs text-white/35 mt-0.5">Ще отговорим максимално бързо</p>
+                  <h2 className="text-lg font-bold text-slate-900 tracking-tight">Изпратете запитване</h2>
+                  <p className="text-xs text-slate-400 mt-0.5">Ще отговорим максимално бързо</p>
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-2 text-white/40 hover:text-white hover:bg-white/[0.06] rounded-lg transition-all duration-200 flex-shrink-0"
+                  onMouseEnter={() => setCloseAngle((a) => a + 360)}
+                  className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-all duration-200 flex-shrink-0"
                   aria-label="Затвори"
                 >
-                  <X className="w-5 h-5" />
+                  <motion.span
+                    animate={{ rotate: closeAngle }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+                  >
+                    <X className="w-5 h-5" />
+                  </motion.span>
                 </button>
               </div>
 
@@ -241,22 +253,22 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
               <div className="flex-1 overflow-y-auto overscroll-contain">
                 {isSuccess ? (
                   <div className="flex flex-col items-center justify-center h-full py-16 px-6 text-center">
-                    <div className="w-16 h-16 rounded-full bg-primary/15 border border-primary/20 flex items-center justify-center mb-5">
+                    <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-5">
                       <CheckCircle className="h-8 w-8 text-primary" />
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2">Благодарим Ви!</h3>
-                    <p className="text-white/60 text-sm max-w-xs leading-relaxed">
+                    <h3 className="text-xl font-bold text-slate-900 mb-2">Благодарим Ви!</h3>
+                    <p className="text-slate-500 text-sm max-w-xs leading-relaxed">
                       Вашето запитване е получено. Ще се свържем с Вас възможно най-скоро.
                     </p>
                   </div>
                 ) : (
                   <div className="p-5">
                     {/* Mobile-only compact contact strip */}
-                    <div className="lg:hidden flex flex-wrap gap-x-4 gap-y-1 mb-5 pb-4 border-b border-white/[0.06]">
-                      <a href="tel:+359899080016" className="flex items-center gap-1.5 text-[11px] text-white/40 hover:text-primary transition-colors">
+                    <div className="lg:hidden flex flex-wrap gap-x-4 gap-y-1 mb-5 pb-4 border-b border-slate-200/70">
+                      <a href="tel:+359899080016" className="flex items-center gap-1.5 text-[11px] text-slate-400 hover:text-primary transition-colors">
                         <Phone className="w-3 h-3" /> +359 89 908 0016
                       </a>
-                      <a href="mailto:office@takiev.bg" className="flex items-center gap-1.5 text-[11px] text-white/40 hover:text-primary transition-colors">
+                      <a href="mailto:office@takiev.bg" className="flex items-center gap-1.5 text-[11px] text-slate-400 hover:text-primary transition-colors">
                         <Mail className="w-3 h-3" /> office@takiev.bg
                       </a>
                     </div>
@@ -269,8 +281,8 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                             name="name"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel className="text-white/70 text-xs">
-                                  Име <span className="text-white/25 font-normal italic text-[10px]">(задължително)</span>
+                                <FormLabel className="text-slate-700 text-xs">
+                                  Име <span className="text-slate-400 font-normal italic text-[10px]">(задължително)</span>
                                 </FormLabel>
                                 <FormControl>
                                   <div className="relative">
@@ -279,13 +291,13 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                                     />
                                     {field.value && (
                                       <button type="button" onClick={() => { field.onChange(""); form.clearErrors("name"); }}
-                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors" aria-label="Изчисти">
+                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors" aria-label="Изчисти">
                                         <XCircle className="w-4 h-4" />
                                       </button>
                                     )}
                                   </div>
                                 </FormControl>
-                                <FormMessage className="text-[11px] mt-0.5 leading-tight text-rose-400/90" />
+                                <FormMessage className="text-[11px] mt-0.5 leading-tight text-rose-500" />
                               </FormItem>
                             )}
                           />
@@ -295,8 +307,8 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                             name="email"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel className="text-white/70 text-xs">
-                                  Email <span className="text-white/25 font-normal italic text-[10px]">(задължително)</span>
+                                <FormLabel className="text-slate-700 text-xs">
+                                  Email <span className="text-slate-400 font-normal italic text-[10px]">(задължително)</span>
                                 </FormLabel>
                                 <FormControl>
                                   <div className="relative">
@@ -305,13 +317,13 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                                     />
                                     {field.value && (
                                       <button type="button" onClick={() => { field.onChange(""); form.clearErrors("email"); }}
-                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors" aria-label="Изчисти">
+                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors" aria-label="Изчисти">
                                         <XCircle className="w-4 h-4" />
                                       </button>
                                     )}
                                   </div>
                                 </FormControl>
-                                <FormMessage className="text-[11px] mt-0.5 leading-tight text-rose-400/90" />
+                                <FormMessage className="text-[11px] mt-0.5 leading-tight text-rose-500" />
                               </FormItem>
                             )}
                           />
@@ -321,7 +333,7 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                             name="phone"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel className="text-white/70 text-xs">Телефон</FormLabel>
+                                <FormLabel className="text-slate-700 text-xs">Телефон</FormLabel>
                                 <FormControl>
                                   <div className="relative">
                                     <Input placeholder="+359 ..." className={inputClass} {...field}
@@ -329,13 +341,13 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                                     />
                                     {field.value && (
                                       <button type="button" onClick={() => { field.onChange(""); form.clearErrors("phone"); }}
-                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors" aria-label="Изчисти">
+                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors" aria-label="Изчисти">
                                         <XCircle className="w-4 h-4" />
                                       </button>
                                     )}
                                   </div>
                                 </FormControl>
-                                <FormMessage className="text-[11px] mt-0.5 leading-tight text-rose-400/90" />
+                                <FormMessage className="text-[11px] mt-0.5 leading-tight text-rose-500" />
                               </FormItem>
                             )}
                           />
@@ -345,7 +357,7 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                             name="company"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel className="text-white/70 text-xs">Фирма</FormLabel>
+                                <FormLabel className="text-slate-700 text-xs">Фирма</FormLabel>
                                 <FormControl>
                                   <div className="relative">
                                     <Input placeholder="Ime на фирмата" className={inputClass} {...field}
@@ -353,13 +365,13 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                                     />
                                     {field.value && (
                                       <button type="button" onClick={() => { field.onChange(""); form.clearErrors("company"); }}
-                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors" aria-label="Изчисти">
+                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors" aria-label="Изчисти">
                                         <XCircle className="w-4 h-4" />
                                       </button>
                                     )}
                                   </div>
                                 </FormControl>
-                                <FormMessage className="text-[11px] mt-0.5 leading-tight text-rose-400/90" />
+                                <FormMessage className="text-[11px] mt-0.5 leading-tight text-rose-500" />
                               </FormItem>
                             )}
                           />
@@ -370,8 +382,8 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                           name="subject"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-white/70 text-xs">
-                                Тема <span className="text-white/25 font-normal italic text-[10px]">(задължително)</span>
+                              <FormLabel className="text-slate-700 text-xs">
+                                Тема <span className="text-slate-400 font-normal italic text-[10px]">(задължително)</span>
                               </FormLabel>
                               <FormControl>
                                 <div className="relative">
@@ -380,13 +392,13 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                                   />
                                   {field.value && (
                                     <button type="button" onClick={() => { field.onChange(""); form.clearErrors("subject"); }}
-                                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors" aria-label="Изчисти">
+                                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors" aria-label="Изчисти">
                                       <XCircle className="w-4 h-4" />
                                     </button>
                                   )}
                                 </div>
                               </FormControl>
-                              <FormMessage className="text-[11px] mt-0.5 leading-tight text-rose-400/90" />
+                              <FormMessage className="text-[11px] mt-0.5 leading-tight text-rose-500" />
                             </FormItem>
                           )}
                         />
@@ -396,8 +408,8 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                           name="message"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-white/70 text-xs">
-                                Съобщение <span className="text-white/25 font-normal italic text-[10px]">(задължително)</span>
+                              <FormLabel className="text-slate-700 text-xs">
+                                Съобщение <span className="text-slate-400 font-normal italic text-[10px]">(задължително)</span>
                               </FormLabel>
                               <FormControl>
                                 <div className="relative">
@@ -406,13 +418,13 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                                   />
                                   {field.value && (
                                     <button type="button" onClick={() => { field.onChange(""); form.clearErrors("message"); }}
-                                      className="absolute right-2.5 top-3 text-white/20 hover:text-white/50 transition-colors" aria-label="Изчисти">
+                                      className="absolute right-2.5 top-3 text-slate-300 hover:text-slate-500 transition-colors" aria-label="Изчисти">
                                       <XCircle className="w-4 h-4" />
                                     </button>
                                   )}
                                 </div>
                               </FormControl>
-                              <FormMessage className="text-[11px] mt-0.5 leading-tight text-rose-400/90" />
+                              <FormMessage className="text-[11px] mt-0.5 leading-tight text-rose-500" />
                             </FormItem>
                           )}
                         />
@@ -431,8 +443,42 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                           )}
                         />
 
+                        {/* Terms consent */}
+                        <FormField
+                          control={form.control}
+                          name="termsAccepted"
+                          render={({ field }) => (
+                            <FormItem>
+                              <div className="flex items-start gap-3">
+                                <FormControl>
+                                  <input
+                                    type="checkbox"
+                                    id="terms-modal"
+                                    checked={field.value}
+                                    onChange={field.onChange}
+                                    className="mt-0.5 w-4 h-4 flex-shrink-0 accent-primary cursor-pointer"
+                                  />
+                                </FormControl>
+                                <label htmlFor="terms-modal" className="text-xs text-slate-600 leading-relaxed cursor-pointer select-none">
+                                  Запознат съм и приемам{" "}
+                                  <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 hover:text-primary/80">
+                                    Общите условия
+                                  </a>
+                                  {" "}и{" "}
+                                  <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 hover:text-primary/80">
+                                    Политиката за поверителност
+                                  </a>
+                                  .{" "}
+                                  <span className="text-slate-400">(Задължително)</span>
+                                </label>
+                              </div>
+                              <FormMessage className="ml-7 text-[11px] text-rose-500" />
+                            </FormItem>
+                          )}
+                        />
+
                         {error && (
-                          <div className="bg-rose-500/10 border border-rose-400/20 rounded-xl p-3 text-rose-300/90 text-xs">
+                          <div className="bg-rose-50 border border-rose-200 rounded-xl p-3 text-rose-600 text-xs">
                             {error}
                           </div>
                         )}

@@ -26,6 +26,9 @@ const contactFormSchema = z.object({
   subject: z.string().min(2, "Темата трябва да е поне 2 символа"),
   message: z.string().min(10, "Съобщението трябва да е поне 10 символа"),
   honeypot: z.string().max(0, "Spam detected").optional(),
+  termsAccepted: z.boolean().refine((val) => val === true, {
+    message: "Необходимо е да приемете условията",
+  }),
 });
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
@@ -45,6 +48,7 @@ export function ContactForm() {
       subject: "",
       message: "",
       honeypot: "",
+      termsAccepted: false,
     },
   });
 
@@ -206,6 +210,40 @@ export function ContactForm() {
               <FormControl>
                 <Input tabIndex={-1} autoComplete="off" {...field} />
               </FormControl>
+            </FormItem>
+          )}
+        />
+
+        {/* Terms consent */}
+        <FormField
+          control={form.control}
+          name="termsAccepted"
+          render={({ field }) => (
+            <FormItem>
+              <div className="flex items-start gap-3">
+                <FormControl>
+                  <input
+                    type="checkbox"
+                    id="terms-cf"
+                    checked={field.value}
+                    onChange={field.onChange}
+                    className="mt-0.5 w-4 h-4 flex-shrink-0 accent-primary cursor-pointer"
+                  />
+                </FormControl>
+                <label htmlFor="terms-cf" className="text-sm text-slate-600 leading-relaxed cursor-pointer select-none">
+                  Запознат съм и приемам{" "}
+                  <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 hover:text-primary/80">
+                    Общите условия
+                  </a>
+                  {" "}и{" "}
+                  <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 hover:text-primary/80">
+                    Политиката за поверителност
+                  </a>
+                  .{" "}
+                  <span className="text-slate-400 text-xs">(Задължително)</span>
+                </label>
+              </div>
+              <FormMessage className="ml-7 text-xs" />
             </FormItem>
           )}
         />

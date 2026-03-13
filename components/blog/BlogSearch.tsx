@@ -252,7 +252,7 @@ export function BlogSearch({ onSearch, posts = [], placeholder = "Търсене
           {query && (
             <button
               onClick={clearSearch}
-              className="absolute right-7 lg:right-8 top-1/2 -translate-y-1/2 text-slate-500 hover:text-primary transition-all duration-500 hover:-rotate-[360deg] z-10"
+              className="absolute right-7 lg:right-8 top-1/2 -translate-y-1/2 text-slate-500 hover:text-primary transition-all duration-500 hover:rotate-[360deg] z-10"
               aria-label="Изчисти търсенето"
             >
               <X className="h-4 w-4" />

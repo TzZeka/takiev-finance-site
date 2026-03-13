@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion, useMotionValue, useSpring } from "framer-motion";
+import { TextPressure } from "@/components/ui/TextPressure";
 
 interface HeroSectionProps {
   motto: string;
@@ -255,9 +256,19 @@ export function HeroSection({ motto }: HeroSectionProps) {
                 <span className="block text-fluid-hero text-white">
                   {currentSlide.heading}
                 </span>
-                <span className="block text-[1.2em] bg-gradient-to-r from-[#19BFB7] to-[#15E6DB] bg-clip-text text-transparent">
-                  {currentSlide.highlight}
-                </span>
+                {currentSlide.highlight && (
+                  <span className="block text-[1.2em] bg-gradient-to-r from-[#19BFB7] to-[#15E6DB] bg-clip-text text-transparent">
+                    <TextPressure
+                      text={currentSlide.highlight}
+                      minWeight={300}
+                      maxWeight={900}
+                      minWidth={80}
+                      maxWidth={125}
+                      radius={320}
+                      className="text-[1em]"
+                    />
+                  </span>
+                )}
               </h1>
 
               {/* Description — each sentence on its own line */}

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { notFound } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ContactModal } from "@/components/shared/ContactModal";
 import { ServiceNavigation } from "@/components/services/ServiceNavigation";
@@ -60,7 +60,7 @@ export function ServicePageClient({ slug }: ServicePageClientProps) {
         <>
             <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
                 {/* Hero Banner with Image */}
-                <section className="relative h-[50vh] min-h-[350px] md:min-h-[420px] flex items-center justify-center text-white overflow-hidden">
+                <section className="relative aspect-[16/9] md:aspect-auto md:h-[50vh] md:min-h-[420px] flex items-center justify-center text-white overflow-hidden">
                     <Image
                         src={serviceBanners[service.id] || serviceBanners.schetovodstvo}
                         alt={service.title}
@@ -97,7 +97,17 @@ export function ServicePageClient({ slug }: ServicePageClientProps) {
 
                 {/* Service Content */}
                 <div className="container mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12">
-                    <ServiceComponent onContact={handleContact} />
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={service.id}
+                            initial={{ opacity: 0, y: 16 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -12 }}
+                            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                            <ServiceComponent onContact={handleContact} />
+                        </motion.div>
+                    </AnimatePresence>
                 </div>
             </div>
 

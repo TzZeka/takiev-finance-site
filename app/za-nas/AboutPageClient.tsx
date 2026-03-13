@@ -67,6 +67,7 @@ function SectionTitle({
                 scrollTrigger: {
                     trigger: containerRef.current,
                     start: "top 85%",
+                    invalidateOnRefresh: true,
                 },
                 y: 30,
                 opacity: 0,
@@ -80,7 +81,7 @@ function SectionTitle({
         const lineRef = containerRef.current.querySelector(".accent-line");
         if (lineRef) {
             gsap.from(lineRef, {
-                scrollTrigger: { trigger: containerRef.current, start: "top 85%" },
+                scrollTrigger: { trigger: containerRef.current, start: "top 85%", invalidateOnRefresh: true },
                 width: 0,
                 duration: 0.8,
                 ease: "power3.inOut"
@@ -90,7 +91,7 @@ function SectionTitle({
         const subRef = containerRef.current.querySelector(".subtitle-text");
         if (subRef) {
             gsap.from(subRef, {
-                scrollTrigger: { trigger: containerRef.current, start: "top 85%" },
+                scrollTrigger: { trigger: containerRef.current, start: "top 85%", invalidateOnRefresh: true },
                 y: 20,
                 opacity: 0,
                 duration: 0.8,
@@ -148,14 +149,15 @@ function ParallaxImage({ src, alt, className = "", imgClassName = "" }: { src: s
                     trigger: containerRef.current,
                     start: "top bottom",
                     end: "bottom top",
-                    scrub: true
+                    scrub: true,
+                    invalidateOnRefresh: true,
                 }
             }
         );
 
         // Reveal animation
         gsap.from(containerRef.current, {
-            scrollTrigger: { trigger: containerRef.current, start: "top 85%" },
+            scrollTrigger: { trigger: containerRef.current, start: "top 85%", invalidateOnRefresh: true },
             clipPath: "inset(10% 10% 10% 10% round 30px)",
             scale: 0.95,
             duration: 1.5,
@@ -517,10 +519,10 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
     const heroImgRef = useRef<HTMLDivElement>(null);
 
     useGSAP(() => {
-        // Top hero reveal
+        // Top hero reveal — delay to ensure page transition completes first
         gsap.fromTo(heroImgRef.current,
             { clipPath: "inset(100% 0% 0% 0%)", scale: 1.1 },
-            { clipPath: "inset(0% 0% 0% 0%)", scale: 1, duration: 1.8, ease: "power4.inOut" }
+            { clipPath: "inset(0% 0% 0% 0%)", scale: 1, duration: 1.8, ease: "power4.inOut", delay: 0.9 }
         );
 
         // Hero inner parallax
@@ -533,7 +535,8 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                     trigger: ".hero-container",
                     start: "top top",
                     end: "bottom top",
-                    scrub: 1
+                    scrub: 1,
+                    invalidateOnRefresh: true,
                 }
             }
         );
@@ -548,10 +551,19 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                     trigger: ".founder-section",
                     start: "top bottom",
                     end: "bottom top",
-                    scrub: 1
+                    scrub: 1,
+                    invalidateOnRefresh: true,
                 }
             }
         );
+
+        // Refresh ScrollTrigger after layout settles (fixes intermittent freeze
+        // caused by page-transition animation affecting scroll position calculations)
+        const refreshTimer = setTimeout(() => {
+            ScrollTrigger.refresh();
+        }, 700);
+
+        return () => clearTimeout(refreshTimer);
 
     }, { scope: mainRef });
 
