@@ -19,6 +19,7 @@ export default defineType({
         list: [
           { title: "YouTube", value: "youtube" },
           { title: "TikTok", value: "tiktok" },
+          { title: "Нашият екип", value: "team" },
         ],
       },
       validation: (Rule) => Rule.required(),

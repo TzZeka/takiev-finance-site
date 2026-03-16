@@ -68,7 +68,7 @@ export interface Video {
   _type: "video";
   _createdAt: string;
   title: string;
-  platform: "youtube" | "tiktok";
+  platform: "youtube" | "tiktok" | "team";
   url: string;
   videoId: string;
   thumbnail?: SanityImage;

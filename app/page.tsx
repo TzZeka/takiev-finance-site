@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { HeroSection } from "@/components/home/HeroSection";
 import { MessagesSection } from "@/components/home/MessagesSection";
-import { CompanyPresentation, CompanyHistory, CompanyValues } from "@/components/home/CompanyPresentation";
+import { CompanyHistory, CompanyValues } from "@/components/home/CompanyPresentation";
 import { ServicesPreview } from "@/components/home/ServicesPreview";
 
 const BlogPreview = dynamic(() =>
@@ -105,27 +105,24 @@ export default async function HomePage() {
           <MessagesSection messages={messages} />
         </div>
         <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 2 }}>
-          <CompanyPresentation />
-        </div>
-        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 3 }}>
           <CompanyHistory />
         </div>
-        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 4 }}>
+        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 3 }}>
           <CompanyValues />
         </div>
-        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 5 }}>
+        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 4 }}>
           <ServicesPreview services={services} />
         </div>
-        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 6 }}>
+        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 5 }}>
           <BlogPreview posts={blogPosts} />
         </div>
-        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 7 }}>
+        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 6 }}>
           <TestimonialsSection testimonials={testimonials} />
         </div>
-        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 8 }}>
+        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 7 }}>
           <ClientsSection clients={clients} />
         </div>
-        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 9 }}>
+        <div className="-mt-12 md:-mt-16 relative" style={{ zIndex: 8 }}>
           <ContactFormSection ctaText={homeContent?.ctaText} />
         </div>
       </div>

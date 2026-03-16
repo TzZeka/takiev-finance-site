@@ -6,7 +6,7 @@ import { motion, useInView, useReducedMotion, type MotionProps, type Variants } 
 import { ArrowUpRight } from "lucide-react";
 import { getImageUrl } from "@/lib/sanity/client";
 import type { Client } from "@/types";
-import { useImageParallax, useZoomReveal } from "@/hooks/useScrollAnim";
+import { useImageParallax } from "@/hooks/useScrollAnim";
 
 
 interface ClientsSectionProps {
@@ -22,7 +22,7 @@ const cardVariants = {
 
 const imageVariants = {
   rest:    { scale: 1 },
-  hovered: { scale: 1.07 },
+  hovered: { scale: 1 },
 };
 
 const shimmerVariants = {
@@ -80,7 +80,6 @@ function PartnerCard({
   const hasCard = !!partner.cardImage?.asset?._ref;
   const imgContainerRef = useRef<HTMLDivElement>(null);
   const imgInnerRef = useRef<HTMLDivElement>(null);
-  useZoomReveal(imgContainerRef, imgInnerRef);
   useImageParallax(imgContainerRef, imgInnerRef);
 
   const spring = reduced
@@ -138,7 +137,7 @@ function PartnerCard({
          * Layer 0 — fallback dark card (no cardImage uploaded).
          * Shows logo + company name + arrow if has website.
          */
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 bg-gradient-to-br from-slate-800 to-slate-900">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 bg-gradient-to-br from-[#2e3e3b] to-[#1e2e2b]">
           <div className="relative w-36 h-20">
             <Image
               src={getImageUrl(partner.logo)}
@@ -294,7 +293,8 @@ export function ClientsSection({ clients }: ClientsSectionProps) {
         viewport: { once: true, margin: "-40px" },
         transition: { type: "spring" as const, stiffness: 80, damping: 20 },
       })}
-      className="relative py-20 md:py-28 bg-slate-950 overflow-hidden shadow-sm"
+      className="relative py-20 md:py-28 overflow-hidden shadow-sm"
+      style={{ backgroundColor: "#40514E" }}
       style={{
         borderTopLeftRadius: "50% 2rem",
         borderTopRightRadius: "50% 2rem",
@@ -319,7 +319,7 @@ export function ClientsSection({ clients }: ClientsSectionProps) {
         <div
           className="grid gap-4 md:gap-5"
           style={{
-            gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))",
           }}
         >
           {clients.map((partner, index) => (

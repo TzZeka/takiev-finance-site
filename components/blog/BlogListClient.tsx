@@ -6,6 +6,7 @@ import {
   useRef,
   useCallback,
   useEffect,
+  useLayoutEffect,
   Fragment,
 } from "react";
 import Link from "next/link";
@@ -19,6 +20,7 @@ import {
   useMotionValue,
 } from "framer-motion";
 import { BlogCard } from "@/components/blog/BlogCard";
+import { FirmNewsDashboard } from "@/components/blog/FirmNewsDashboard";
 import {
   Search,
   X,
@@ -29,7 +31,7 @@ import {
 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { getImageUrl } from "@/lib/sanity/client";
-import type { BlogPost } from "@/types";
+import type { BlogPost, NewsItem } from "@/types";
 
 const POSTS_PER_PAGE = 8;
 const MAX_VISIBLE_TAGS = 3;
@@ -57,9 +59,10 @@ function HighlightedTitle({ title, query }: { title: string; query: string }) {
 
 interface BlogListClientProps {
   posts: BlogPost[];
+  news?: NewsItem[];
 }
 
-export function BlogListClient({ posts }: BlogListClientProps) {
+export function BlogListClient({ posts, news }: BlogListClientProps) {
   const router = useRouter();
 
   // ── State ──────────────────────────────────────────────────────────────────
@@ -75,6 +78,8 @@ export function BlogListClient({ posts }: BlogListClientProps) {
   const [searchFocused, setSearchFocused] = useState(false);
   const [suggestionIndex, setSuggestionIndex] = useState(-1);
   const [iconFlipKey, setIconFlipKey] = useState(0);
+  const [svgPath, setSvgPath] = useState("");
+  const [totalLength, setTotalLength] = useState(0);
 
   // Desktop search expansion: captured rect of main content at focus moment
   const [expandedRect, setExpandedRect] = useState<{
@@ -88,6 +93,10 @@ export function BlogListClient({ posts }: BlogListClientProps) {
   const searchWrapperRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const mainRef = useRef<HTMLElement>(null);
+  const twoColRef = useRef<HTMLDivElement>(null);
+  const dividerSpacerRef = useRef<HTMLDivElement>(null);
+  const recentSectionRef = useRef<HTMLElement>(null);
+  const newsSectionRef = useRef<HTMLDivElement>(null);
 
   // ── Detect touch/coarse pointer — hide cursor on mobile ───────────────────
   useEffect(() => {
@@ -125,17 +134,92 @@ export function BlogListClient({ posts }: BlogListClientProps) {
   const mouseY = useMotionValue(-300);
   const smoothX = useSpring(mouseX, { damping: 26, stiffness: 280 });
   const smoothY = useSpring(mouseY, { damping: 26, stiffness: 280 });
+  const dashoffsetMV = useMotionValue(0);
 
-  // ── Scroll progress aura ───────────────────────────────────────────────────
+  // ── Scroll progress with spring for smoothness ────────────────────────────
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 0.85", "end end"],
+    offset: ["start start", "end end"],
   });
+  // Spring smooths out choppy scroll events and slows down the fill rate
   const springProgress = useSpring(scrollYProgress, {
-    stiffness: 90,
-    damping: 30,
+    stiffness: 38,
+    damping: 18,
     restDelta: 0.001,
   });
+
+  // ── SVG progress path: compute geometry with padding + rounded corners ─────
+  const svgAnimatedPathRef = useRef<SVGPathElement>(null);
+
+  const computePath = useCallback(() => {
+    if (!containerRef.current || !dividerSpacerRef.current || !recentSectionRef.current) return;
+
+    const cRect = containerRef.current.getBoundingClientRect();
+    const spacerRect = dividerSpacerRef.current.getBoundingClientRect();
+    const recentRect = recentSectionRef.current.getBoundingClientRect();
+
+    const divX = Math.round(spacerRect.left - cRect.left);
+    const cW = Math.round(cRect.width);
+    const PAD = 14; // gap from section borders
+    const R = 10;   // corner radius
+
+    const rT = Math.round(recentRect.top - cRect.top) - PAD;
+    const rB = Math.round(recentRect.bottom - cRect.top) + PAD;
+
+    // Path: vertical divider → bracket around "Последни" (rounded corners)
+    let p =
+      `M ${divX} 0 ` +
+      `L ${divX} ${rT - R} ` +
+      `Q ${divX} ${rT} ${divX + R} ${rT} ` +
+      `L ${cW - R} ${rT} ` +
+      `Q ${cW} ${rT} ${cW} ${rT + R} ` +
+      `L ${cW} ${rB - R} ` +
+      `Q ${cW} ${rB} ${cW - R} ${rB} ` +
+      `L ${divX + R} ${rB} ` +
+      `Q ${divX} ${rB} ${divX} ${rB + R}`;
+
+    if (newsSectionRef.current) {
+      const nRect = newsSectionRef.current.getBoundingClientRect();
+      if (nRect.height > 4) {
+        const nT = Math.round(nRect.top - cRect.top) - PAD;
+        const nB = Math.round(nRect.bottom - cRect.top) + PAD;
+        p +=
+          ` L ${divX} ${nT - R} ` +
+          `Q ${divX} ${nT} ${divX + R} ${nT} ` +
+          `L ${cW - R} ${nT} ` +
+          `Q ${cW} ${nT} ${cW} ${nT + R} ` +
+          `L ${cW} ${nB - R} ` +
+          `Q ${cW} ${nB} ${cW - R} ${nB} ` +
+          `L ${divX} ${nB}`;
+      }
+    }
+
+    setSvgPath(p);
+  }, []);
+
+  // Measure exact path length via SVG after path string changes
+  useEffect(() => {
+    if (svgAnimatedPathRef.current && svgPath) {
+      setTotalLength(svgAnimatedPathRef.current.getTotalLength());
+    }
+  }, [svgPath]);
+
+  useLayoutEffect(() => { computePath(); }, [computePath]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const ro = new ResizeObserver(computePath);
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, [computePath]);
+
+  // Sync dashoffset with spring progress (smooth + slower fill)
+  useEffect(() => {
+    const update = (v: number) => dashoffsetMV.set(totalLength * (1 - v));
+    update(springProgress.get());
+    return springProgress.on("change", update);
+  }, [springProgress, totalLength, dashoffsetMV]);
 
   // ── Tags ───────────────────────────────────────────────────────────────────
   const allTags = useMemo(() => {
@@ -248,11 +332,13 @@ export function BlogListClient({ posts }: BlogListClientProps) {
     }
   };
 
-  // ── Desktop search expansion ───────────────────────────────────────────────
+  // ── Desktop search expansion + scroll lock ────────────────────────────────
   const openSearch = useCallback(() => {
     setSearchFocused(true);
-    setIconFlipKey((k) => k + 1); // trigger icon flip
+    setIconFlipKey((k) => k + 1);
     if (!isMobilePointer && mainRef.current && searchWrapperRef.current) {
+      // Lock page scroll instantly
+      document.body.style.overflow = "hidden";
       const mRect = mainRef.current.getBoundingClientRect();
       const sRect = searchWrapperRef.current.getBoundingClientRect();
       setExpandedRect({
@@ -267,7 +353,12 @@ export function BlogListClient({ posts }: BlogListClientProps) {
     setSearchFocused(false);
     setSuggestionIndex(-1);
     setExpandedRect(null);
+    // Restore scroll immediately
+    document.body.style.overflow = "";
   }, []);
+
+  // Ensure scroll is always restored on unmount
+  useEffect(() => () => { document.body.style.overflow = ""; }, []);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
@@ -294,24 +385,10 @@ export function BlogListClient({ posts }: BlogListClientProps) {
 
   return (
     <div ref={containerRef} className="relative">
-      {/* ── DESKTOP SEARCH BACKDROP ──────────────────────────────────────── */}
-      <AnimatePresence>
-        {expandedRect && (
-          <motion.div
-            className="fixed inset-0 z-[199]"
-            style={{
-              backdropFilter: "blur(8px)",
-              WebkitBackdropFilter: "blur(8px)",
-              background: "rgba(10,20,18,0.22)",
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.22 }}
-            onClick={closeSearch}
-          />
-        )}
-      </AnimatePresence>
+      {/* ── CLICK-OUTSIDE CAPTURE (no blur, just closes search) ─────────── */}
+      {expandedRect && (
+        <div className="fixed inset-0 z-[199]" onClick={closeSearch} />
+      )}
 
       {/* ── CUSTOM CURSOR (desktop only) ──────────────────────────────────── */}
       <AnimatePresence>
@@ -337,7 +414,7 @@ export function BlogListClient({ posts }: BlogListClientProps) {
       </AnimatePresence>
 
       {/* ── TWO-COLUMN LAYOUT ─────────────────────────────────────────────── */}
-      <div className="flex flex-col lg:flex-row">
+      <div ref={twoColRef} className="flex flex-col lg:flex-row">
 
         {/* ── SIDEBAR ───────────────────────────────────────────────────── */}
         <aside className="w-full lg:w-[250px] xl:w-[268px] flex-shrink-0 lg:sticky lg:top-28 lg:self-start space-y-5 pb-8 lg:pb-0">
@@ -605,19 +682,11 @@ export function BlogListClient({ posts }: BlogListClientProps) {
           )}
         </aside>
 
-        {/* ── SCROLL PROGRESS DIVIDER ───────────────────────────────────── */}
-        <div className="hidden lg:flex flex-shrink-0 w-px mx-8 xl:mx-10 self-stretch relative overflow-hidden">
-          <div className="absolute inset-0 bg-slate-200/70 rounded-full" />
-          <motion.div
-            className="absolute top-0 left-0 right-0 rounded-full"
-            style={{
-              scaleY: springProgress,
-              height: "100%",
-              background: "linear-gradient(to bottom, #19BFB7, #0d9b97)",
-              transformOrigin: "top center",
-            }}
-          />
-        </div>
+        {/* ── DIVIDER SPACER — keeps layout; SVG draws the actual animated line */}
+        <div
+          ref={dividerSpacerRef}
+          className="hidden lg:block flex-shrink-0 w-px mx-8 xl:mx-10"
+        />
 
         {/* ── MAIN CONTENT ──────────────────────────────────────────────── */}
         <main ref={mainRef} className="flex-1 min-w-0">
@@ -710,20 +779,29 @@ export function BlogListClient({ posts }: BlogListClientProps) {
                   : ""
               }
             >
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`${selectedTag ?? "all"}-${searchQuery}-${currentPage}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.18 }}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-6 xl:gap-7"
-                >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 xl:gap-7">
+                <AnimatePresence mode="popLayout">
                   {paginatedPosts.map((post, i) => (
-                    <BlogCard key={post._id} post={post} index={i} />
+                    <motion.div
+                      key={post._id}
+                      initial={{ opacity: 0, y: 14, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{
+                        opacity: 0,
+                        scale: 0.93,
+                        transition: { duration: 0.16, ease: "easeIn" },
+                      }}
+                      transition={{
+                        duration: 0.32,
+                        delay: Math.min(i * 0.05, 0.25),
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                    >
+                      <BlogCard post={post} index={i} />
+                    </motion.div>
                   ))}
-                </motion.div>
-              </AnimatePresence>
+                </AnimatePresence>
+              </div>
             </div>
           ) : (
             <div className="text-center py-20 bg-white rounded-3xl border border-black/[0.06]">
@@ -790,7 +868,7 @@ export function BlogListClient({ posts }: BlogListClientProps) {
 
       {/* ── HORIZONTAL SCROLL-SNAP — Последни публикации ────────────────── */}
       {recentPosts.length > 0 && (
-        <section className="mt-16">
+        <section ref={recentSectionRef} className="mt-16">
           <div className="flex items-center gap-4 mb-6">
             <div className="h-px flex-1 bg-black/[0.06]" />
             <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 flex-shrink-0">
@@ -844,6 +922,42 @@ export function BlogListClient({ posts }: BlogListClientProps) {
             ))}
           </div>
         </section>
+      )}
+
+      {/* ── FIRM NEWS DASHBOARD ─────────────────────────────────────────── */}
+      <div ref={newsSectionRef}>
+        <FirmNewsDashboard news={news ?? []} />
+      </div>
+
+      {/* ── SVG SCROLL PROGRESS PATH (desktop only, absolute) ───────────── */}
+      {svgPath && (
+        <svg
+          className="absolute inset-0 pointer-events-none hidden lg:block"
+          style={{ zIndex: 1, overflow: "visible", width: "100%", height: "100%" }}
+          aria-hidden="true"
+        >
+          {/* Gray background track */}
+          <path
+            d={svgPath}
+            stroke="rgba(64,81,78,0.15)"
+            strokeWidth="1"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          {/* Animated fill */}
+          <motion.path
+            ref={svgAnimatedPathRef}
+            d={svgPath}
+            stroke="#40514E"
+            strokeWidth="1"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeDasharray={totalLength}
+            style={{ strokeDashoffset: dashoffsetMV }}
+          />
+        </svg>
       )}
 
       {/* ── FLOATING CONTROL PILL ────────────────────────────────────────── */}

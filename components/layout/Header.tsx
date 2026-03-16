@@ -208,8 +208,8 @@ export function Header() {
             className="absolute inset-0 rounded-2xl pointer-events-none"
             animate={{
               backgroundColor: scrolled
-                ? "rgba(6, 14, 12, 0.92)"
-                : "rgba(6, 14, 12, 0.52)",
+                ? "rgba(22, 36, 32, 0.95)"
+                : "rgba(42, 60, 55, 0.62)",
               borderColor: scrolled
                 ? "rgba(255, 255, 255, 0.07)"
                 : "rgba(255, 255, 255, 0.14)",
@@ -243,8 +243,8 @@ export function Header() {
                 className="rounded-xl px-2 py-1.5 transition-all duration-500"
                 style={{
                   background: scrolled
-                    ? "rgba(255,255,255,0.03)"
-                    : "rgba(0,0,0,0.22)",
+                    ? "rgba(255,255,255,0.04)"
+                    : "rgba(0,0,0,0.12)",
                   border: "1px solid rgba(255,255,255,0.08)",
                   backdropFilter: scrolled ? "none" : "blur(10px)",
                   WebkitBackdropFilter: scrolled ? "none" : "blur(10px)",
@@ -365,7 +365,7 @@ export function Header() {
             exit={{ clipPath: "inset(100% 0 0% 0)", transition: { duration: 0.55, ease: [0.76, 0, 0.24, 1] } }}
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
             className="md:hidden fixed inset-0 z-[49] flex flex-col"
-            style={{ height: "100dvh", backgroundColor: "#060e0c" }}
+            style={{ height: "100dvh", backgroundColor: "#1a2b27" }}
           >
             {/* Teal accent line top */}
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />

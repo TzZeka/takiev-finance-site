@@ -62,11 +62,13 @@ function InfoCard({
   label,
   value,
   href,
+  target,
 }: {
   icon: React.ElementType;
   label: string;
   value: string;
   href?: string;
+  target?: string;
 }) {
   const inner = (
     <div className="flex items-center gap-3 p-3 rounded-xl border border-white/[0.06] hover:border-primary/20 bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300 group/card">
@@ -80,7 +82,7 @@ function InfoCard({
     </div>
   );
 
-  return href ? <a href={href} className="block">{inner}</a> : inner;
+  return href ? <a href={href} target={target} className="block">{inner}</a> : inner;
 }
 
 export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactModalProps) {

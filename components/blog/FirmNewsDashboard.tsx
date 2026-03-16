@@ -25,17 +25,19 @@ export function FirmNewsDashboard({ news }: FirmNewsDashboardProps) {
   if (!news || news.length === 0) return null;
 
   return (
-    <section className="mb-10">
+    <section className="mt-16 mb-10">
       <div className="bg-[#40514E] rounded-2xl border border-white/[0.08] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08]">
-          <div className="flex items-center gap-2.5">
-            <span className="w-2 h-2 rounded-full bg-white/60 inline-block" />
-            <span className="text-[11px] font-bold tracking-[0.18em] uppercase text-white/60">
+        <div className="flex items-center justify-between px-6 pt-6 pb-5 border-b border-white/[0.08]">
+          <div>
+            <h3 className="text-[20px] md:text-[22px] font-bold text-white tracking-tight leading-tight">
               Фирмени новини
-            </span>
+            </h3>
+            <p className="text-[12px] text-white/45 mt-0.5 font-medium">
+              Актуална информация от екипа
+            </p>
           </div>
-          <span className="text-[11px] text-white/35 font-medium tabular-nums">
+          <span className="text-[12px] text-white/35 font-semibold tabular-nums bg-white/10 px-3 py-1 rounded-full">
             {news.length} {news.length === 1 ? "новина" : "новини"}
           </span>
         </div>

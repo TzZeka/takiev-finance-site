@@ -548,8 +548,8 @@ body:has(.loader-active) {
    ============================================ */
 
 /* Variable font weight hover effect */
-h1, h2, h3 { font-variation-settings: 'wght' 700; transition: font-variation-settings 0.25s ease; }
-.group:hover h3 { font-variation-settings: 'wght' 800; }
+h1, h2, h3 { font-variation-settings: 'wght' 700, 'wdth' 100; transition: font-variation-settings 0.25s ease; }
+.group:hover h3 { font-variation-settings: 'wght' 800, 'wdth' 100; }
 
 /* Aspect ratio helpers */
 .aspect-video-safe { aspect-ratio: 16 / 9; }

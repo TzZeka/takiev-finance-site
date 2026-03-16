@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Phone, MapPin, Facebook, Linkedin, Youtube, ExternalLink } from "lucide-react";
@@ -58,7 +58,7 @@ function FlipLabel({ text }: { text: string }) {
   return (
     <span
       className="relative overflow-hidden inline-flex flex-col"
-      style={{ height: "1.4em" }}
+      style={{ height: "1.5em" }}
     >
       <span className="block will-change-transform transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-full">
         {text}
@@ -83,6 +83,24 @@ const containerVariants = {
   },
 };
 
+// 3D flip-in for map & founder photo
+const flipCardVariants = {
+  open: {
+    opacity: 1,
+    rotateX: 0,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.88, ease: [0.22, 1, 0.36, 1] as const },
+  },
+  closed: {
+    opacity: 0,
+    rotateX: -22,
+    y: 18,
+    filter: "blur(6px)",
+    transition: { duration: 0.18, ease: [0.4, 0, 1, 1] as const },
+  },
+};
+
 const itemVariants = {
   open: {
     opacity: 1,
@@ -98,11 +116,38 @@ const itemVariants = {
   },
 };
 
+// ── Social media data ───────────────────────────────────────────────────────
+const socials = [
+  {
+    href: "https://www.facebook.com/n.takiev",
+    label: "Facebook",
+    renderIcon: (cls: string) => <Facebook className={cls} />,
+  },
+  {
+    href: "https://www.linkedin.com/company/takiev-finance/",
+    label: "LinkedIn",
+    renderIcon: (cls: string) => <Linkedin className={cls} />,
+  },
+  {
+    href: "https://www.youtube.com/@nikolaytakiev6221",
+    label: "YouTube",
+    renderIcon: (cls: string) => <Youtube className={cls} />,
+  },
+  {
+    href: "https://www.tiktok.com/@n.takiev",
+    label: "TikTok",
+    renderIcon: (cls: string) => (
+      <svg className={cls} viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+      </svg>
+    ),
+  },
+];
+
 // ── QuickPanel ─────────────────────────────────────────────────────────────
 export function QuickPanel() {
   const { isOpen, setIsOpen, setIsVisible } = useQuickPanel();
   const [headerHeight, setHeaderHeight] = useState(80);
-  const panelRef = useRef<HTMLDivElement>(null);
 
   const getHeaderHeight = useCallback(() => {
     if (typeof window === "undefined") return 80;
@@ -146,51 +191,21 @@ export function QuickPanel() {
     return () => document.removeEventListener("keydown", handle);
   }, [setIsOpen]);
 
-  // Scroll-hide — mirrors header with a 150ms delay
+  // Close panel when header hides (scroll down past 200px)
   useEffect(() => {
     if (!isOpen) return;
     const HIDE_AFTER = 200;
     const TOLERANCE = 8;
-    const DELAY = 150;
     let rafId = 0;
     let lastY = Math.max(0, window.scrollY);
-    let isHidden = false;
-    let delayTimer: ReturnType<typeof setTimeout> | null = null;
 
     const onScroll = () => {
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
         const y = Math.max(0, window.scrollY);
         const delta = y - lastY;
-
-        if (y < HIDE_AFTER) {
-          if (isHidden) {
-            isHidden = false;
-            if (delayTimer) { clearTimeout(delayTimer); delayTimer = null; }
-            const el = panelRef.current;
-            if (el) {
-              el.style.transition = "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)";
-              el.style.transform = "translateY(0)";
-            }
-          }
-        } else if (delta > TOLERANCE && !isHidden) {
-          if (delayTimer) clearTimeout(delayTimer);
-          delayTimer = setTimeout(() => {
-            isHidden = true;
-            const el = panelRef.current;
-            if (el) {
-              el.style.transition = "transform 0.32s cubic-bezier(0.4, 0, 1, 1)";
-              el.style.transform = "translateY(-110%)";
-            }
-          }, DELAY);
-        } else if (delta < -TOLERANCE && isHidden) {
-          if (delayTimer) { clearTimeout(delayTimer); delayTimer = null; }
-          isHidden = false;
-          const el = panelRef.current;
-          if (el) {
-            el.style.transition = "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)";
-            el.style.transform = "translateY(0)";
-          }
+        if (y >= HIDE_AFTER && delta > TOLERANCE) {
+          setIsOpen(false);
         }
         lastY = y;
       });
@@ -199,13 +214,11 @@ export function QuickPanel() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       cancelAnimationFrame(rafId);
-      if (delayTimer) clearTimeout(delayTimer);
       window.removeEventListener("scroll", onScroll);
     };
-  }, [isOpen]);
+  }, [isOpen, setIsOpen]);
 
   // Spacer clears the header — panel island top aligns with header island top
-  // Header island starts at pt-3 (12px) from viewport top; spacer = headerHeight - 4px
   const spacerHeight = headerHeight + 20;
 
   return (
@@ -226,15 +239,10 @@ export function QuickPanel() {
         )}
       </AnimatePresence>
 
-      {/* ── Panel island ──
-          Starts at top-0 with same pt-3 / px-2 as the header.
-          The header sits on top (z-50) covering the panel top area.
-          Content below the spacer is visible under the header.
-      ── */}
+      {/* ── Panel island ── */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            ref={panelRef}
             key="qp-panel"
             className="fixed top-0 left-0 right-0 px-2 pt-3 md:px-3 md:pt-4"
             style={{ zIndex: 48, pointerEvents: "none", willChange: "transform" }}
@@ -246,18 +254,20 @@ export function QuickPanel() {
             }}
             transition={{ duration: 0.88, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Island glass container */}
+            {/* Island glass container — Glassmorphism 2.0 */}
             <div
               className="relative mx-auto rounded-2xl overflow-hidden"
               style={{
                 maxWidth: "1480px",
                 pointerEvents: "auto",
-                background: "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.72) 18%, rgba(255,255,255,0.95) 36%, #ffffff 55%)",
-                border: "1px solid rgba(0,0,0,0.08)",
-                boxShadow: "0 4px 24px rgba(25,191,183,0.10), 0 1px 4px rgba(0,0,0,0.04)",
+                background: "rgba(232, 245, 241, 0.82)",
+                backdropFilter: "blur(40px) saturate(220%) brightness(1.03)",
+                WebkitBackdropFilter: "blur(40px) saturate(220%) brightness(1.03)",
+                border: "1px solid rgba(255,255,255,0.88)",
+                boxShadow: "0 8px 40px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.95), 0 1px 3px rgba(0,0,0,0.06)",
               }}
             >
-              {/* Film grain — premium texture over the gradient */}
+              {/* Film grain — subtle texture on glass */}
               <div
                 aria-hidden="true"
                 className="absolute inset-0 pointer-events-none z-10"
@@ -265,18 +275,18 @@ export function QuickPanel() {
                   backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
                   backgroundRepeat: "repeat",
                   backgroundSize: "180px 180px",
-                  mixBlendMode: "multiply",
-                  opacity: 0.055,
+                  mixBlendMode: "overlay",
+                  opacity: 0.045,
                 }}
               />
 
-              {/* Spacer — clears the header island (pointer-events-none so header remains clickable) */}
+              {/* Spacer — clears the header island */}
               <div
                 aria-hidden
                 style={{ height: `${spacerHeight}px`, pointerEvents: "none" }}
               />
 
-              {/* ── Content grid ── */}
+              {/* ── Content ── */}
               <motion.div
                 className="px-6 pb-8 lg:pb-10 md:px-8"
                 variants={containerVariants}
@@ -284,16 +294,22 @@ export function QuickPanel() {
                 animate="open"
                 exit="closed"
               >
+                {/* Main grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6 gap-6 sm:gap-8 lg:gap-10">
 
-                  {/* ── Google Maps — 2 cols wide, always colorful ── */}
+                  {/* ── Google Maps — 2 cols wide ── */}
                   <motion.div
                     className="sm:col-span-2 lg:col-span-2"
-                    variants={itemVariants}
+                    variants={flipCardVariants}
+                    style={{ transformPerspective: 900 }}
                   >
                     <div
-                      className="relative w-full rounded-xl overflow-hidden border border-slate-200"
-                      style={{ height: "210px", boxShadow: "0 4px 20px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.06)" }}
+                      className="relative w-full rounded-xl overflow-hidden"
+                      style={{
+                        height: "210px",
+                        border: "1.5px solid rgba(25,191,183,0.32)",
+                        boxShadow: "0 0 0 1px rgba(255,255,255,0.45)",
+                      }}
                     >
                       <iframe
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2932.283956399353!2d23.319877890847863!3d42.697707877149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40aa855eff40e335%3A0xa7cffc05e42a4e56!2sTakiev%20Finance%20EOOD!5e0!3m2!1sbg!2sbg!4v1768080298879!5m2!1sbg!2sbg"
@@ -310,7 +326,7 @@ export function QuickPanel() {
 
                   {/* ── Useful Sites ── */}
                   <motion.div variants={itemVariants}>
-                    <p className="text-sm font-bold mb-4 flex items-center text-slate-800">
+                    <p className="text-sm font-bold mb-4 flex items-center" style={{ color: "#1a3530" }}>
                       <span className="text-primary">—</span>
                       <span className="ml-2">Полезни сайтове</span>
                     </p>
@@ -325,92 +341,85 @@ export function QuickPanel() {
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group text-sm text-slate-600 hover:text-primary transition-colors flex items-center py-0.5"
+                            className="group text-sm hover:text-primary transition-colors flex items-center py-0.5"
+                            style={{ color: "#2d4a44" }}
                           >
                             <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0" />
                             <FlipLabel text={link.label} />
-                            <ExternalLink className="w-3 h-3 ml-1.5 opacity-50 flex-shrink-0" />
+                            <ExternalLink className="w-3 h-3 ml-1.5 flex-shrink-0" style={{ color: "#40514E", opacity: 0.5 }} />
                           </a>
                         </li>
                       ))}
                     </ul>
                   </motion.div>
 
-                  {/* ── Contact Info ── */}
+                  {/* ── Contact Info (no address) ── */}
                   <motion.div variants={itemVariants}>
-                    <p className="text-sm font-bold mb-4 flex items-center text-slate-800">
+                    <p className="text-sm font-bold mb-4 flex items-center" style={{ color: "#1a3530" }}>
                       <span className="text-primary">—</span>
                       <span className="ml-2">Контакти</span>
                     </p>
                     <ul className="space-y-2.5">
                       <li className="group flex items-center space-x-3">
-                        <div className="p-1.5 bg-primary/[0.06] rounded-lg border border-slate-200 group-hover:border-primary transition-all duration-300 flex-shrink-0">
+                        <div
+                          className="p-1.5 rounded-lg border group-hover:border-primary transition-all duration-300 flex-shrink-0"
+                          style={{ background: "rgba(64,81,78,0.07)", borderColor: "rgba(64,81,78,0.20)" }}
+                        >
                           <Mail className="h-3.5 w-3.5 text-primary" />
                         </div>
                         <a
                           href="mailto:office@takiev.bg"
-                          className="group text-sm text-slate-600 hover:text-primary transition-colors"
+                          className="group text-sm hover:text-primary transition-colors"
+                          style={{ color: "#2d4a44" }}
                         >
                           <FlipLabel text="office@takiev.bg" />
                         </a>
                       </li>
                       <li className="group flex items-center space-x-3">
-                        <div className="p-1.5 bg-primary/[0.06] rounded-lg border border-slate-200 group-hover:border-primary transition-all duration-300 flex-shrink-0">
+                        <div
+                          className="p-1.5 rounded-lg border group-hover:border-primary transition-all duration-300 flex-shrink-0"
+                          style={{ background: "rgba(64,81,78,0.07)", borderColor: "rgba(64,81,78,0.20)" }}
+                        >
                           <Phone className="h-3.5 w-3.5 text-primary" />
                         </div>
                         <a
                           href="tel:+359899080016"
-                          className="group text-sm text-slate-600 hover:text-primary transition-colors"
+                          className="group text-sm hover:text-primary transition-colors"
+                          style={{ color: "#2d4a44" }}
                         >
                           <FlipLabel text="+359 89 908 0016" />
-                        </a>
-                      </li>
-                      <li className="group flex items-start space-x-3">
-                        <div className="p-1.5 bg-primary/[0.06] rounded-lg border border-slate-200 group-hover:border-primary transition-all duration-300 flex-shrink-0 mt-0.5">
-                          <MapPin className="h-3.5 w-3.5 text-primary" />
-                        </div>
-                        <a
-                          href="https://maps.app.goo.gl/K4z9hmq1RbuuUfQy6"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group text-sm text-slate-500 leading-relaxed hover:text-primary transition-colors"
-                        >
-                          <FlipLabel text="бул. Александър Стамболийски 30Б" />
                         </a>
                       </li>
                     </ul>
                   </motion.div>
 
-                  {/* ── Social Media ── */}
+                  {/* ── Social Media — icon + label ── */}
                   <motion.div variants={itemVariants}>
-                    <p className="text-sm font-bold mb-4 flex items-center text-slate-800">
+                    <p className="text-sm font-bold mb-4 flex items-center" style={{ color: "#1a3530" }}>
                       <span className="text-primary">—</span>
                       <span className="ml-2">Социални мрежи</span>
                     </p>
-                    <div className="flex flex-wrap gap-2.5">
-                      {[
-                        { href: "https://www.facebook.com/n.takiev", label: "Facebook", icon: <Facebook className="h-4 w-4 text-slate-500 group-hover:text-white transition-colors" /> },
-                        { href: "https://www.linkedin.com/company/takiev-finance/", label: "LinkedIn", icon: <Linkedin className="h-4 w-4 text-slate-500 group-hover:text-white transition-colors" /> },
-                        { href: "https://www.youtube.com/@nikolaytakiev6221", label: "YouTube", icon: <Youtube className="h-4 w-4 text-slate-500 group-hover:text-white transition-colors" /> },
-                        {
-                          href: "https://www.tiktok.com/@n.takiev",
-                          label: "TikTok",
-                          icon: (
-                            <svg className="h-4 w-4 text-slate-500 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
-                            </svg>
-                          ),
-                        },
-                      ].map(({ href, label, icon }) => (
+                    <div className="flex flex-col gap-2">
+                      {socials.map(({ href, label, renderIcon }) => (
                         <a
                           key={label}
                           href={href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group p-2.5 bg-slate-100 hover:bg-primary rounded-lg transition-all duration-300 border border-slate-200 hover:border-primary"
+                          className="group flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all duration-300 hover:bg-primary"
+                          style={{
+                            background: "rgba(64,81,78,0.07)",
+                            border: "1px solid rgba(64,81,78,0.18)",
+                          }}
                           aria-label={label}
                         >
-                          {icon}
+                          {renderIcon("h-4 w-4 flex-shrink-0 transition-colors duration-300 group-hover:text-white")}
+                          <span
+                            className="text-xs font-medium transition-colors duration-300 group-hover:text-white leading-none"
+                            style={{ color: "#2d4a44" }}
+                          >
+                            <FlipLabel text={label} />
+                          </span>
                         </a>
                       ))}
                     </div>
@@ -419,12 +428,13 @@ export function QuickPanel() {
                   {/* ── Founder Photo — xl only ── */}
                   <motion.div
                     className="hidden xl:flex items-center justify-center"
-                    variants={itemVariants}
+                    variants={flipCardVariants}
+                    style={{ transformPerspective: 900 }}
                   >
                     <div className="relative">
                       <div className="absolute -inset-3 bg-gradient-to-br from-primary/20 via-transparent to-primary/10 rounded-2xl transform rotate-3" />
                       <div className="absolute -inset-2 border border-primary/30 rounded-xl transform -rotate-2" />
-                      <div className="relative w-32 h-40 transform rotate-2 overflow-hidden rounded-lg border-2 border-white/20 shadow-xl shadow-black/30">
+                      <div className="relative w-36 h-44 transform rotate-2 overflow-hidden rounded-xl border-2 border-white/20">
                         <Image
                           src="/firm-logo/nikolay-takiev.jpg"
                           alt="Николай Такиев - Основател"
@@ -437,13 +447,43 @@ export function QuickPanel() {
                       </div>
                       <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 transform rotate-2">
                         <div className="bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full border border-primary/20 shadow-sm">
-                          <p className="text-[11px] font-medium text-slate-700 whitespace-nowrap">Николай Такиев</p>
+                          <p className="text-[11px] font-medium whitespace-nowrap" style={{ color: "#1a3530" }}>Николай Такиев</p>
                         </div>
                       </div>
                     </div>
                   </motion.div>
 
                 </div>
+
+                {/* ── Office Address Row — full width ── */}
+                <motion.div
+                  variants={itemVariants}
+                  className="flex items-center justify-center gap-4 mt-6 pt-5"
+                  style={{ borderTop: "1px solid rgba(64,81,78,0.15)" }}
+                >
+                  <p className="text-sm font-bold flex items-center flex-shrink-0" style={{ color: "#1a3530" }}>
+                    <span className="text-primary">—</span>
+                    <span className="ml-2">Офис</span>
+                  </p>
+                  <div className="flex items-center gap-2.5">
+                    <div
+                      className="p-1.5 rounded-lg border flex-shrink-0"
+                      style={{ background: "rgba(64,81,78,0.07)", borderColor: "rgba(64,81,78,0.20)" }}
+                    >
+                      <MapPin className="h-3.5 w-3.5 text-primary" />
+                    </div>
+                    <a
+                      href="https://maps.app.goo.gl/K4z9hmq1RbuuUfQy6"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm hover:text-primary transition-colors leading-relaxed"
+                      style={{ color: "#2d4a44" }}
+                    >
+                      бул. Александър Стамболийски 30Б, гр. София
+                    </a>
+                  </div>
+                </motion.div>
+
               </motion.div>
             </div>
           </motion.div>

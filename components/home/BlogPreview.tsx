@@ -42,7 +42,7 @@ function BlogPostCard({ post, anim, index }: { post: BlogPost; anim: (d: number)
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent z-10" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10" />
               <div className="absolute top-4 left-4 z-10">
                 <span className="px-3 py-1.5 bg-primary/90 backdrop-blur-sm text-white text-xs font-semibold rounded-lg">
                   Блог
@@ -108,15 +108,16 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
         viewport: { once: true, margin: "-40px" },
         transition: { type: "spring" as const, stiffness: 80, damping: 20 },
       })}
-      className="relative py-20 md:py-28 bg-slate-950 overflow-hidden shadow-sm"
+      className="relative py-20 md:py-28 overflow-hidden shadow-sm"
       style={{
+        backgroundColor: "#40514E",
         borderTopLeftRadius: "50% 2rem",
         borderTopRightRadius: "50% 2rem",
         filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
       }}
     >
       {/* Subtle gradient */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-[100px]" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/10 rounded-full blur-[100px]" />
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}

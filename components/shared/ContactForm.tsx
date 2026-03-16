@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import { PremiumCTA } from "@/components/ui/PremiumCTA";
 import {
   Form,
   FormControl,
@@ -16,7 +14,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, CheckCircle } from "lucide-react";
+import { Loader2, CheckCircle, Send } from "lucide-react";
+import { motion } from "framer-motion";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Името трябва да е поне 2 символа"),
@@ -254,16 +253,30 @@ export function ContactForm() {
           </div>
         )}
 
-        <PremiumCTA type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? (
-            <>
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              Изпращане...
-            </>
-          ) : (
-            "Изпрати запитване"
-          )}
-        </PremiumCTA>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full relative overflow-hidden rounded-full bg-primary text-dark font-bold py-4 px-8 flex items-center justify-center gap-3 border-2 border-primary hover:bg-transparent hover:text-primary transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          <span className="tracking-wide text-sm">
+            {isSubmitting ? "Изпращане..." : "Изпрати запитване"}
+          </span>
+          <motion.span
+            animate={
+              isSubmitting
+                ? { x: 28, y: -28, opacity: 0, rotate: -45 }
+                : { x: 0, y: 0, opacity: 1, rotate: 0 }
+            }
+            transition={{ duration: 0.4, ease: "easeIn" }}
+            className="flex-shrink-0"
+          >
+            {isSubmitting ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Send className="w-5 h-5" />
+            )}
+          </motion.span>
+        </button>
       </form>
     </Form>
   );
