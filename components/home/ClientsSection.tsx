@@ -294,8 +294,8 @@ export function ClientsSection({ clients }: ClientsSectionProps) {
         transition: { type: "spring" as const, stiffness: 80, damping: 20 },
       })}
       className="relative py-20 md:py-28 overflow-hidden shadow-sm"
-      style={{ backgroundColor: "#40514E" }}
       style={{
+        backgroundColor: "#40514E",
         borderTopLeftRadius: "50% 2rem",
         borderTopRightRadius: "50% 2rem",
         filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
