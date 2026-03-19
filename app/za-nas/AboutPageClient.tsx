@@ -123,7 +123,7 @@ function SectionTitle({
             </h2>
 
             {subtitle && (
-                <p className={`subtitle-text text-sm sm:text-base md:text-lg max-w-2xl ${center ? "mx-auto" : ""} px-4 font-medium ${darkText ? "text-[#1b2b28]" : "text-white/80"} ${subtitleClass}`}>
+                <p className={`subtitle-text text-sm sm:text-base md:text-lg max-w-2xl ${center ? "mx-auto" : ""} px-4 font-medium ${darkText ? "text-surface" : "text-white/80"} ${subtitleClass}`}>
                     {subtitle}
                 </p>
             )}
@@ -274,7 +274,7 @@ function ValuesSection() {
                         >
                             <Image src={values[activeIndex].image} fill alt="bg" className="object-cover" />
                             {/* Dark overlay for text readability */}
-                            <div className="absolute inset-x-0 bottom-0 h-[80%] bg-gradient-to-t from-[#1b2b28] via-[#1b2b28]/80 to-transparent" />
+                            <div className="absolute inset-x-0 bottom-0 h-[80%] bg-gradient-to-t from-surface via-surface/80 to-transparent" />
                             {/* Overall subtle darkening */}
                             <div className="absolute inset-0 bg-black/20" />
                         </motion.div>
@@ -321,7 +321,7 @@ function ValuesSection() {
                                             {i === activeIndex && (
                                                 <motion.div
                                                     key={`progress-${activeIndex}`}
-                                                    className="absolute inset-y-0 left-0 bg-primary shadow-[0_0_10px_#19BFB7]"
+                                                    className="absolute inset-y-0 left-0 bg-primary shadow-[0_0_10px_var(--color-primary)]"
                                                     initial={{ width: 0 }}
                                                     animate={{ width: "100%" }}
                                                     transition={{ duration: isPaused ? 0 : 6, ease: "linear" }}
@@ -357,51 +357,51 @@ function BusinessSectorsSection() {
         <div ref={containerRef} className="relative z-10 w-full mt-10">
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 max-w-7xl mx-auto">
                 {/* Row 1 */}
-                <div className="bento-item lg:col-span-2 md:col-span-2 relative group bg-white/[0.12] backdrop-blur-md p-8 sm:p-10 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform overflow-hidden shadow-2xl">
+                <div className="bento-item lg:col-span-2 md:col-span-2 relative group bg-white/[0.12] backdrop-blur-md p-8 sm:p-10 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(var(--color-primary-rgb),0.3)] will-change-auto hover:will-change-transform overflow-hidden shadow-2xl">
                     <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-3 relative z-10">Електронна търговия</h3>
                     <p className="text-white/80 max-w-md text-base leading-relaxed relative z-10 font-medium">Пълно счетоводно обслужване на онлайн магазини, Amazon, Shopify и дропшипинг бизнеси.</p>
                 </div>
 
-                <div className="bento-item relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform flex flex-col justify-end overflow-hidden shadow-2xl">
+                <div className="bento-item relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(var(--color-primary-rgb),0.3)] will-change-transform flex flex-col justify-end overflow-hidden shadow-2xl">
                     <h3 className="text-xl font-extrabold text-white mb-2 relative z-10">ИТ Сектор</h3>
                     <p className="text-white/80 text-sm relative z-10 font-medium">ИТ компании и софтуерни решения.</p>
                 </div>
 
-                <div className="bento-item relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform flex flex-col justify-end overflow-hidden shadow-2xl">
+                <div className="bento-item relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(var(--color-primary-rgb),0.3)] will-change-transform flex flex-col justify-end overflow-hidden shadow-2xl">
                     <h3 className="text-xl font-extrabold text-white mb-2 relative z-10">Криптовалути</h3>
                     <p className="text-white/80 text-sm relative z-10 font-medium">Счетоводство и данъчно облагане.</p>
                 </div>
 
                 {/* Row 2 */}
-                <div className="bento-item lg:col-span-1 md:col-span-1 relative group bg-primary/10 p-6 sm:p-8 rounded-3xl border border-primary/20 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
+                <div className="bento-item lg:col-span-1 md:col-span-1 relative group bg-primary/10 p-6 sm:p-8 rounded-3xl border border-primary/20 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(var(--color-primary-rgb),0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
                     <h3 className="text-xl font-extrabold text-primary mb-2 relative z-10">Фрийлансъри</h3>
                     <p className="text-white/80 text-sm relative z-10 font-medium">Цялостно обслужване на свободни професии.</p>
                 </div>
 
-                <div className="bento-item lg:col-span-2 md:col-span-2 relative group bg-white/[0.12] backdrop-blur-md p-8 sm:p-10 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform overflow-hidden shadow-2xl flex flex-col justify-center">
+                <div className="bento-item lg:col-span-2 md:col-span-2 relative group bg-white/[0.12] backdrop-blur-md p-8 sm:p-10 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(var(--color-primary-rgb),0.3)] will-change-auto hover:will-change-transform overflow-hidden shadow-2xl flex flex-col justify-center">
                     <div className="absolute right-0 bottom-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none group-hover:bg-primary/20 transition-colors duration-700" />
                     <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-3 relative z-10">Строителство и Имоти</h3>
                     <p className="text-white/80 max-w-sm text-base leading-relaxed relative z-10 font-medium">Специфично счетоводно отчитане за инвеститори и строителни фирми.</p>
                 </div>
 
-                <div className="bento-item lg:col-span-1 md:col-span-3 relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
+                <div className="bento-item lg:col-span-1 md:col-span-3 relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(var(--color-primary-rgb),0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
                     <h3 className="text-xl font-extrabold text-white mb-2 relative z-10">Маркетинг</h3>
                     <p className="text-white/80 text-sm relative z-10 font-medium">Агенции и дигитални услуги.</p>
                 </div>
 
                 {/* Row 3 */}
-                <div className="bento-item lg:col-span-2 md:col-span-1 relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
+                <div className="bento-item lg:col-span-2 md:col-span-1 relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(var(--color-primary-rgb),0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
                     <h3 className="text-xl font-extrabold text-white mb-2 relative z-10">Airbnb & Booking</h3>
                     <p className="text-white/80 text-sm relative z-10 font-medium">Оптимизация за краткосрочни наеми.</p>
                 </div>
 
-                <div className="bento-item lg:col-span-1 md:col-span-1 relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
+                <div className="bento-item lg:col-span-1 md:col-span-1 relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(var(--color-primary-rgb),0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
                     <h3 className="text-xl font-extrabold text-white mb-2 relative z-10">Медицина</h3>
                     <p className="text-white/80 text-sm relative z-10 font-medium">Лечебни заведения.</p>
                 </div>
 
-                <div className="bento-item lg:col-span-1 md:col-span-1 relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(25,191,183,0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
+                <div className="bento-item lg:col-span-1 md:col-span-1 relative group bg-white/[0.12] backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/10 transition-[transform,border-color,background-color,box-shadow] duration-500 ease-out hover:-translate-y-2 hover:border-primary/50 hover:bg-white/[0.16] hover:shadow-[0_20px_40px_-15px_rgba(var(--color-primary-rgb),0.3)] will-change-transform flex flex-col justify-center overflow-hidden shadow-2xl">
                     <h3 className="text-xl font-extrabold text-white mb-2 relative z-10">Изкуство</h3>
                     <p className="text-white/80 text-sm relative z-10 font-medium">Творчески индустрии.</p>
                 </div>
@@ -449,17 +449,17 @@ function TeamSection({ teamMembers }: { teamMembers: TeamMemberDisplay[] }) {
                                 src={member.image}
                                 alt={member.name}
                                 fill
-                                className="object-cover object-top transition-transform duration-[1.5s] ease-out group-hover:scale-105"
+                                className="object-cover object-top transition-transform duration-1500 ease-out group-hover:scale-105"
                                 sizes="(max-width: 768px) 100vw, 50vw"
                             />
 
-                            <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-[#1b2b28] via-[#1b2b28]/60 to-transparent pointer-events-none transition-opacity duration-700 opacity-90 group-hover:opacity-100" />
+                            <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-surface via-surface/60 to-transparent pointer-events-none transition-opacity duration-700 opacity-90 group-hover:opacity-100" />
 
                             <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 flex flex-col justify-end h-full">
                                 <div className="w-full">
-                                    <div className="transform transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]" style={{ transform: isActive ? "translateY(0)" : "translateY(15px)" }}>
+                                    <div className="transform transition-transform duration-700 ease-smooth-out" style={{ transform: isActive ? "translateY(0)" : "translateY(15px)" }}>
                                         {member.isLeader && (
-                                            <span className="inline-block bg-primary text-white text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider mb-4 shadow-[0_0_15px_rgba(25,191,183,0.5)]">
+                                            <span className="inline-block bg-primary text-white text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider mb-4 shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.5)]">
                                                 Ръководител
                                             </span>
                                         )}
@@ -471,7 +471,7 @@ function TeamSection({ teamMembers }: { teamMembers: TeamMemberDisplay[] }) {
                                     </div>
 
                                     <div
-                                        className="overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                                        className="overflow-hidden transition-all duration-700 ease-smooth-out"
                                         style={{
                                             opacity: isActive ? 1 : 0,
                                             maxHeight: isActive ? "300px" : "0",
@@ -583,7 +583,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
 
                 {/* Organic glowing background blobs for premium feel */}
                 <div className="absolute top-[20%] right-[-10%] w-[50vw] h-[50vw] bg-primary/10 rounded-full blur-[150px]" />
-                <div className="absolute bottom-[20%] left-[-10%] w-[60vw] h-[60vw] bg-[#2d3d3a]/60 rounded-full blur-[150px]" />
+                <div className="absolute bottom-[20%] left-[-10%] w-[60vw] h-[60vw] bg-dark-muted/60 rounded-full blur-[150px]" />
             </div>
 
             <style dangerouslySetInnerHTML={{
@@ -602,7 +602,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
         }
         .stylish-divider {
            height: 1px;
-           background: linear-gradient(90deg, transparent 0%, rgba(25,191,183,0.5) 25%, rgba(25,191,183,0.8) 50%, rgba(25,191,183,0.5) 75%, transparent 100%);
+           background: linear-gradient(90deg, transparent 0%, rgba(var(--color-primary-rgb),0.5) 25%, rgba(var(--color-primary-rgb),0.8) 50%, rgba(var(--color-primary-rgb),0.5) 75%, transparent 100%);
         }
       `}} />
 
@@ -632,14 +632,14 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                         title="Лично отношение. Професионален подход."
                         subtitle="Такиев Финанс предлага първокласни счетоводни услуги и данъчни консултации, адаптирани за успеха на вашия бизнес."
                         darkText={true}
-                        titleClass="!text-[#2d3d3a]"
-                        subtitleClass="!text-[#2d3d3a]/80"
+                        titleClass="!text-dark-muted"
+                        subtitleClass="!text-dark-muted/80"
                     />
                 </div>
             </section>
 
             {/* ===== FOUNDER ===== */}
-            <section className="founder-section relative py-28 sm:py-36 z-10 clip-slant-reverse bg-[#1b2b28] section-inset border-y border-white/5 mt-40">
+            <section className="founder-section relative py-28 sm:py-36 z-10 clip-slant-reverse bg-surface section-inset border-y border-white/5 mt-40">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
                     {/* Title — extracted above the grid */}
@@ -658,9 +658,9 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
 
                             <div className="space-y-5 text-white/90 leading-relaxed text-[17px] max-w-2xl font-medium">
                                 <p><span className="text-white font-bold">Николай Такиев</span> има надсетилетен професионален опит в областта на данъчното консултиране и счетоводството. Автор е на редица книги, статии и публикации, които подпомагат бизнес развитието.</p>
-                                <p>От 2020 г. е лектор на множество обучения и семинари, а през 2021 г. основава професионалната програма за обучение към академията на <span className="font-bold text-white bg-[#19BFB7]/20 px-2 py-0.5 rounded">Finance Academy</span>.</p>
+                                <p>От 2020 г. е лектор на множество обучения и семинари, а през 2021 г. основава професионалната програма за обучение към академията на <span className="font-bold text-white bg-primary/20 px-2 py-0.5 rounded">Finance Academy</span>.</p>
                                 <p>Активен външен данъчен консултант на водещи одиторски компании. Автор в блога на единствената платформа за онлайн счетоводен софтуер – <a href="https://blog.nula.bg/author/nikolai/" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-white transition-colors duration-300 font-bold inline-flex items-center">NulaBG <ExternalLink className="w-4 h-4 ml-1" /></a></p>
-                                <div className="border-l-4 border-primary pl-6 py-2 bg-gradient-to-r from-[#19BFB7]/10 to-transparent rounded-r-xl">
+                                <div className="border-l-4 border-primary pl-6 py-2 bg-gradient-to-r from-primary/10 to-transparent rounded-r-xl">
                                     <p className="italic text-white">Компанията работи в тесни партньорски взаимоотношения с високо квалифицирани юристи в областта на гражданското, търговското и трудовото право.</p>
                                 </div>
                             </div>
@@ -670,10 +670,10 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                         <div className="lg:col-span-5 relative flex items-end justify-center pt-20 pb-0">
                             <div className="relative w-[300px] sm:w-[380px] h-[400px] sm:h-[450px]">
                                 {/* 3D Portal Base (Circle at bottom) */}
-                                <div className="absolute bottom-0 w-[300px] sm:w-[380px] h-[300px] sm:h-[380px] rounded-full border border-white/10 bg-gradient-to-b from-[#2d3d3a] to-[#122220] shadow-[inset_0_-20px_60px_rgba(0,0,0,0.8),inset_0_10px_30px_rgba(25,191,183,0.15),0_30px_50px_rgba(0,0,0,0.5)] flex items-center justify-center overflow-hidden">
+                                <div className="absolute bottom-0 w-[300px] sm:w-[380px] h-[300px] sm:h-[380px] rounded-full border border-white/10 bg-gradient-to-b from-dark-muted to-[#122220] shadow-[inset_0_-20px_60px_rgba(0,0,0,0.8),inset_0_10px_30px_rgba(var(--color-primary-rgb),0.15),0_30px_50px_rgba(0,0,0,0.5)] flex items-center justify-center overflow-hidden">
                                     {/* Inner grid/glow for depth */}
-                                    <div className="absolute inset-x-0 bottom-0 h-[60%] opacity-30 bg-[linear-gradient(rgba(25,191,183,1)_1px,transparent_1px),linear-gradient(90deg,rgba(25,191,183,1)_1px,transparent_1px)] bg-[size:20px_20px] [mask-image:linear-gradient(to_bottom,transparent,black)]" />
-                                    <div className="absolute bottom-0 w-[80%] h-[50%] bg-[#19BFB7]/20 blur-[50px] rounded-full" />
+                                    <div className="absolute inset-x-0 bottom-0 h-[60%] opacity-30 bg-[linear-gradient(rgba(var(--color-primary-rgb),1)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--color-primary-rgb),1)_1px,transparent_1px)] bg-[size:20px_20px] [mask-image:linear-gradient(to_bottom,transparent,black)]" />
+                                    <div className="absolute bottom-0 w-[80%] h-[50%] bg-primary/20 blur-[50px] rounded-full" />
                                 </div>
 
                                 {/* Image Wrapper clipped precisely to circle bottom but open at top */}
@@ -700,7 +700,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                                     href="https://www.linkedin.com/company/takiev-finance/"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="w-14 h-14 rounded-full bg-[#1b2b28] border-2 border-[#19BFB7] flex items-center justify-center text-[#19BFB7] hover:bg-[#19BFB7] hover:text-[#1b2b28] transition-all duration-300 hover:-translate-y-1"
+                                    className="w-14 h-14 rounded-full bg-surface border-2 border-primary flex items-center justify-center text-primary hover:bg-primary hover:text-surface transition-all duration-300 hover:-translate-y-1"
                                 >
                                     <Linkedin className="w-6 h-6" />
                                 </motion.a>
@@ -714,7 +714,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                     {/* Badges — full-width single row */}
                     <div className="flex flex-wrap lg:flex-nowrap justify-center gap-3">
                         {founderExpertise.map(exp => (
-                            <div key={exp} className="px-5 py-2.5 rounded-full bg-white/5 border border-white/10 text-white shadow-lg text-[15px] font-semibold hover:border-primary/50 hover:bg-[#19BFB7]/20 transition-all cursor-default whitespace-nowrap">
+                            <div key={exp} className="px-5 py-2.5 rounded-full bg-white/5 border border-white/10 text-white shadow-lg text-[15px] font-semibold hover:border-primary/50 hover:bg-primary/20 transition-all cursor-default whitespace-nowrap">
                                 {exp}
                             </div>
                         ))}
@@ -726,7 +726,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
             <section className="relative py-8 bg-transparent z-20">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <p className="text-[#1b2b28] text-[13px] tracking-widest uppercase font-bold">Последвайте ни</p>
+                        <p className="text-surface text-[13px] tracking-widest uppercase font-bold">Последвайте ни</p>
                         <div className="flex items-center gap-4">
                             {socialLinks.map((social) => {
                                 const Icon = social.icon;
@@ -736,7 +736,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                                         href={social.href}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-12 h-12 rounded-full border border-[#1b2b28]/15 flex items-center justify-center text-[#1b2b28]/60 hover:text-[#19BFB7] hover:border-[#19BFB7]/80 hover:bg-[#19BFB7]/10 transition-all duration-300"
+                                        className="w-12 h-12 rounded-full border border-surface/15 flex items-center justify-center text-surface/60 hover:text-primary hover:border-primary/80 hover:bg-primary/10 transition-all duration-300"
                                     >
                                         <span className="sr-only">{social.label}</span>
                                         <Icon className="w-5 h-5" />
@@ -769,7 +769,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                         <div className="order-1 lg:order-2">
                             <div className="flex flex-wrap gap-2 mb-8">
                                 {["Top 100 Bulgaria", "2025", "Finance & Accounting"].map((badge) => (
-                                    <span key={badge} className="px-4 py-1.5 bg-[#19BFB7]/20 border border-[#19BFB7]/50 text-sm font-bold text-white uppercase tracking-wider rounded-full">
+                                    <span key={badge} className="px-4 py-1.5 bg-primary/20 border border-primary/50 text-sm font-bold text-white uppercase tracking-wider rounded-full">
                                         {badge}
                                     </span>
                                 ))}
@@ -789,7 +789,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
             {/* ===== VALUES ===== */}
             < section className="relative py-24 sm:py-32 z-10" >
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-                    <div className="absolute inset-x-0 inset-y-0 bg-[#2d3d3a] rounded-[3rem] border border-white/5 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] -z-10" />
+                    <div className="absolute inset-x-0 inset-y-0 bg-dark-muted rounded-[3rem] border border-white/5 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] -z-10" />
                     <div className="py-16">
                         <SectionTitle title="Нашите ценности" subtitle="Принципите, които направляват всяко наше действие и създават доверие" />
                         <ValuesSection />
@@ -798,7 +798,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
             </section >
 
             {/* ===== EXPERTISE BENTO ===== */}
-            < section className="relative py-24 sm:py-32 z-10 clip-slant-reverse bg-[#2d3d3a] section-inset border-y border-white/5 mt-40" >
+            < section className="relative py-24 sm:py-32 z-10 clip-slant-reverse bg-dark-muted section-inset border-y border-white/5 mt-40" >
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <SectionTitle title="Експертиза в разнообразни сектори" subtitle="Изключителен практически опит в разнообразни области на икономиката" />
                     <BusinessSectorsSection />
@@ -812,14 +812,14 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                         title="Изграждаме финансово бъдеще"
                         subtitle="Такиев Финанс предлага експертни счетоводни услуги и данъчни консултации за различни бизнеси и физически лица. В нашата практика обслужваме широка гама от клиенти, които успешно изграждат своя бизнес в различни сектори на икономиката."
                         darkText={true}
-                        titleClass="!text-[#2d3d3a]"
-                        subtitleClass="!text-[#2d3d3a]/80 font-medium"
+                        titleClass="!text-dark-muted"
+                        subtitleClass="!text-dark-muted/80 font-medium"
                     />
                 </div>
             </section>
 
             {/* ===== TEAM ACCORDION ===== */}
-            <section className="relative py-24 sm:py-32 z-10 clip-slant bg-[#2d3d3a] section-inset border-y border-white/5 mt-40">
+            <section className="relative py-24 sm:py-32 z-10 clip-slant bg-dark-muted section-inset border-y border-white/5 mt-40">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <SectionTitle title="Нашият екип" subtitle="Експерти с богат опит и безкомпромисен стандарт на работа" />
                     <TeamSection teamMembers={displayMembers} />
@@ -834,8 +834,8 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                             title="Нашите партньори"
                             subtitle="Заедно постигаме повече и работим с водещи организации в сектора"
                             center={true}
-                            titleClass="!text-[#2d3d3a]"
-                            subtitleClass="!text-[#2d3d3a]/80"
+                            titleClass="!text-dark-muted"
+                            subtitleClass="!text-dark-muted/80"
                         />
                     </div>
                 </div>
@@ -854,7 +854,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                     <div className="absolute -top-[50%] right-[5%] sm:right-[15%] w-16 sm:w-24 h-[200%] bg-white/10 rotate-[35deg] transform origin-center transition-transform" />
 
                     {/* Turquoise line (thicker, overlapping white, casting shadow) */}
-                    <div className="absolute -top-[50%] right-[10%] sm:right-[calc(15%+40px)] w-24 sm:w-36 h-[200%] bg-gradient-to-b from-[#19BFB7] to-[#128a84] rotate-[35deg] transform origin-center shadow-[-20px_0_30px_rgba(0,0,0,0.6)]" />
+                    <div className="absolute -top-[50%] right-[10%] sm:right-[calc(15%+40px)] w-24 sm:w-36 h-[200%] bg-gradient-to-b from-primary to-primary-dark rotate-[35deg] transform origin-center shadow-[-20px_0_30px_rgba(0,0,0,0.6)]" />
                 </div>
 
                 <div className="container mx-auto px-4 text-center relative z-20">

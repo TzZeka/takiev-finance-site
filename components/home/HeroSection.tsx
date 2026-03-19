@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -37,7 +37,7 @@ const acronymSecond = [
   { letter: "С" },
 ];
 
-export function HeroSection({ motto: _motto }: HeroSectionProps) {
+export function HeroSection({ motto }: HeroSectionProps) {
   const prefersReducedMotion = useReducedMotion();
 
   // Refs for tracking elements
@@ -280,7 +280,7 @@ export function HeroSection({ motto: _motto }: HeroSectionProps) {
       ref={containerRef} 
       className="relative bg-background text-white"
       style={{
-        backgroundColor: "#40514E"
+        backgroundColor: "var(--color-dark)"
       }}
     >
       {/* --- PIN CONTAINER --- */}
@@ -302,6 +302,7 @@ export function HeroSection({ motto: _motto }: HeroSectionProps) {
                 muted
                 loop
                 playsInline
+                preload="metadata"
             >
                 <source src="/firm-logo/hero-video/hero-section-video-2.mp4" type="video/mp4" />
             </video>
@@ -309,14 +310,14 @@ export function HeroSection({ motto: _motto }: HeroSectionProps) {
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
-                background: 'linear-gradient(to right, #40514E 0%, rgba(64,81,78,0.92) 10%, rgba(64,81,78,0.55) 28%, rgba(64,81,78,0.18) 52%, rgba(64,81,78,0.04) 72%, transparent 92%)'
+                background: 'linear-gradient(to right, var(--color-dark) 0%, rgba(var(--color-dark-rgb),0.92) 10%, rgba(var(--color-dark-rgb),0.55) 28%, rgba(var(--color-dark-rgb),0.18) 52%, rgba(var(--color-dark-rgb),0.04) 72%, transparent 92%)'
               }}
             />
             {/* Top + bottom vignette for cinematic depth */}
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
-                background: 'linear-gradient(to bottom, rgba(64,81,78,0.5) 0%, transparent 25%, transparent 70%, rgba(64,81,78,0.55) 100%)'
+                background: 'linear-gradient(to bottom, rgba(var(--color-dark-rgb),0.5) 0%, transparent 25%, transparent 70%, rgba(var(--color-dark-rgb),0.55) 100%)'
               }}
             />
         </div>
@@ -328,22 +329,24 @@ export function HeroSection({ motto: _motto }: HeroSectionProps) {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: 'radial-gradient(ellipse 80% 65% at 50% 44%, rgba(64,81,78,0.65) 0%, rgba(64,81,78,0.28) 45%, transparent 72%)',
+              background: 'radial-gradient(ellipse 80% 65% at 50% 44%, rgba(var(--color-dark-rgb),0.65) 0%, rgba(var(--color-dark-rgb),0.28) 45%, transparent 72%)',
               filter: 'blur(32px)',
             }}
           />
 
-          {/* H1 — centered in viewport */}
-          <div className="absolute inset-0 flex items-center justify-center" style={{ marginTop: '-5vh' }}>
-            <div className="text-center px-4 pointer-events-auto relative z-20">
+          {/* H1 — far left, vertically centered */}
+          <div className="absolute inset-0 flex items-center justify-start pl-[6%] md:pl-[8%]">
+            <div className="text-left pointer-events-auto relative z-20">
               <h1
                 ref={h1Ref}
-                className="text-fluid-hero leading-[1.1] text-white tracking-tight"
+                className="leading-[1.1] text-white"
                 style={{
                   fontFamily: "'Hubot Sans', sans-serif",
                   fontVariationSettings: "'wght' 900, 'wdth' 125",
                   fontWeight: 900,
                   fontStretch: "125%",
+                  fontSize: "clamp(2rem, 0.8rem + 3.1vw, 4.1rem)",
+                  letterSpacing: "0.01em",
                   textShadow: '0 2px 24px rgba(0,0,0,0.75), 0 0 80px rgba(0,0,0,0.35)',
                 }}
               >
@@ -362,33 +365,40 @@ export function HeroSection({ motto: _motto }: HeroSectionProps) {
           {/* Buttons — left of center axis */}
           <div
             ref={scene1BtnWrapRef}
-            className="absolute bottom-[18%] md:bottom-[22%] left-[6%] md:left-[14%] flex flex-col sm:flex-row gap-4 pointer-events-auto z-20"
+            className="absolute bottom-[18%] md:bottom-[22%] left-[6%] md:left-[8%] flex flex-col sm:flex-row gap-4 pointer-events-auto z-20"
           >
             {/* Primary — text-flip */}
             <Link
               href="/kontakti"
-              className="group relative overflow-hidden rounded-full px-8 py-4 bg-primary text-dark font-bold border-2 border-primary hover:bg-transparent hover:text-primary transition-colors duration-300 shadow-xl"
+              className="group rounded-full px-8 py-4 bg-primary text-dark font-bold border-2 border-primary hover:bg-transparent hover:text-primary transition-colors duration-300 shadow-xl overflow-hidden"
             >
-              <span className="block transition-transform duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-full text-sm tracking-wide">
-                Изпрати запитване
-              </span>
-              <span className="absolute inset-0 flex items-center justify-center translate-y-full transition-transform duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0 text-sm tracking-wide">
-                Изпрати запитване
+              <span
+                className="relative overflow-hidden inline-flex flex-col text-sm tracking-wide"
+                style={{ height: "1.2em", lineHeight: "1.2em" }}
+              >
+                <span className="block transition-transform duration-420 ease-expo-out group-hover:-translate-y-full">
+                  Изпрати запитване
+                </span>
+                <span aria-hidden className="absolute inset-x-0 top-full block transition-transform duration-420 ease-expo-out group-hover:-translate-y-full">
+                  Изпрати запитване
+                </span>
               </span>
             </Link>
 
             {/* Secondary — text-flip */}
             <Link
               href="/uslugi"
-              className="group relative overflow-hidden rounded-full px-7 py-4 border border-white/25 text-white hover:border-white/60 transition-colors duration-300 backdrop-blur-sm bg-black/10 flex items-center gap-3 shadow-lg"
+              className="group rounded-full px-7 py-4 border border-white/25 text-white hover:border-white/60 transition-colors duration-300 backdrop-blur-sm bg-black/10 shadow-lg overflow-hidden"
             >
-              <Play className="w-4 h-4 text-primary flex-shrink-0" fill="currentColor" />
-              <span className="relative overflow-hidden inline-block">
-                <span className="block transition-transform duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-full text-sm font-medium tracking-wide">
+              <span
+                className="relative overflow-hidden inline-flex flex-col text-sm font-medium tracking-wide"
+                style={{ height: "1.2em", lineHeight: "1.2em" }}
+              >
+                <span className="block transition-transform duration-420 ease-expo-out group-hover:-translate-y-full">
                   Нашите услуги
                 </span>
-                <span className="absolute inset-0 flex items-center translate-y-full transition-transform duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0 text-sm font-medium tracking-wide">
-                  Нашите услуги
+                <span aria-hidden className="absolute inset-x-0 top-full block transition-transform duration-420 ease-expo-out group-hover:-translate-y-full">
+                  Към услуги
                 </span>
               </span>
             </Link>
@@ -397,15 +407,31 @@ export function HeroSection({ motto: _motto }: HeroSectionProps) {
         </div>
 
         {/* Scroll indicator Bottom */}
-        <div ref={scrollIndicatorRef} className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-20">
+        <div ref={scrollIndicatorRef} className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20">
           <span className="text-[10px] tracking-[0.3em] uppercase text-white/50">Скролни надолу</span>
-          <div className="w-[1px] h-12 bg-white/20 relative overflow-hidden">
-            <motion.div 
-              className="absolute top-0 left-0 w-full bg-primary"
-              animate={{ height: ["0%", "100%", "0%"], top: ["0%", "0%", "100%"] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </div>
+          <motion.div
+            className="flex flex-col items-center gap-[3px]"
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          >
+            {[
+              { w: 22, h: 13, vb: "0 0 22 13", d: "M1 1.5L11 11L21 1.5", delay: 0 },
+              { w: 17, h: 10, vb: "0 0 17 10", d: "M1 1L8.5 8.5L16 1",   delay: 0.18 },
+              { w: 12, h: 8,  vb: "0 0 12 8",  d: "M1 1L6 6.5L11 1",     delay: 0.36 },
+            ].map(({ w, h, vb, d, delay }) => (
+              <motion.svg
+                key={w}
+                width={w}
+                height={h}
+                viewBox={vb}
+                fill="none"
+                animate={{ stroke: ["rgba(255,255,255,0.25)", "#19BFB7", "rgba(255,255,255,0.25)"] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay }}
+              >
+                <path d={d} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </motion.svg>
+            ))}
+          </motion.div>
         </div>
 
 

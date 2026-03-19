@@ -58,7 +58,7 @@ export function PricingCard({
         {/* Pricing */}
         <div className="mb-6">
           <div className="flex items-baseline gap-2">
-            <span className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-[#1effff] bg-clip-text text-transparent">
+            <span className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary-bright bg-clip-text text-transparent">
               {price}
             </span>
             {billingPeriod && (

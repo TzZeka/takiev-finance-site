@@ -404,7 +404,7 @@ export function BlogListClient({ posts, news }: BlogListClientProps) {
               ease: [0.22, 1, 0.36, 1],
             }}
           >
-            <div className="w-[68px] h-[68px] rounded-full bg-[#1b2b28]/75 backdrop-blur-md border border-white/15 flex items-center justify-center shadow-[0_4px_24px_rgba(0,0,0,0.3)]">
+            <div className="w-[68px] h-[68px] rounded-full bg-surface/75 backdrop-blur-md border border-white/15 flex items-center justify-center shadow-[0_4px_24px_rgba(0,0,0,0.3)]">
               <span className="text-white text-[8px] font-bold tracking-[0.18em] uppercase">
                 ПРОЧЕТИ
               </span>
@@ -458,7 +458,7 @@ export function BlogListClient({ posts, news }: BlogListClientProps) {
                   onFocus={openSearch}
                   onKeyDown={handleSearchKeyDown}
                   placeholder="Търси статии..."
-                  className={`w-full bg-transparent pl-10 pr-9 py-3 text-[13px] text-[#1b2b28] placeholder:text-slate-400 outline-none transition-shadow duration-200 ${
+                  className={`w-full bg-transparent pl-10 pr-9 py-3 text-[13px] text-surface placeholder:text-slate-400 outline-none transition-shadow duration-200 ${
                     expandedRect ? "text-[15px] py-3.5" : ""
                   }`}
                 />
@@ -523,7 +523,7 @@ export function BlogListClient({ posts, news }: BlogListClientProps) {
                             </div>
                           )}
                           <div className="flex-1 min-w-0">
-                            <p className="text-[12px] font-semibold text-[#1b2b28] leading-snug line-clamp-1">
+                            <p className="text-[12px] font-semibold text-surface leading-snug line-clamp-1">
                               <HighlightedTitle
                                 title={post.title}
                                 query={searchQuery}
@@ -563,7 +563,7 @@ export function BlogListClient({ posts, news }: BlogListClientProps) {
                 className={`w-full text-left px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 flex items-center justify-between ${
                   !selectedTag
                     ? "bg-primary text-white shadow-sm"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-[#1b2b28]"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-surface"
                 }`}
               >
                 <span>Всички</span>
@@ -586,7 +586,7 @@ export function BlogListClient({ posts, news }: BlogListClientProps) {
                     className={`w-full text-left px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 flex items-center justify-between ${
                       isActive
                         ? "bg-primary text-white shadow-sm"
-                        : "text-slate-600 hover:bg-slate-50 hover:text-[#1b2b28]"
+                        : "text-slate-600 hover:bg-slate-50 hover:text-surface"
                     }`}
                   >
                     <span className="truncate mr-2">{tag}</span>
@@ -660,7 +660,7 @@ export function BlogListClient({ posts, news }: BlogListClientProps) {
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-[12px] font-semibold text-[#1b2b28] leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                        <h4 className="text-[12px] font-semibold text-surface leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                           {post.title}
                         </h4>
                         <div className="flex items-center gap-1.5 mt-1 flex-wrap">
@@ -695,7 +695,7 @@ export function BlogListClient({ posts, news }: BlogListClientProps) {
             <AnimatePresence mode="wait">
               <motion.h2
                 key={selectedTag ?? "all"}
-                className="text-2xl md:text-[28px] font-bold text-[#1b2b28] tracking-tight flex items-center gap-1"
+                className="text-2xl md:text-[28px] font-bold text-surface tracking-tight flex items-center gap-1"
               >
                 {selectedTag ? (
                   <>
@@ -808,7 +808,7 @@ export function BlogListClient({ posts, news }: BlogListClientProps) {
               <div className="w-14 h-14 mx-auto mb-5 rounded-full bg-slate-50 flex items-center justify-center border border-black/[0.06]">
                 <Search className="w-5 h-5 text-slate-400" />
               </div>
-              <p className="text-[15px] font-semibold text-[#1b2b28] mb-3">
+              <p className="text-[15px] font-semibold text-surface mb-3">
                 {isFiltering
                   ? "Няма намерени статии по зададените критерии."
                   : "Статиите ще бъдат добавени скоро."}
@@ -833,7 +833,7 @@ export function BlogListClient({ posts, news }: BlogListClientProps) {
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="w-9 h-9 rounded-xl border border-black/[0.08] bg-white flex items-center justify-center text-slate-500 hover:text-[#1b2b28] hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+                className="w-9 h-9 rounded-xl border border-black/[0.08] bg-white flex items-center justify-center text-slate-500 hover:text-surface hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -845,7 +845,7 @@ export function BlogListClient({ posts, news }: BlogListClientProps) {
                     className={`w-9 h-9 rounded-xl text-[13px] font-semibold transition-all duration-200 ${
                       page === currentPage
                         ? "bg-primary text-white shadow-sm"
-                        : "border border-black/[0.08] bg-white text-slate-500 hover:border-primary/40 hover:text-[#1b2b28]"
+                        : "border border-black/[0.08] bg-white text-slate-500 hover:border-primary/40 hover:text-surface"
                     }`}
                   >
                     {page}
@@ -857,7 +857,7 @@ export function BlogListClient({ posts, news }: BlogListClientProps) {
                   setCurrentPage((p) => Math.min(totalPages, p + 1))
                 }
                 disabled={currentPage === totalPages}
-                className="w-9 h-9 rounded-xl border border-black/[0.08] bg-white flex items-center justify-center text-slate-500 hover:text-[#1b2b28] hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+                className="w-9 h-9 rounded-xl border border-black/[0.08] bg-white flex items-center justify-center text-slate-500 hover:text-surface hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -897,14 +897,14 @@ export function BlogListClient({ posts, news }: BlogListClientProps) {
                   )}
                   {post.tags?.[0] && (
                     <div className="absolute top-2.5 left-2.5">
-                      <span className="text-[9px] font-bold tracking-wider uppercase bg-white/90 backdrop-blur-sm text-[#1b2b28] px-2 py-0.5 rounded-full">
+                      <span className="text-[9px] font-bold tracking-wider uppercase bg-white/90 backdrop-blur-sm text-surface px-2 py-0.5 rounded-full">
                         {post.tags[0]}
                       </span>
                     </div>
                   )}
                 </div>
                 <div className="p-4">
-                  <h4 className="text-[13px] font-bold text-[#1b2b28] leading-snug line-clamp-2 group-hover:text-primary transition-colors mb-2">
+                  <h4 className="text-[13px] font-bold text-surface leading-snug line-clamp-2 group-hover:text-primary transition-colors mb-2">
                     {post.title}
                   </h4>
                   <div className="flex items-center gap-2">
@@ -949,7 +949,7 @@ export function BlogListClient({ posts, news }: BlogListClientProps) {
           <motion.path
             ref={svgAnimatedPathRef}
             d={svgPath}
-            stroke="#40514E"
+            stroke="var(--color-dark)"
             strokeWidth="1"
             fill="none"
             strokeLinecap="round"
@@ -1048,7 +1048,7 @@ function FloatingPill({
               onClick={onToggle}
               className="flex items-center gap-3 px-5 py-3 whitespace-nowrap"
             >
-              <span className="flex items-center gap-2 text-[13px] font-semibold text-[#1b2b28]">
+              <span className="flex items-center gap-2 text-[13px] font-semibold text-surface">
                 {/* Static dot — no pulsing */}
                 <span className="w-2 h-2 rounded-full bg-primary inline-block" />
                 {postCount} статии

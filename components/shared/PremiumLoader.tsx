@@ -87,7 +87,7 @@ export function PremiumLoader() {
             className="loader-bg fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
             style={{
               background:
-                "linear-gradient(135deg, #020617 0%, #0f172a 20%, #19BFB7 50%, #0f172a 80%, #020617 100%)",
+                "linear-gradient(135deg, #020617 0%, #0f172a 20%, var(--color-primary) 50%, #0f172a 80%, #020617 100%)",
               backgroundSize: "300% 300%",
               animation: "loader-bg-flow 6s ease infinite",
               willChange: "transform",
@@ -139,7 +139,7 @@ export function PremiumLoader() {
                       style={{
                         padding: `${BORDER_RATIO * 100}%`,
                         background:
-                          "linear-gradient(135deg, #147d6c 0%, #1effff 100%)",
+                          "linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-bright) 100%)",
                         boxShadow:
                           "0 8px 24px rgba(0,0,0,0.35), 0 2px 8px rgba(25,191,183,0.3)",
                       }}
@@ -149,7 +149,7 @@ export function PremiumLoader() {
                         className="relative w-full h-full rounded-[4%] overflow-hidden"
                         style={{
                           background:
-                            "linear-gradient(145deg, #22d4cb 0%, #19BFB7 40%, #15a39d 100%)",
+                            "linear-gradient(145deg, #22d4cb 0%, var(--color-primary) 40%, #15a39d 100%)",
                           boxShadow:
                             "inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.15)",
                         }}
@@ -205,11 +205,11 @@ export function PremiumLoader() {
                 <h1
                   className="loader-heading text-4xl sm:text-5xl md:text-6xl font-bold tracking-wide mb-2"
                   style={{
-                    fontFamily: "'Berkslund', serif",
+                    fontFamily: "var(--font-berkslund)",
                     /* Base white text, then shine overlay via background-clip */
                     color: "transparent",
                     backgroundImage:
-                      "linear-gradient(90deg, #fff 0%, #fff 42%, #19BFB7 47%, #1effff 50%, #19BFB7 53%, #fff 58%, #fff 100%)",
+                      "linear-gradient(90deg, #fff 0%, #fff 42%, var(--color-primary) 47%, var(--color-primary-bright) 50%, var(--color-primary) 53%, #fff 58%, #fff 100%)",
                     backgroundSize: "300% 100%",
                     backgroundPosition: "-100% 0",
                     backgroundClip: "text",
@@ -229,10 +229,10 @@ export function PremiumLoader() {
                 <p
                   className="loader-slogan text-[10px] sm:text-xs md:text-sm font-extrabold tracking-[0.25em] uppercase mb-5"
                   style={{
-                    fontFamily: "'Avenir', sans-serif",
+                    fontFamily: "var(--font-avenir)",
                     color: "transparent",
                     backgroundImage:
-                      "linear-gradient(90deg, #147d6c 0%, #147d6c 42%, #fff 47%, #1effff 50%, #fff 53%, #1effff 58%, #1effff 100%)",
+                      "linear-gradient(90deg, var(--color-primary-dark) 0%, var(--color-primary-dark) 42%, #fff 47%, var(--color-primary-bright) 50%, #fff 53%, var(--color-primary-bright) 58%, var(--color-primary-bright) 100%)",
                     backgroundSize: "300% 100%",
                     backgroundPosition: "-100% 0",
                     backgroundClip: "text",
@@ -268,7 +268,7 @@ export function PremiumLoader() {
                   style={{
                     color: "transparent",
                     backgroundImage:
-                      "linear-gradient(90deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.55) 42%, #19BFB7 47%, #1effff 50%, #19BFB7 53%, rgba(255,255,255,0.55) 58%, rgba(255,255,255,0.55) 100%)",
+                      "linear-gradient(90deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.55) 42%, var(--color-primary) 47%, var(--color-primary-bright) 50%, var(--color-primary) 53%, rgba(255,255,255,0.55) 58%, rgba(255,255,255,0.55) 100%)",
                     backgroundSize: "300% 100%",
                     backgroundPosition: "-100% 0",
                     backgroundClip: "text",

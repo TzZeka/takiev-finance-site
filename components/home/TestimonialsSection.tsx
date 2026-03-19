@@ -59,7 +59,7 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
             <h2
               className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.05]"
               style={{
-                color: "#40514E",
+                color: "var(--color-dark)",
                 fontVariationSettings: "'wght' 900, 'wdth' 125",
                 fontWeight: 900,
                 fontStretch: "125%",
@@ -84,14 +84,14 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
               <div className="flex gap-2">
                 <button
                   onClick={goToPrevious}
-                  className="w-11 h-11 rounded-full border-2 border-slate-200 text-slate-400 hover:border-[#40514E] hover:text-[#40514E] transition-all duration-300 flex items-center justify-center"
+                  className="w-11 h-11 rounded-full border-2 border-slate-200 text-slate-400 hover:border-dark hover:text-dark transition-all duration-300 flex items-center justify-center"
                   aria-label="Previous"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <button
                   onClick={goToNext}
-                  className="w-11 h-11 rounded-full border-2 border-slate-200 text-slate-400 hover:border-[#40514E] hover:text-[#40514E] transition-all duration-300 flex items-center justify-center"
+                  className="w-11 h-11 rounded-full border-2 border-slate-200 text-slate-400 hover:border-dark hover:text-dark transition-all duration-300 flex items-center justify-center"
                   aria-label="Next"
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -159,7 +159,7 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
                 <div>
                   <p
                     className="font-bold text-base"
-                    style={{ color: "#40514E", fontVariationSettings: "'wght' 700" }}
+                    style={{ color: "var(--color-dark)", fontVariationSettings: "'wght' 700" }}
                   >
                     {current.clientName}
                   </p>

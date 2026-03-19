@@ -2,6 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   DESIGN TOKENS — CSS Custom Properties
+   Mirror of tailwind.config.ts for use inside inline styles
+   and CSS gradient strings where Tailwind classes cannot reach.
+   ============================================================ */
+:root {
+  /* Brand */
+  --color-primary: #19BFB7;
+  --color-primary-rgb: 25, 191, 183;
+  --color-primary-dark: #147d6c;
+  --color-primary-bright: #1effff;
+  --color-primary-link: #0D7F78;
+  --color-primary-link-hover: #0B5E59;
+
+  /* Dark scale */
+  --color-dark: #40514E;
+  --color-dark-rgb: 64, 81, 78;
+  --color-dark-muted: #2d3d3a;
+
+  /* Surface scale */
+  --color-surface: #1b2b28;
+  --color-surface-rgb: 27, 43, 40;
+  --color-surface-raised: #2d4a44;
+  --color-surface-raised-rgb: 45, 74, 68;
+  --color-surface-deeper: #1a3530;
+  --color-surface-deep: #060e0c;
+
+  /* Typography */
+  --font-sans: 'Hubot Sans', system-ui, sans-serif;      /* headings */
+  --font-body: 'Mona Sans', system-ui, sans-serif;       /* body text */
+  --font-berkslund: 'Berkslund', serif;                  /* logo wordmark */
+  --font-avenir: 'Avenir', sans-serif;                   /* logo subtitle */
+}
+
 @font-face {
   font-family: 'Berkslund';
   src:
@@ -23,6 +57,32 @@
   src: url('/fonts/Hubot Sans/Hubot-Sans.woff2') format('woff2');
   font-weight: 200 900;
   font-stretch: 75% 125%;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Mona Sans — body variable font ────────────────────────────────────────
+   Sister font to Hubot Sans (GitHub, 2023). Same wdth/wght axes:
+     wdth  75–125  (font-stretch 75%–125%)
+     wght 200–900  (font-weight  200–900)
+   Two faces: upright (normal) + italic. woff2 converted from the official
+   TTF variable files. Upright is preloaded in <head>; italic loads on demand.
+   ───────────────────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Mona Sans';
+  src: url('/fonts/Mona_Sans/MonaSans[wdth,wght].woff2') format('woff2');
+  font-weight: 200 900;
+  font-stretch: 75% 125%;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mona Sans';
+  src: url('/fonts/Mona_Sans/MonaSans-Italic[wdth,wght].woff2') format('woff2');
+  font-weight: 200 900;
+  font-stretch: 75% 125%;
+  font-style: italic;
   font-display: swap;
 }
 
@@ -214,8 +274,20 @@ body:has(.loader-active) {
   html,
   body {
     @apply bg-background text-foreground;
-    font-family: 'Hubot Sans', system-ui, sans-serif;
+    /* Body font: Mona Sans — all running text, nav, labels, buttons, inputs */
+    font-family: 'Mona Sans', system-ui, sans-serif;
+    font-weight: 400;
+    font-stretch: 100%;
+    /* wdth axis is mapped from font-stretch; wght axis from font-weight.
+       Tailwind utilities (.font-bold etc.) work correctly via font-weight. */
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Anchor ALL heading levels to Hubot Sans — regardless of utility classes.
+     The existing h1.font-bold / h2.font-black rules override stretch/weight
+     as needed (they have higher specificity). */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Hubot Sans', system-ui, sans-serif;
   }
 
   /* Mobile scrolling - simple and reliable */
@@ -544,10 +616,75 @@ body:has(.loader-active) {
 }
 
 /* ============================================
+   MONA SANS — OPTICAL SIZING
+   ============================================
+   Variable axes:
+     wdth  75–125  mapped via CSS font-stretch (%)
+     wght 200–900  mapped via CSS font-weight (numeric)
+
+   Strategy based on typographic optical-size theory:
+   · Fine print / captions  → normal width, heavier weight (+50 units)
+     Reason: at tiny sizes, thicker strokes maintain contrast (WCAG 1.4.4).
+   · Small labels (13-14px) → slight weight boost (+25 units)
+   · Normal body  (15-16px) → base: weight 400, stretch 100% (inherited)
+   · Large body   (18-22px) → slightly wider + lighter (elegant at display size)
+   · Display body (24-32px) → more expanded + light (visual breathing room)
+
+   CSS Fonts Level 4 allows numeric font-weight 1–1000, so values like 425
+   or 370 are valid in all modern browsers (Chrome 62+, FF 61+, Safari 11+).
+   font-stretch % is also CSS4, supported everywhere modern.
+
+   Heading elements (h1–h6) are anchored to Hubot Sans in @layer base,
+   so these rules only affect Mona Sans body-level elements.
+
+   WCAG compliance:
+   · Contrast ratio of body text on dark surfaces: ≥ 7:1 (AAA)
+   · Contrast ratio of body text on white:         ≥ 7:1 (AAA)
+   · Heavier weight at small sizes improves effective contrast.
+   ============================================ */
+
+/* Fine print — captions, super-small labels */
+small,
+.text-xs,
+.text-fluid-xs {
+  font-weight: 445;
+  font-stretch: 98%;
+}
+
+/* Small — navigation labels, metadata, 13-14px body */
+.text-sm,
+.text-fluid-sm {
+  font-weight: 420;
+}
+
+/* Large body / lead — lightly wider, visually lighter */
+.text-lg,
+.text-fluid-lg {
+  font-stretch: 102%;
+  font-weight: 385;
+}
+
+/* XL body — more pronounced optical expansion */
+.text-xl,
+.text-fluid-xl {
+  font-stretch: 105%;
+  font-weight: 360;
+}
+
+/* 2XL / 3XL — display body, paragraph intros */
+.text-2xl,
+.text-fluid-2xl,
+.text-3xl,
+.text-fluid-3xl {
+  font-stretch: 108%;
+  font-weight: 340;
+}
+
+/* ============================================
    HIGH-END EFFECTS
    ============================================ */
 
-/* Variable font weight hover effect */
+/* Variable font weight hover effect (Hubot Sans headings only) */
 h1, h2, h3 { font-variation-settings: 'wght' 700, 'wdth' 100; transition: font-variation-settings 0.25s ease; }
 .group:hover h3 { font-variation-settings: 'wght' 800, 'wdth' 100; }
 

@@ -224,7 +224,7 @@ export function BlogSearch({ onSearch, posts = [], placeholder = "Търсене
         className={cn(
           "bg-white rounded-2xl border shadow-sm overflow-hidden flex flex-col absolute top-0 left-0 w-full",
           isFocused
-            ? "border-primary/50 shadow-[0_8px_30px_rgb(0,0,0,0.08)] z-[100] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]"
+            ? "border-primary/50 shadow-[0_8px_30px_rgb(0,0,0,0.08)] z-[100] transition-all duration-500 ease-soft-out"
             : "border-black/5 hover:border-black/10 z-[60] transition-all duration-300 ease-out",
           showSuggestions ? "lg:max-w-[800px]" : ""
         )}
@@ -247,7 +247,7 @@ export function BlogSearch({ onSearch, posts = [], placeholder = "Търсене
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             autoComplete="off"
-            className="w-full bg-slate-50 text-[#1b2b28] placeholder:text-slate-400 focus:placeholder-transparent pl-10 pr-10 py-2.5 text-[16px] lg:text-sm rounded-xl focus:outline-none transition-all duration-300 placeholder:transition-colors placeholder:duration-300"
+            className="w-full bg-slate-50 text-surface placeholder:text-slate-400 focus:placeholder-transparent pl-10 pr-10 py-2.5 text-[16px] lg:text-sm rounded-xl focus:outline-none transition-all duration-300 placeholder:transition-colors placeholder:duration-300"
           />
           {query && (
             <button
@@ -263,7 +263,7 @@ export function BlogSearch({ onSearch, posts = [], placeholder = "Търсене
         {/* Suggestions Area - expands seamlessly downward */}
         <div
           className={cn(
-            "overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] flex-shrink-0",
+            "overflow-hidden transition-all duration-500 ease-soft-out flex-shrink-0",
             showSuggestions ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
           )}
         >
@@ -296,7 +296,7 @@ export function BlogSearch({ onSearch, posts = [], placeholder = "Търсене
                           <FileText className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
                         )}
                         <div className="flex-1 min-w-0 pr-4 ml-1">
-                          <span className="text-[13px] text-[#1b2b28] whitespace-nowrap overflow-hidden text-ellipsis block font-medium">
+                          <span className="text-[13px] text-surface whitespace-nowrap overflow-hidden text-ellipsis block font-medium">
                             {highlightMatch(s.text, s.matchStart, s.matchEnd)}
                           </span>
                           {s.tags && s.tags.length > 0 && (
@@ -325,7 +325,7 @@ export function BlogSearch({ onSearch, posts = [], placeholder = "Търсене
                         )}
                       >
                         <Tag className="w-4 h-4 text-primary/60 flex-shrink-0" />
-                        <span className="flex-1 text-[13px] text-[#1b2b28] whitespace-nowrap overflow-hidden text-ellipsis font-medium">
+                        <span className="flex-1 text-[13px] text-surface whitespace-nowrap overflow-hidden text-ellipsis font-medium">
                           {highlightMatch(s.text, s.matchStart, s.matchEnd)}
                         </span>
                         <span className="text-[10px] text-slate-400 bg-slate-100 border border-black/5 px-2 py-0.5 rounded-full flex-shrink-0">
@@ -349,7 +349,7 @@ export function BlogSearch({ onSearch, posts = [], placeholder = "Търсене
                     избор
                   </span>
                 </div>
-                <span className="text-[10px] uppercase font-bold tracking-widest text-[#19BFB7]/80">
+                <span className="text-[10px] uppercase font-bold tracking-widest text-primary/80">
                   Резултати
                 </span>
               </div>

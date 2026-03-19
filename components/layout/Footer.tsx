@@ -45,16 +45,16 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-[#06100e] text-white overflow-hidden">
+    <footer className="relative bg-surface-deep text-white overflow-hidden">
 
       {/* ── Top accent line ── */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-[#19BFB7]/50 to-transparent" />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
       {/* ── Stylized Text Logo banner (Replacing Image) ── */}
-      <div className="relative w-full bg-[#06100e] border-b border-white/[0.05] flex items-center justify-center overflow-hidden py-12 md:py-20">
+      <div className="relative w-full bg-surface-deep border-b border-white/[0.05] flex items-center justify-center overflow-hidden py-12 md:py-20">
         <h2
           className="text-white/[0.04] text-[14vw] sm:text-[11vw] md:text-[9vw] leading-none select-none whitespace-nowrap italic pointer-events-none transition-colors duration-700 hover:text-white/[0.08]"
-          style={{ fontFamily: "'Berkslung', 'Berkslund', serif", fontWeight: 400 }}
+          style={{ fontFamily: "var(--font-berkslund)", fontWeight: 400 }}
         >
           Takiev Finance
         </h2>
@@ -71,7 +71,7 @@ export function Footer() {
               <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/30">
                 ЕИК: 206666484
               </p>
-              <div className="w-6 h-px bg-[#19BFB7]/60" />
+              <div className="w-6 h-px bg-primary/60" />
               <p className="text-sm text-white/50 leading-relaxed">
                 Избери своя доверен бизнес партньор. Експертно счетоводно обслужване на Вашия бизнес.
               </p>
@@ -88,7 +88,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
-                  className="w-8 h-8 border border-white/10 flex items-center justify-center text-white/35 hover:text-[#19BFB7] hover:border-[#19BFB7]/50 transition-all duration-300"
+                  className="w-8 h-8 border border-white/10 flex items-center justify-center text-white/35 hover:text-primary hover:border-primary/50 transition-all duration-300"
                 >
                   <Facebook className="w-3.5 h-3.5" />
                 </a>
@@ -98,7 +98,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="LinkedIn"
-                  className="w-8 h-8 border border-white/10 flex items-center justify-center text-white/35 hover:text-[#19BFB7] hover:border-[#19BFB7]/50 transition-all duration-300"
+                  className="w-8 h-8 border border-white/10 flex items-center justify-center text-white/35 hover:text-primary hover:border-primary/50 transition-all duration-300"
                 >
                   <Linkedin className="w-3.5 h-3.5" />
                 </a>
@@ -108,7 +108,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="YouTube"
-                  className="w-8 h-8 border border-white/10 flex items-center justify-center text-white/35 hover:text-[#19BFB7] hover:border-[#19BFB7]/50 transition-all duration-300"
+                  className="w-8 h-8 border border-white/10 flex items-center justify-center text-white/35 hover:text-primary hover:border-primary/50 transition-all duration-300"
                 >
                   <Youtube className="w-3.5 h-3.5" />
                 </a>
@@ -118,7 +118,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="TikTok"
-                  className="w-8 h-8 border border-white/10 flex items-center justify-center text-white/35 hover:text-[#19BFB7] hover:border-[#19BFB7]/50 transition-all duration-300"
+                  className="w-8 h-8 border border-white/10 flex items-center justify-center text-white/35 hover:text-primary hover:border-primary/50 transition-all duration-300"
                 >
                   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />

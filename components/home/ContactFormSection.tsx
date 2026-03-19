@@ -44,7 +44,7 @@ export function ContactFormSection({ ctaText }: ContactFormSectionProps) {
             <h2
               className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.05]"
               style={{
-                color: "#40514E",
+                color: "var(--color-dark)",
                 fontVariationSettings: "'wght' 900, 'wdth' 125",
                 fontWeight: 900,
                 fontStretch: "125%",

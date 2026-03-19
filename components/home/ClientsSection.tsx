@@ -295,7 +295,7 @@ export function ClientsSection({ clients }: ClientsSectionProps) {
       })}
       className="relative py-20 md:py-28 overflow-hidden shadow-sm"
       style={{
-        backgroundColor: "#40514E",
+        backgroundColor: "var(--color-dark)",
         borderTopLeftRadius: "50% 2rem",
         borderTopRightRadius: "50% 2rem",
         filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",

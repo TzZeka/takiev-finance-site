@@ -75,7 +75,7 @@ export default function ServicesPage() {
 
         {/* Grid pattern */}
         <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: "linear-gradient(#19BFB7 1px, transparent 1px), linear-gradient(90deg, #19BFB7 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(90deg, var(--color-primary) 1px, transparent 1px)",
           backgroundSize: "60px 60px",
         }} />
 

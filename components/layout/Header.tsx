@@ -35,8 +35,8 @@ const navItems = [
   { href: "/za-nas", label: "За нас" },
   { href: "/uslugi", label: "Услуги", hasSubmenu: true },
   { href: "/blog", label: "Блог" },
+  { href: "/novini", label: "Новини" },
   { href: "/video", label: "Видео" },
-  { href: "/kontakti", label: "Контакти" },
 ];
 
 function MenuIcon({ isOpen }: { isOpen: boolean }) {
@@ -208,11 +208,11 @@ export function Header() {
             className="absolute inset-0 rounded-2xl pointer-events-none"
             animate={{
               backgroundColor: scrolled
-                ? "rgba(22, 36, 32, 0.95)"
-                : "rgba(42, 60, 55, 0.62)",
+                ? "rgba(12, 22, 19, 0.97)"
+                : "rgba(14, 28, 24, 0.86)",
               borderColor: scrolled
-                ? "rgba(255, 255, 255, 0.07)"
-                : "rgba(255, 255, 255, 0.14)",
+                ? "rgba(255, 255, 255, 0.09)"
+                : "rgba(255, 255, 255, 0.13)",
             }}
             style={{
               borderWidth: "1px",
@@ -243,9 +243,9 @@ export function Header() {
                 className="rounded-xl px-2 py-1.5 transition-all duration-500"
                 style={{
                   background: scrolled
-                    ? "rgba(255,255,255,0.04)"
-                    : "rgba(0,0,0,0.12)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                    ? "rgba(0,0,0,0.18)"
+                    : "rgba(0,0,0,0.26)",
+                  border: "1px solid rgba(255,255,255,0.09)",
                   backdropFilter: scrolled ? "none" : "blur(10px)",
                   WebkitBackdropFilter: scrolled ? "none" : "blur(10px)",
                 }}
@@ -254,8 +254,31 @@ export function Header() {
               </div>
             </div>
 
-            {/* ── Col 3: CTA + Hamburger ── */}
-            <div className="flex items-center justify-end gap-3">
+            {/* ── Col 3: Контакти pill + CTA + Hamburger ── */}
+            <div className="flex items-center justify-end gap-2">
+
+              {/* Контакти pill — transparent ghost, collapses on scroll */}
+              <Link
+                href="/kontakti"
+                className="hidden md:inline-flex items-center whitespace-nowrap text-sm font-medium overflow-hidden flex-shrink-0"
+                style={{
+                  height: "2.25rem",
+                  borderRadius: "9999px",
+                  maxWidth: scrolled ? "0px" : "110px",
+                  paddingLeft: scrolled ? "0" : "1rem",
+                  paddingRight: scrolled ? "0" : "1rem",
+                  opacity: scrolled ? 0 : 1,
+                  pointerEvents: scrolled ? "none" : "auto",
+                  color: pathname === "/kontakti" ? "var(--color-primary)" : "rgba(255,255,255,0.80)",
+                  border: `1px solid ${pathname === "/kontakti" ? "rgba(25,191,183,0.45)" : "rgba(255,255,255,0.18)"}`,
+                  background: pathname === "/kontakti" ? "rgba(25,191,183,0.08)" : "rgba(255,255,255,0.06)",
+                  transition:
+                    "max-width 0.45s cubic-bezier(0.22,1,0.36,1), padding 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease",
+                }}
+              >
+                Контакти
+              </Link>
+
               {/* Desktop CTA — mail → paper-plane on hover, collapses on scroll */}
               <motion.button
                 whileHover="hover"

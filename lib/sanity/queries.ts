@@ -356,6 +356,20 @@ export async function getAllNews(): Promise<NewsItem[]> {
   );
 }
 
+// External News Articles (НАП / НОИ)
+export async function getNewsArticles(): Promise<import('@/types/novini').SanityNewsArticle[]> {
+  return client.fetch(
+    `*[_type == "newsArticle"] | order(publishedAt desc) [0...10] {
+      _id,
+      source,
+      url,
+      title,
+      publishedAt,
+      manualSummary
+    }`
+  )
+}
+
 // Team Members — leaders first, then by order
 export async function getTeamMembers(): Promise<TeamMember[]> {
   return client.fetch(

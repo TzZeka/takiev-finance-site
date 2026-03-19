@@ -32,7 +32,7 @@ const FILTERS: FilterOption[] = [
   {
     id: "youtube",
     label: "YouTube",
-    icon: <Youtube className="w-3.5 h-3.5 text-[#FF0000]" />,
+    icon: <Youtube className="w-3.5 h-3.5 text-red-500" />,
   },
   {
     id: "tiktok",
@@ -53,7 +53,7 @@ const PLATFORM_COLORS = {
     bg: "rgba(255,0,0,0.06)",
     line: "rgba(255,0,0,0.15)",
     hover: "rgba(255,0,0,0.22)",
-    icon: "#FF0000",
+    icon: "var(--color-youtube)",
   },
   tiktok: {
     border: "rgba(255,255,255,0.14)",
@@ -67,7 +67,7 @@ const PLATFORM_COLORS = {
     bg: "rgba(25,191,183,0.06)",
     line: "rgba(25,191,183,0.18)",
     hover: "rgba(25,191,183,0.25)",
-    icon: "#19BFB7",
+    icon: "var(--color-primary)",
   },
 } as const;
 
@@ -105,11 +105,11 @@ export function VideoPageClient({ videos }: { videos: Video[] }) {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#060e0c" }}>
+    <div className="min-h-screen" style={{ background: "var(--color-surface-deep)" }}>
 
       {/* ── HERO ────────────────────────────────────────────────────────────── */}
       <section className="relative pt-32 pb-20 md:pt-44 md:pb-28 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0c1a16] via-[#080f0d] to-[#060e0c]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-surface via-surface-deep to-surface-deep" />
 
         {/* Teal radial glow */}
         <div
@@ -209,7 +209,7 @@ export function VideoPageClient({ videos }: { videos: Video[] }) {
                 (e.currentTarget as HTMLElement).style.background = "rgba(255,0,0,0.07)";
               }}
             >
-              <Youtube className="w-4 h-4 text-[#FF0000]" />
+              <Youtube className="w-4 h-4 text-red-500" />
               YouTube канал
               <ArrowRight className="w-3.5 h-3.5 text-white/25 group-hover:translate-x-0.5 transition-transform duration-200" />
             </a>
@@ -253,7 +253,7 @@ export function VideoPageClient({ videos }: { videos: Video[] }) {
                   key={filter.id}
                   onClick={() => handleFilter(filter.id)}
                   className="relative flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 whitespace-nowrap flex-shrink-0 outline-none"
-                  style={{ color: isActive ? "#060e0c" : "rgba(255,255,255,0.42)" }}
+                  style={{ color: isActive ? "var(--color-surface-deep)" : "rgba(255,255,255,0.42)" }}
                 >
                   {isActive && (
                     <motion.div
@@ -293,7 +293,7 @@ export function VideoPageClient({ videos }: { videos: Video[] }) {
                 >
                   {activeFilter === "all" && (
                     <SectionDivider
-                      icon={<Youtube className="w-4 h-4 text-[#FF0000]" />}
+                      icon={<Youtube className="w-4 h-4 text-red-500" />}
                       label="YouTube"
                       colors={PLATFORM_COLORS.youtube}
                     />
@@ -381,7 +381,7 @@ export function VideoPageClient({ videos }: { videos: Video[] }) {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/kontakti"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-colors duration-200 bg-primary text-[#060e0c] hover:bg-primary/90"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-colors duration-200 bg-primary text-surface-deep hover:bg-primary/90"
             >
               Свържете се с нас
               <ArrowRight className="w-4 h-4" />
@@ -462,12 +462,12 @@ function YouTubeCard({ video, featured }: { video: Video; featured?: boolean }) 
         </div>
         <div className="p-5">
           <div className="flex items-center gap-2 mb-2.5">
-            <Youtube className="w-3.5 h-3.5 text-[#FF0000]/50 flex-shrink-0" />
+            <Youtube className="w-3.5 h-3.5 text-red-500/50 flex-shrink-0" />
             {video.featured && (
               <span
                 className="text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full"
                 style={{
-                  color: "#19BFB7",
+                  color: "var(--color-primary)",
                   background: "rgba(25,191,183,0.1)",
                   border: "1px solid rgba(25,191,183,0.2)",
                 }}
@@ -546,7 +546,7 @@ function ShortVideoCard({
                   <span
                     className="text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full"
                     style={{
-                      color: "#19BFB7",
+                      color: "var(--color-primary)",
                       background: "rgba(25,191,183,0.12)",
                       border: "1px solid rgba(25,191,183,0.25)",
                     }}

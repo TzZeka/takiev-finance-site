@@ -224,8 +224,8 @@ export function BlogArticleLayout({ post, headings, categories, relatedPosts }: 
         >
           <div className="relative bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 rounded-3xl border border-white/[0.06] overflow-hidden shadow-2xl">
             {/* Decorative blurred orbs */}
-            <div className="absolute -top-20 right-[10%] w-60 h-60 bg-[#19BFB7] rounded-full blur-[150px] opacity-15 pointer-events-none" />
-            <div className="absolute -bottom-20 left-[5%] w-60 h-60 bg-[#40514E] rounded-full blur-[150px] opacity-15 pointer-events-none" />
+            <div className="absolute -top-20 right-[10%] w-60 h-60 bg-primary rounded-full blur-[150px] opacity-15 pointer-events-none" />
+            <div className="absolute -bottom-20 left-[5%] w-60 h-60 bg-dark rounded-full blur-[150px] opacity-15 pointer-events-none" />
 
             <div className="relative z-10 flex flex-col-reverse md:flex-row items-stretch">
               {/* Text + Socials — left */}
@@ -349,7 +349,7 @@ export function BlogArticleLayout({ post, headings, categories, relatedPosts }: 
             {/* Background layers */}
             <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />
             <div className="absolute -top-16 -right-16 w-48 h-48 bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
-            <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-[#40514E]/30 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-dark/30 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
               {/* Text — left */}

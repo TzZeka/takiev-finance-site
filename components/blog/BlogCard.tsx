@@ -35,7 +35,7 @@ function getReadingTime(post: BlogPost): number {
 }
 
 export function BlogCard({ post, index = 0 }: BlogCardProps) {
-  const accent = post.accentColor || "#19BFB7";
+  const accent = post.accentColor || "var(--color-primary)";
   const readMins = getReadingTime(post);
 
   return (
@@ -85,7 +85,7 @@ export function BlogCard({ post, index = 0 }: BlogCardProps) {
               {post.tags.slice(0, 2).map((tag) => (
                 <span
                   key={tag}
-                  className="text-[10px] font-bold tracking-wider uppercase bg-white/90 backdrop-blur-sm text-[#1b2b28] px-2.5 py-1 rounded-full"
+                  className="text-[10px] font-bold tracking-wider uppercase bg-white/90 backdrop-blur-sm text-surface px-2.5 py-1 rounded-full"
                 >
                   {tag}
                 </span>
@@ -104,7 +104,7 @@ export function BlogCard({ post, index = 0 }: BlogCardProps) {
         {/* Content */}
         <div className="flex flex-col flex-1 p-5 md:p-6">
           {/* Title */}
-          <h3 className="text-[17px] md:text-[18px] font-bold text-[#1b2b28] leading-snug line-clamp-3 mb-3 group-hover:text-primary transition-colors duration-200">
+          <h3 className="text-[17px] md:text-[18px] font-bold text-surface leading-snug line-clamp-3 mb-3 group-hover:text-primary transition-colors duration-200">
             {post.title}
           </h3>
 

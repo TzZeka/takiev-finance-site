@@ -4,9 +4,10 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Loader2, CheckCircle, Mail, Phone, MapPin, XCircle } from "lucide-react";
+import { contactFormSchema, type ContactFormValues } from "@/lib/validations";
+import { FlipLabel } from "@/components/ui/FlipLabel";
 import {
   Form,
   FormControl,
@@ -18,30 +19,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-const hasLetters = (val: string) => /[a-zA-Zа-яА-ЯёЁ]/.test(val);
-
-const contactFormSchema = z.object({
-  name: z.string()
-    .min(5, "Името трябва да е поне 5 символа")
-    .regex(/^[^\d]+$/, "Името не може да съдържа цифри"),
-  email: z.string().email("Невалиден email адрес"),
-  phone: z.string()
-    .optional()
-    .refine((val) => !val || /^[+\d\s()-]*$/.test(val), "Телефонът може да съдържа само цифри"),
-  company: z.string().optional(),
-  subject: z.string()
-    .min(2, "Темата трябва да е поне 2 символа")
-    .refine((val) => hasLetters(val), "Темата трябва да съдържа букви"),
-  message: z.string()
-    .min(10, "Съобщението трябва да е поне 10 символа")
-    .refine((val) => hasLetters(val), "Съобщението трябва да съдържа букви"),
-  honeypot: z.string().max(0, "Spam detected").optional(),
-  termsAccepted: z.boolean().refine((val) => val === true, {
-    message: "Необходимо е да приемете условията",
-  }),
-});
-
-type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -168,7 +145,7 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
             {/* ── LEFT INFO COLUMN (lg+ only) — dark ── */}
             <div
               className="hidden lg:flex flex-col w-[280px] flex-shrink-0 border-r border-white/[0.05] overflow-y-auto"
-              style={{ background: "#0e2019" }}
+              style={{ background: "var(--color-surface)" }}
             >
               {/* Logo */}
               <div className="p-7 pb-6 border-b border-white/[0.05]">
@@ -179,13 +156,13 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                   <div>
                     <span
                       className="block text-base font-bold text-white leading-tight"
-                      style={{ fontFamily: "'Berkslund', serif" }}
+                      style={{ fontFamily: "var(--font-berkslund)" }}
                     >
                       Takiev Finance
                     </span>
                     <span
-                      className="text-[9px] font-bold tracking-widest uppercase bg-gradient-to-r from-[#147d6c] to-[#1effff] bg-clip-text text-transparent opacity-70"
-                      style={{ fontFamily: "'Avenir', sans-serif" }}
+                      className="text-[9px] font-bold tracking-widest uppercase bg-gradient-to-r from-primary-dark to-primary-bright bg-clip-text text-transparent opacity-70"
+                      style={{ fontFamily: "var(--font-avenir)" }}
                     >
                       Accounting & Tax Company
                     </span>
@@ -498,14 +475,7 @@ export function ContactModal({ isOpen, onClose, defaultSubject = "" }: ContactMo
                             </>
                           ) : (
                             <>
-                              <span className="relative overflow-hidden inline-flex flex-col" style={{ height: "1.15em" }}>
-                                <span className="block will-change-transform transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-full">
-                                  Изпрати запитване
-                                </span>
-                                <span aria-hidden className="absolute inset-x-0 top-full block will-change-transform transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-full">
-                                  Изпрати запитване
-                                </span>
-                              </span>
+                              <FlipLabel text="Изпрати запитване" height="1.15em" />
                               <Mail className="w-4 h-4 flex-shrink-0" />
                             </>
                           )}

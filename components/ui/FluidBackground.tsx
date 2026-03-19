@@ -19,7 +19,7 @@ export function FluidBackground({ className = "", baseOpacity = 0.09 }: FluidBac
           height: "55%",
           top: "5%",
           left: "-10%",
-          backgroundColor: "#19BFB7",
+          backgroundColor: "var(--color-primary)",
           opacity: baseOpacity,
         }}
       />
@@ -43,7 +43,7 @@ export function FluidBackground({ className = "", baseOpacity = 0.09 }: FluidBac
           height: "40%",
           top: "40%",
           left: "30%",
-          backgroundColor: "#0d9488",
+          backgroundColor: "var(--color-primary-dark)",
           opacity: baseOpacity * 0.7,
         }}
       />

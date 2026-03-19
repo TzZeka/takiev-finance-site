@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Phone, MapPin, Facebook, Linkedin, Youtube, ExternalLink } from "lucide-react";
 import { useQuickPanel } from "@/components/layout/QuickPanelContext";
+import { FlipLabel } from "@/components/ui/FlipLabel";
 
 // ── BricksIcon ─────────────────────────────────────────────────────────────
 // Exported so Navigation.tsx can render the trigger button
@@ -50,26 +51,6 @@ export function BricksIcon({ className, isOpen }: { className?: string; isOpen: 
         );
       })}
     </svg>
-  );
-}
-
-// ── FlipLabel — same text-flip hover animation as nav buttons ──────────────
-function FlipLabel({ text }: { text: string }) {
-  return (
-    <span
-      className="relative overflow-hidden inline-flex flex-col"
-      style={{ height: "1.5em" }}
-    >
-      <span className="block will-change-transform transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-full">
-        {text}
-      </span>
-      <span
-        aria-hidden
-        className="absolute inset-x-0 top-full block will-change-transform transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-full"
-      >
-        {text}
-      </span>
-    </span>
   );
 }
 
@@ -326,7 +307,7 @@ export function QuickPanel() {
 
                   {/* ── Useful Sites ── */}
                   <motion.div variants={itemVariants}>
-                    <p className="text-sm font-bold mb-4 flex items-center" style={{ color: "#1a3530" }}>
+                    <p className="text-sm font-bold mb-4 flex items-center" style={{ color: "var(--color-surface-deeper)" }}>
                       <span className="text-primary">—</span>
                       <span className="ml-2">Полезни сайтове</span>
                     </p>
@@ -342,11 +323,11 @@ export function QuickPanel() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="group text-sm hover:text-primary transition-colors flex items-center py-0.5"
-                            style={{ color: "#2d4a44" }}
+                            style={{ color: "var(--color-surface-raised)" }}
                           >
                             <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0" />
-                            <FlipLabel text={link.label} />
-                            <ExternalLink className="w-3 h-3 ml-1.5 flex-shrink-0" style={{ color: "#40514E", opacity: 0.5 }} />
+                            <FlipLabel text={link.label} height="1.5em" />
+                            <ExternalLink className="w-3 h-3 ml-1.5 flex-shrink-0" style={{ color: "var(--color-dark)", opacity: 0.5 }} />
                           </a>
                         </li>
                       ))}
@@ -355,7 +336,7 @@ export function QuickPanel() {
 
                   {/* ── Contact Info (no address) ── */}
                   <motion.div variants={itemVariants}>
-                    <p className="text-sm font-bold mb-4 flex items-center" style={{ color: "#1a3530" }}>
+                    <p className="text-sm font-bold mb-4 flex items-center" style={{ color: "var(--color-surface-deeper)" }}>
                       <span className="text-primary">—</span>
                       <span className="ml-2">Контакти</span>
                     </p>
@@ -370,9 +351,9 @@ export function QuickPanel() {
                         <a
                           href="mailto:office@takiev.bg"
                           className="group text-sm hover:text-primary transition-colors"
-                          style={{ color: "#2d4a44" }}
+                          style={{ color: "var(--color-surface-raised)" }}
                         >
-                          <FlipLabel text="office@takiev.bg" />
+                          <FlipLabel text="office@takiev.bg" height="1.5em" />
                         </a>
                       </li>
                       <li className="group flex items-center space-x-3">
@@ -385,9 +366,9 @@ export function QuickPanel() {
                         <a
                           href="tel:+359899080016"
                           className="group text-sm hover:text-primary transition-colors"
-                          style={{ color: "#2d4a44" }}
+                          style={{ color: "var(--color-surface-raised)" }}
                         >
-                          <FlipLabel text="+359 89 908 0016" />
+                          <FlipLabel text="+359 89 908 0016" height="1.5em" />
                         </a>
                       </li>
                     </ul>
@@ -395,7 +376,7 @@ export function QuickPanel() {
 
                   {/* ── Social Media — icon + label ── */}
                   <motion.div variants={itemVariants}>
-                    <p className="text-sm font-bold mb-4 flex items-center" style={{ color: "#1a3530" }}>
+                    <p className="text-sm font-bold mb-4 flex items-center" style={{ color: "var(--color-surface-deeper)" }}>
                       <span className="text-primary">—</span>
                       <span className="ml-2">Социални мрежи</span>
                     </p>
@@ -416,9 +397,9 @@ export function QuickPanel() {
                           {renderIcon("h-4 w-4 flex-shrink-0 transition-colors duration-300 group-hover:text-white")}
                           <span
                             className="text-xs font-medium transition-colors duration-300 group-hover:text-white leading-none"
-                            style={{ color: "#2d4a44" }}
+                            style={{ color: "var(--color-surface-raised)" }}
                           >
-                            <FlipLabel text={label} />
+                            <FlipLabel text={label} height="1.5em" />
                           </span>
                         </a>
                       ))}
@@ -447,7 +428,7 @@ export function QuickPanel() {
                       </div>
                       <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 transform rotate-2">
                         <div className="bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full border border-primary/20 shadow-sm">
-                          <p className="text-[11px] font-medium whitespace-nowrap" style={{ color: "#1a3530" }}>Николай Такиев</p>
+                          <p className="text-[11px] font-medium whitespace-nowrap" style={{ color: "var(--color-surface-deeper)" }}>Николай Такиев</p>
                         </div>
                       </div>
                     </div>
@@ -461,7 +442,7 @@ export function QuickPanel() {
                   className="flex items-center justify-center gap-4 mt-6 pt-5"
                   style={{ borderTop: "1px solid rgba(64,81,78,0.15)" }}
                 >
-                  <p className="text-sm font-bold flex items-center flex-shrink-0" style={{ color: "#1a3530" }}>
+                  <p className="text-sm font-bold flex items-center flex-shrink-0" style={{ color: "var(--color-surface-deeper)" }}>
                     <span className="text-primary">—</span>
                     <span className="ml-2">Офис</span>
                   </p>
@@ -477,7 +458,7 @@ export function QuickPanel() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm hover:text-primary transition-colors leading-relaxed"
-                      style={{ color: "#2d4a44" }}
+                      style={{ color: "var(--color-surface-raised)" }}
                     >
                       бул. Александър Стамболийски 30Б, гр. София
                     </a>

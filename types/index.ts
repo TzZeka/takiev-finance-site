@@ -1,6 +1,7 @@
 export * from "./sanity";
 export * from "./blog";
 export * from "./service";
+export * from "./novini";
 
 // Contact Submission Type
 export interface ContactSubmission {

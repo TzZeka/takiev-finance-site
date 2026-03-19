@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -14,23 +13,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, CheckCircle, Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, Send } from "lucide-react";
 import { motion } from "framer-motion";
-
-const contactFormSchema = z.object({
-  name: z.string().min(2, "Името трябва да е поне 2 символа"),
-  email: z.string().email("Невалиден email адрес"),
-  phone: z.string().optional(),
-  company: z.string().optional(),
-  subject: z.string().min(2, "Темата трябва да е поне 2 символа"),
-  message: z.string().min(10, "Съобщението трябва да е поне 10 символа"),
-  honeypot: z.string().max(0, "Spam detected").optional(),
-  termsAccepted: z.boolean().refine((val) => val === true, {
-    message: "Необходимо е да приемете условията",
-  }),
-});
-
-type ContactFormValues = z.infer<typeof contactFormSchema>;
+import { contactFormSchema, type ContactFormValues } from "@/lib/validations";
 
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,23 +44,16 @@ export function ContactForm() {
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        throw new Error("Грешка при изпращане на формата");
-      }
+      if (!response.ok) throw new Error("Грешка при изпращане на формата");
 
       setIsSuccess(true);
       form.reset();
 
-      // Reset success message after 5 seconds
-      setTimeout(() => {
-        setIsSuccess(false);
-      }, 5000);
+      setTimeout(() => setIsSuccess(false), 5000);
     } catch (err) {
       setError(
         err instanceof Error
@@ -117,7 +96,6 @@ export function ContactForm() {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="email"
@@ -125,11 +103,7 @@ export function ContactForm() {
               <FormItem>
                 <FormLabel>Email *</FormLabel>
                 <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="email@example.com"
-                    {...field}
-                  />
+                  <Input type="email" placeholder="email@example.com" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -151,7 +125,6 @@ export function ContactForm() {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="company"
@@ -188,23 +161,22 @@ export function ContactForm() {
             <FormItem>
               <FormLabel>Съобщение *</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Как можем да Ви помогнем?"
-                  rows={5}
-                  {...field}
-                />
+                <Textarea placeholder="Как можем да Ви помогнем?" rows={5} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {/* Honeypot field - hidden from users, visible to bots */}
+        {/* Honeypot — hidden from users, visible to bots */}
         <FormField
           control={form.control}
           name="honeypot"
           render={({ field }) => (
-            <FormItem className="absolute -left-[9999px] opacity-0 h-0 w-0 overflow-hidden" aria-hidden="true">
+            <FormItem
+              className="absolute -left-[9999px] opacity-0 h-0 w-0 overflow-hidden"
+              aria-hidden="true"
+            >
               <FormLabel>Leave this empty</FormLabel>
               <FormControl>
                 <Input tabIndex={-1} autoComplete="off" {...field} />
@@ -229,13 +201,26 @@ export function ContactForm() {
                     className="mt-0.5 w-4 h-4 flex-shrink-0 accent-primary cursor-pointer"
                   />
                 </FormControl>
-                <label htmlFor="terms-cf" className="text-sm text-slate-600 leading-relaxed cursor-pointer select-none">
+                <label
+                  htmlFor="terms-cf"
+                  className="text-sm text-slate-600 leading-relaxed cursor-pointer select-none"
+                >
                   Запознат съм и приемам{" "}
-                  <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 hover:text-primary/80">
+                  <a
+                    href="/terms"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline underline-offset-2 hover:text-primary/80"
+                  >
                     Общите условия
                   </a>
                   {" "}и{" "}
-                  <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 hover:text-primary/80">
+                  <a
+                    href="/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline underline-offset-2 hover:text-primary/80"
+                  >
                     Политиката за поверителност
                   </a>
                   .{" "}
@@ -253,14 +238,12 @@ export function ContactForm() {
           </div>
         )}
 
-        <button
+        {/* Uses Button component for consistent focus ring, disabled, and isLoading states */}
+        <Button
           type="submit"
-          disabled={isSubmitting}
-          className="w-full relative overflow-hidden rounded-full bg-primary text-dark font-bold py-4 px-8 flex items-center justify-center gap-3 border-2 border-primary hover:bg-transparent hover:text-primary transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+          isLoading={isSubmitting}
+          className="w-full rounded-full bg-primary text-dark font-bold py-4 px-8 border-2 border-primary hover:bg-transparent hover:text-primary transition-colors duration-base"
         >
-          <span className="tracking-wide text-sm">
-            {isSubmitting ? "Изпращане..." : "Изпрати запитване"}
-          </span>
           <motion.span
             animate={
               isSubmitting
@@ -268,15 +251,12 @@ export function ContactForm() {
                 : { x: 0, y: 0, opacity: 1, rotate: 0 }
             }
             transition={{ duration: 0.4, ease: "easeIn" }}
-            className="flex-shrink-0"
+            className="flex items-center gap-3"
           >
-            {isSubmitting ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <Send className="w-5 h-5" />
-            )}
+            <span className="tracking-wide text-sm">Изпрати запитване</span>
+            <Send className="w-5 h-5 flex-shrink-0" />
           </motion.span>
-        </button>
+        </Button>
       </form>
     </Form>
   );

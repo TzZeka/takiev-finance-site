@@ -41,10 +41,16 @@ export function Logo() {
         "flex flex-col justify-center transition-all duration-300 overflow-hidden",
         scrolled ? "max-w-0 opacity-0" : "max-w-full opacity-100"
       )}>
-        <span className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold leading-tight text-white tracking-wide transition-all duration-300 group-hover:opacity-90 whitespace-nowrap" style={{ fontFamily: "'Berkslund', serif" }}>
+        <span
+          className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold leading-tight text-white tracking-wide transition-all duration-300 group-hover:opacity-90 whitespace-nowrap"
+          style={{ fontFamily: "var(--font-berkslund)" }}
+        >
           Takiev Finance
         </span>
-        <p className="text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs font-extrabold tracking-wider leading-tight bg-gradient-to-r from-[#147d6c] to-[#1effff] bg-clip-text text-transparent opacity-80 whitespace-nowrap uppercase" style={{ fontFamily: "'Avenir', sans-serif" }}>
+        <p
+          className="text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs font-extrabold tracking-wider leading-tight bg-gradient-to-r from-primary-dark to-primary-bright bg-clip-text text-transparent opacity-80 whitespace-nowrap uppercase"
+          style={{ fontFamily: "var(--font-avenir)" }}
+        >
           ACCOUNTING & TAX COMPANY
         </p>
       </div>

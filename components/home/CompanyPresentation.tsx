@@ -438,11 +438,11 @@ export function CompanyHistory() {
                             width: isActive ? 14 : 10,
                             height: isActive ? 14 : 10,
                             backgroundColor: isActive
-                              ? "#19BFB7"
+                              ? "var(--color-primary)"
                               : isPast
-                              ? "rgba(25,191,183,0.5)"
+                              ? "rgba(var(--color-primary-rgb),0.5)"
                               : "#e2e8f0",
-                            boxShadow: isActive ? "0 0 12px rgba(25,191,183,0.7)" : "none",
+                            boxShadow: isActive ? "0 0 12px rgba(var(--color-primary-rgb),0.7)" : "none",
                             transition: "all 0.5s ease",
                           }}
                         />
@@ -472,9 +472,9 @@ export function CompanyHistory() {
                             ? "clamp(3rem, 4.5vw, 4.5rem)"
                             : "clamp(1.75rem, 2.8vw, 2.5rem)",
                           color: isActive
-                            ? "#40514E"
+                            ? "var(--color-dark)"
                             : isPast
-                            ? "rgba(25,191,183,0.55)"
+                            ? "rgba(var(--color-primary-rgb),0.55)"
                             : "#e2e8f0",
                           transition: "all 0.6s cubic-bezier(0.22, 1, 0.36, 1)",
                           lineHeight: 1.05,
@@ -484,7 +484,7 @@ export function CompanyHistory() {
                       </div>
                       <div
                         className="text-xs tracking-[0.18em] uppercase mt-1 transition-colors duration-500"
-                        style={{ color: isActive ? "#19BFB7" : "#94a3b8" }}
+                        style={{ color: isActive ? "var(--color-primary)" : "#94a3b8" }}
                       >
                         {item.label}
                       </div>
@@ -498,7 +498,7 @@ export function CompanyHistory() {
           {/* RIGHT — Forest text panel */}
           <div
             className="relative h-full overflow-hidden"
-            style={{ backgroundColor: "#40514E", cursor: "none", borderTopLeftRadius: "1.5rem", borderBottomLeftRadius: "1.5rem" }}
+            style={{ backgroundColor: "var(--color-dark)", cursor: "none", borderTopLeftRadius: "1.5rem", borderBottomLeftRadius: "1.5rem" }}
             onMouseMove={handleRightMouseMove}
             onMouseLeave={handleRightMouseLeave}
             onClick={handleRightClick}
@@ -653,7 +653,7 @@ export function CompanyValues() {
       })}
       className="relative py-20 md:py-28 overflow-hidden shadow-sm"
       style={{
-        backgroundColor: "#40514E",
+        backgroundColor: "var(--color-dark)",
         borderTopLeftRadius: "50% 2rem",
         borderTopRightRadius: "50% 2rem",
         filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
@@ -694,8 +694,8 @@ export function CompanyValues() {
         transition={{ duration: 0.6, delay: 0.2 }}
       >
         <div className="relative overflow-hidden group/carousel">
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#40514E] to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#40514E] to-transparent z-10 pointer-events-none" />
+          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[var(--color-dark)] to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[var(--color-dark)] to-transparent z-10 pointer-events-none" />
 
           <div
             className="flex gap-5 animate-scroll-left group-hover/carousel:[animation-play-state:paused]"

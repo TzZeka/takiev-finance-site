@@ -325,7 +325,7 @@ export function CompanyRegistrationTab({ onContact }: CompanyRegistrationTabProp
 
                         {/* Completion */}
                         <div className="relative flex items-center gap-4">
-                          <div className="relative z-10 flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-[#1effff] flex items-center justify-center shadow-lg shadow-primary/50">
+                          <div className="relative z-10 flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-bright flex items-center justify-center shadow-lg shadow-primary/50">
                             <CheckCircle className="w-5 h-5 text-white" strokeWidth={2.5} />
                           </div>
                           <span className="text-lg font-semibold text-primary">Готово!</span>

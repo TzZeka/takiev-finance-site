@@ -115,7 +115,7 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
             <h2
               className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.05]"
               style={{
-                color: "#40514E",
+                color: "var(--color-dark)",
                 fontVariationSettings: "'wght' 900, 'wdth' 125",
                 fontWeight: 900,
                 fontStretch: "125%",
@@ -159,7 +159,7 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
                         <div className="flex items-center justify-between mb-1.5">
                           <h3
                             className="text-base font-bold transition-colors duration-300 group-hover:text-primary"
-                            style={{ color: "#40514E" }}
+                            style={{ color: "var(--color-dark)" }}
                           >
                             {service.name}
                           </h3>

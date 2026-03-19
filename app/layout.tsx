@@ -123,10 +123,18 @@ export default function RootLayout({
   return (
     <html lang="bg" data-scroll-behavior="smooth">
       <head>
-        {/* Preload variable font (headings + body) */}
+        {/* Preload Hubot Sans — headings variable font */}
         <link
           rel="preload"
           href="/fonts/Hubot Sans/Hubot-Sans.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        {/* Preload Mona Sans — body variable font (upright only; italic loads on demand) */}
+        <link
+          rel="preload"
+          href="/fonts/Mona_Sans/MonaSans[wdth,wght].woff2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"

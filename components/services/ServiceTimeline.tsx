@@ -97,7 +97,7 @@ export function ServiceTimeline({ steps, title }: ServiceTimelineProps) {
           transition={{ delay: steps.length * 0.1 + 0.3, duration: 0.4, type: "spring" }}
           className="relative flex items-center gap-6 md:gap-8"
         >
-          <div className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary to-[#1effff] flex items-center justify-center shadow-lg shadow-primary/50">
+          <div className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary to-primary-bright flex items-center justify-center shadow-lg shadow-primary/50">
             <Check className="w-4 h-4 md:w-6 md:h-6 text-white" strokeWidth={3} />
           </div>
           <span className="text-lg md:text-xl font-semibold text-primary">

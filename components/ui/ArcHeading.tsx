@@ -5,6 +5,8 @@ import { useReducedMotion } from "framer-motion";
 interface ArcHeadingProps {
   mainText: string;
   accentText: string;
+  /** Heading level announced to screen readers (default: 2) */
+  level?: 1 | 2 | 3 | 4 | 5 | 6;
   /** Tailwind size classes on the SVG wrapper (default: "w-full max-w-3xl mx-auto") */
   className?: string;
   /** How pronounced the arch is — 0 = flat, lower value = more curved (default: 30) */
@@ -14,6 +16,7 @@ interface ArcHeadingProps {
 export function ArcHeading({
   mainText,
   accentText,
+  level = 2,
   className = "w-full max-w-3xl mx-auto",
   archY = 30,
 }: ArcHeadingProps) {
@@ -23,29 +26,36 @@ export function ArcHeading({
   // Quadratic bezier arc: starts left, peaks at center top, ends right
   const d = `M 40,110 Q 300,${archY} 560,110`;
 
+  const HeadingTag = `h${level}` as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+
   return (
-    <svg
-      viewBox="0 0 600 130"
-      className={className}
-      aria-label={`${mainText} ${accentText}`}
-      role="heading"
-      aria-level={2}
-    >
-      <defs>
-        <path id={`arc-path-${id}`} d={d} />
-      </defs>
-      <text
-        fontSize="52"
-        fontWeight="800"
-        fontFamily="var(--font-hubot-sans), 'Hubot Sans', sans-serif"
-        textAnchor="middle"
-        letterSpacing="-1"
+    <>
+      {/* Real heading element — accessible to screen readers, hidden visually */}
+      <HeadingTag className="sr-only">{mainText} {accentText}</HeadingTag>
+
+      {/* Visual arc — hidden from assistive technology */}
+      <svg
+        viewBox="0 0 600 130"
+        className={className}
+        aria-hidden="true"
+        role="presentation"
       >
-        <textPath href={`#arc-path-${id}`} startOffset="50%">
-          <tspan fill="white">{mainText} </tspan>
-          <tspan fill="#19BFB7" fontSize="60">{accentText}</tspan>
-        </textPath>
-      </text>
-    </svg>
+        <defs>
+          <path id={`arc-path-${id}`} d={d} />
+        </defs>
+        <text
+          fontSize="52"
+          fontWeight="800"
+          fontFamily="var(--font-sans), 'Hubot Sans', sans-serif"
+          textAnchor="middle"
+          letterSpacing="-1"
+        >
+          <textPath href={`#arc-path-${id}`} startOffset="50%">
+            <tspan fill="white">{mainText} </tspan>
+            <tspan fill="var(--color-primary)" fontSize="60">{accentText}</tspan>
+          </textPath>
+        </text>
+      </svg>
+    </>
   );
 }

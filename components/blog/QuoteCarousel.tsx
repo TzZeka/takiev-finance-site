@@ -56,7 +56,7 @@ export function QuoteCarousel() {
                         >
                             <p className="text-sm md:text-base text-slate-600 font-medium leading-relaxed">
                                 <span className="italic">&ldquo;{QUOTES[currentIndex].text}&rdquo;</span>
-                                <span className="font-semibold text-[#19BFB7] md:ml-2">
+                                <span className="font-semibold text-primary md:ml-2">
                                     — {QUOTES[currentIndex].author}
                                 </span>
                             </p>

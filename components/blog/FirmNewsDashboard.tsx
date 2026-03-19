@@ -26,7 +26,7 @@ export function FirmNewsDashboard({ news }: FirmNewsDashboardProps) {
 
   return (
     <section className="mt-16 mb-10">
-      <div className="bg-[#40514E] rounded-2xl border border-white/[0.08] overflow-hidden">
+      <div className="bg-dark rounded-2xl border border-white/[0.08] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-5 border-b border-white/[0.08]">
           <div>
