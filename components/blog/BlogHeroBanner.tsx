@@ -43,7 +43,8 @@ export function BlogHeroBanner() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden pt-32 pb-20 md:pt-44 md:pb-32 rounded-b-[2.5rem] md:rounded-b-[4rem]"
+      className="relative overflow-hidden pt-32 pb-0 md:pt-44 md:pb-0 rounded-b-[2.5rem] md:rounded-b-[4rem]"
+      style={{ minHeight: "520px" }}
     >
       {/* ── Background image ── */}
       <motion.div
@@ -67,20 +68,19 @@ export function BlogHeroBanner() {
       {/* ── Gradient overlay for readability ── */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#06121c]/65 via-[#06121c]/35 to-[#06121c]/70 pointer-events-none" />
 
-      {/* ── Content ── */}
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-3xl mx-auto text-center">
-          {/* Breadcrumbs */}
-          <div className="flex justify-center mb-8">
-            <Breadcrumbs />
-          </div>
+      {/* ── Breadcrumbs ── */}
+      <div className="absolute top-0 inset-x-0 z-20 pt-32 md:pt-36 flex justify-center">
+        <Breadcrumbs />
+      </div>
 
-          {/* Glassmorphism card */}
-          <div className="inline-block bg-white/[0.02] backdrop-blur-xl rounded-2xl md:rounded-3xl px-8 py-7 md:px-14 md:py-10 border border-white/[0.05] shadow-[0_8px_40px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.04)]">
-            <h1 className="text-4xl md:text-5xl lg:text-[3.75rem] font-bold text-white mb-4 tracking-tight">
+      {/* ── Glassmorphism card — pinned to bottom ── */}
+      <div className="absolute inset-x-0 bottom-0 px-4 z-10">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="block bg-white/[0.015] backdrop-blur-xl rounded-t-[1.5rem] md:rounded-t-[2.5rem] px-8 py-7 md:px-14 md:py-10 border border-white/[0.04] shadow-[0_8px_40px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.03)]">
+            <h1 className="text-5xl md:text-6xl lg:text-[5rem] font-bold text-white mb-4 tracking-tight">
               Блог
             </h1>
-            <p className="text-[16px] md:text-[18px] text-white/72 leading-relaxed max-w-xl mx-auto font-medium">
+            <p className="font-body text-[15px] md:text-[17px] text-white/65 leading-relaxed max-w-xl mx-auto tracking-wide" style={{ fontWeight: 300, fontStretch: "110%" }}>
               Актуални новини, съвети и анализи по счетоводство, данъци и бизнес
             </p>
           </div>

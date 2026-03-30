@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* PremiumCTA — arrow icon loops right→left while hovered */
+.group:hover .cta-content svg:last-child {
+  animation: cta-arrow 1s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .group:hover .cta-content svg:last-child {
+    animation: none;
+  }
+}
+
 /* Hero video arc + shadow — desktop only */
 @media (min-width: 768px) {
   .hero-video-arc {

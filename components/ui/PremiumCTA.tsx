@@ -1,8 +1,9 @@
 "use client";
+import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 /**
- * PremiumCTA — animated corner-line button used for primary marketing CTAs.
+ * PremiumCTA — animated border-line button used for primary marketing CTAs.
  *
  * When to use vs. <Button>:
  *   - PremiumCTA: dark hero/section backgrounds, full-bleed marketing callouts
@@ -33,10 +34,27 @@ export function PremiumCTA({
   const prefersReducedMotion = useReducedMotion();
   const isDefault = variant === "default";
 
+  const [spotPos, setSpotPos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setSpotPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    setIsHovered(true);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setSpotPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  const handleMouseLeave = () => setIsHovered(false);
+
   const baseClass = [
     "group relative inline-flex items-center justify-center gap-2",
     "px-8 py-4 font-semibold text-sm tracking-wide",
     "cursor-pointer select-none overflow-hidden",
+    "rounded-t-[1.25rem] md:rounded-t-[1.75rem]",
     isDefault ? "bg-white/5 text-white" : "bg-white/[0.04] text-white/80",
     disabled ? "opacity-50 pointer-events-none" : "",
     className,
@@ -44,33 +62,63 @@ export function PremiumCTA({
     .filter(Boolean)
     .join(" ");
 
-  const cornerLine = "absolute bg-primary/60 transition-all ease-out duration-base";
+  const borderBase =
+    "absolute h-px w-0 group-hover:w-full bg-primary/60 transition-[width] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]";
+
+  const spotBg = isDefault ? "rgba(25,191,183,0.18)" : "rgba(255,255,255,0.08)";
 
   const inner = (
     <>
-      <span className={`${cornerLine} top-0 right-0 h-px w-1/2 group-hover:w-full`} />
-      <span className={`${cornerLine} top-0 right-0 w-px h-1/2 group-hover:h-full`} />
-      <span className={`${cornerLine} bottom-0 left-0 h-px w-0 group-hover:w-full [transition-delay:75ms]`} />
-      <span className={`${cornerLine} bottom-0 left-0 w-px h-0 group-hover:h-full [transition-delay:75ms]`} />
+      {/* Top border: fills right → left */}
+      <span className={`${borderBase} top-0 right-0 duration-[380ms]`} />
+      {/* Bottom border: fills left → right, slightly slower */}
+      <span className={`${borderBase} bottom-0 left-0 duration-[560ms] [transition-delay:40ms]`} />
+
+      {/* Cursor-origin radial spotlight */}
       <span
         aria-hidden
-        className={[
-          "absolute inset-0 origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-slow pointer-events-none [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]",
-          isDefault ? "bg-primary/15" : "bg-white/[0.07]",
-        ].join(" ")}
+        style={{
+          position: "absolute",
+          left: spotPos.x,
+          top: spotPos.y,
+          width: "320px",
+          height: "320px",
+          borderRadius: "50%",
+          background: spotBg,
+          transform: `translate(-50%, -50%) scale(${isHovered ? 2.4 : 0})`,
+          transition: isHovered
+            ? "transform 2400ms cubic-bezier(0.22,1,0.36,1), opacity 500ms ease"
+            : "transform 1200ms cubic-bezier(0.22,1,0.36,1), opacity 700ms ease 100ms",
+          opacity: isHovered ? 1 : 0,
+          pointerEvents: "none",
+        }}
       />
-      <span className="relative z-10 flex items-center gap-2">{children}</span>
+
+      <span className="relative z-10 flex items-center gap-2 cta-content">{children}</span>
     </>
   );
+
+  const mouseHandlers = {
+    onMouseEnter: handleMouseEnter as React.MouseEventHandler,
+    onMouseMove: handleMouseMove as React.MouseEventHandler,
+    onMouseLeave: handleMouseLeave,
+  };
+
+  const motionProps = prefersReducedMotion
+    ? {}
+    : {
+        whileHover: { scale: 1.025 },
+        whileTap: { scale: 0.97 },
+        transition: { type: "spring" as const, stiffness: 400, damping: 25 },
+      };
 
   if (href) {
     return (
       <motion.a
         href={href}
         aria-label={ariaLabel}
-        whileHover={prefersReducedMotion ? {} : { scale: 1.025 }}
-        whileTap={prefersReducedMotion ? {} : { scale: 0.97 }}
-        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        {...motionProps}
+        {...mouseHandlers}
         className={baseClass}
       >
         {inner}
@@ -84,9 +132,8 @@ export function PremiumCTA({
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel}
-      whileHover={prefersReducedMotion ? {} : { scale: 1.025 }}
-      whileTap={prefersReducedMotion ? {} : { scale: 0.97 }}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      {...motionProps}
+      {...mouseHandlers}
       className={baseClass}
     >
       {inner}

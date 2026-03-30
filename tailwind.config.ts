@@ -82,6 +82,15 @@ const config: Config = {
         "420": "420ms",
         "1500": "1.5s",
       },
+      keyframes: {
+        "cta-arrow": {
+          "0%, 100%": { transform: "translateX(0px)" },
+          "45%": { transform: "translateX(6px)" },
+        },
+      },
+      animation: {
+        "cta-arrow": "cta-arrow 1s ease-in-out infinite",
+      },
       transitionTimingFunction: {
         // cubic-bezier(0.22,1,0.36,1) — standard expo-out used throughout
         "expo-out": "cubic-bezier(0.22, 1, 0.36, 1)",

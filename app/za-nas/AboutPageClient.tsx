@@ -66,7 +66,8 @@ function SectionTitle({
             gsap.from(split.chars, {
                 scrollTrigger: {
                     trigger: containerRef.current,
-                    start: "top 85%",
+                    start: "top 88%",
+                    once: true,
                     invalidateOnRefresh: true,
                 },
                 y: 30,
@@ -81,7 +82,7 @@ function SectionTitle({
         const lineRef = containerRef.current.querySelector(".accent-line");
         if (lineRef) {
             gsap.from(lineRef, {
-                scrollTrigger: { trigger: containerRef.current, start: "top 85%", invalidateOnRefresh: true },
+                scrollTrigger: { trigger: containerRef.current, start: "top 88%", once: true, invalidateOnRefresh: true },
                 width: 0,
                 duration: 0.8,
                 ease: "power3.inOut"
@@ -91,7 +92,7 @@ function SectionTitle({
         const subRef = containerRef.current.querySelector(".subtitle-text");
         if (subRef) {
             gsap.from(subRef, {
-                scrollTrigger: { trigger: containerRef.current, start: "top 85%", invalidateOnRefresh: true },
+                scrollTrigger: { trigger: containerRef.current, start: "top 88%", once: true, invalidateOnRefresh: true },
                 y: 20,
                 opacity: 0,
                 duration: 0.8,
@@ -157,7 +158,7 @@ function ParallaxImage({ src, alt, className = "", imgClassName = "" }: { src: s
 
         // Reveal animation
         gsap.from(containerRef.current, {
-            scrollTrigger: { trigger: containerRef.current, start: "top 85%", invalidateOnRefresh: true },
+            scrollTrigger: { trigger: containerRef.current, start: "top 88%", once: true, invalidateOnRefresh: true },
             clipPath: "inset(10% 10% 10% 10% round 30px)",
             scale: 0.95,
             duration: 1.5,
@@ -344,7 +345,7 @@ function BusinessSectorsSection() {
 
     useGSAP(() => {
         gsap.from(".bento-item", {
-            scrollTrigger: { trigger: containerRef.current, start: "top 80%" },
+            scrollTrigger: { trigger: containerRef.current, start: "top 88%", once: true, invalidateOnRefresh: true },
             y: 50,
             opacity: 0,
             stagger: 0.1,
@@ -417,7 +418,7 @@ function TeamSection({ teamMembers }: { teamMembers: TeamMemberDisplay[] }) {
 
     useGSAP(() => {
         gsap.from(".team-member", {
-            scrollTrigger: { trigger: containerRef.current, start: "top 80%" },
+            scrollTrigger: { trigger: containerRef.current, start: "top 88%", once: true, invalidateOnRefresh: true },
             y: 60,
             opacity: 0,
             stagger: 0.15,
@@ -530,7 +531,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
         target: heroImgRef,
         offset: ["start start", "end start"],
     });
-    const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
+    const imageY = useTransform(scrollYProgress, [0, 1], ["-4%", "4%"]);
 
     useGSAP(() => {
         // Top hero reveal — delay to ensure page transition completes first
@@ -607,40 +608,41 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
             {/* ===== HERO SECTION ===== */}
             <section
                 ref={heroImgRef}
-                className="hero-container relative overflow-hidden pt-36 pb-24 md:pt-52 md:pb-40 rounded-b-[2.5rem] md:rounded-b-[4rem]"
+                className="hero-container relative overflow-hidden rounded-b-[2.5rem] md:rounded-b-[4rem]"
+                style={{ aspectRatio: "6912 / 2801", minHeight: "360px", maxHeight: "88vh" }}
             >
-                {/* Parallax image wrapper — 125% tall so y-translate never shows gaps */}
+                {/* Parallax — inset-0 wrapper with scale-[1.08] bleed covers ±4% y movement */}
                 <motion.div
-                    className="absolute w-full pointer-events-none"
-                    style={isDesktop
-                        ? { y: imageY, height: "125%", top: "-12.5%" }
-                        : { height: "100%", top: 0 }
-                    }
+                    className="absolute inset-0 pointer-events-none"
+                    style={isDesktop ? { y: imageY } : undefined}
                 >
                     <Image
                         src="/firm-logo/banners/banner-for-us.png"
                         alt="Takiev Finance - Екипът"
                         fill
                         priority
-                        className="object-cover object-[center_25%]"
+                        quality={95}
+                        className="object-cover object-center scale-[1.08]"
                         sizes="100vw"
                     />
                 </motion.div>
 
                 {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-[#06121c]/65 via-[#06121c]/35 to-[#06121c]/70 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#06121c]/55 via-[#06121c]/20 to-[#06121c]/80 pointer-events-none" />
 
-                {/* Content */}
-                <div className="container mx-auto px-4 relative z-10 mt-16 md:mt-24">
-                    <div className="max-w-3xl mx-auto text-center">
-                        <div className="flex justify-center mb-8">
-                            <Breadcrumbs />
-                        </div>
-                        <div className="inline-block bg-white/[0.02] backdrop-blur-xl rounded-2xl md:rounded-3xl px-8 py-7 md:px-14 md:py-10 border border-white/[0.05] shadow-[0_8px_40px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.04)]">
-                            <h1 className="text-4xl md:text-5xl lg:text-[3.75rem] font-bold text-white mb-4 tracking-tight">
+                {/* Breadcrumbs — top center, below header */}
+                <div className="absolute top-0 inset-x-0 z-20 pt-32 md:pt-36 flex justify-center">
+                    <Breadcrumbs />
+                </div>
+
+                {/* Glassmorphism card — bottom center */}
+                <div className="absolute inset-x-0 bottom-0 px-4 z-10">
+                    <div className="max-w-2xl mx-auto text-center">
+                        <div className="block bg-white/[0.015] backdrop-blur-2xl rounded-t-[1.5rem] md:rounded-t-[2.5rem] px-8 py-7 md:px-14 md:py-10 border border-white/[0.07] shadow-[0_16px_48px_rgba(0,0,0,0.65),0_4px_16px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.1)]">
+                            <h1 className="text-5xl md:text-6xl lg:text-[5rem] font-bold text-white mb-4 tracking-tight">
                                 За нас
                             </h1>
-                            <p className="text-[16px] md:text-[18px] text-white/72 leading-relaxed max-w-xl mx-auto font-medium">
+                            <p className="font-body text-[15px] md:text-[17px] text-white/65 leading-relaxed max-w-xl mx-auto tracking-wide" style={{ fontWeight: 300, fontStretch: "110%" }}>
                                 Лично отношение. Професионален подход.
                             </p>
                         </div>
@@ -881,9 +883,19 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                 </div>
 
                 <div className="container mx-auto px-4 text-center relative z-20">
+                    {/* Brand icon — left side, vertically centered, slightly tilted */}
+                    <div className="hidden lg:block absolute left-0 xl:left-6 bottom-0 translate-y-1/3 pointer-events-none" aria-hidden="true">
+                        <Image
+                            src="/icon.svg"
+                            alt=""
+                            width={160}
+                            height={160}
+                            className="opacity-60 rotate-[-24deg]"
+                        />
+                    </div>
                     <SectionTitle title="Готови ли сте за старт?" subtitle="Свържете се с нас днес и нека заедно изградим финансовото бъдеще на вашия бизнес." />
                     <div className="mt-16 flex justify-center">
-                        <PremiumCTA href="/kontakti">
+                        <PremiumCTA href="/kontakti" className="border border-white/20 bg-white/[0.08]">
                             Свържете се с нас <ArrowRight className="w-5 h-5 ml-2" />
                         </PremiumCTA>
                     </div>
