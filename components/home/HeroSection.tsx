@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -161,6 +161,14 @@ export function HeroSection({ motto }: HeroSectionProps) {
   const btnPrimaryRef = useRef<HTMLAnchorElement>(null);
   const btnBlogRef = useRef<HTMLAnchorElement>(null);
 
+  // Mobile stats counters
+  const mobileStatsRef = useRef<HTMLDivElement>(null);
+  const statsAnimated = useRef(false);
+  const [yearCount, setYearCount] = useState(new Date().getFullYear());
+  const [yearLabelVisible, setYearLabelVisible] = useState(false);
+  const [count150, setCount150] = useState(0);
+  const [plusVisible, setPlusVisible] = useState(false);
+
   useGSAP(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isMobile = window.innerWidth < 768;
@@ -200,25 +208,38 @@ export function HeroSection({ motto }: HeroSectionProps) {
         pin: true,
         scrub: 0.8,
         anticipatePin: 1,
-        invalidateOnRefresh: true, // FIX #2
+        invalidateOnRefresh: true,
+        // Hard-reset to scene-1 state when user scrolls above the hero
+        onLeaveBack: () => {
+          gsap.set(scene1ContentRef.current,   { opacity: 1, y: 0 });
+          gsap.set(videoWrapRef.current,        { opacity: 1 });
+          gsap.set(scrollIndicatorRef.current,  { opacity: 1 });
+          gsap.set(takievWrapRef.current,       { autoAlpha: 0 });
+          gsap.set(finansWrapRef.current,       { autoAlpha: 0 });
+          gsap.set(sentencesWrapRef.current,    { autoAlpha: 0, y: 30 });
+          gsap.set(finalTagRef.current,         { autoAlpha: 0 });
+          gsap.set(finalButtonsWrapRef.current, { autoAlpha: 0 });
+          gsap.set(statCardsRef.current,        { opacity: 0 });
+        },
       },
     });
 
-    // SCENE 1 OUT — fromTo с explicit start state за коректен scroll-back
+    // SCENE 1 OUT — explicit fromTo on all elements so FROM is never mis-captured
     scrollTl.fromTo(
       scene1ContentRef.current,
       { opacity: 1, y: 0 },
       { opacity: 0, y: -50, duration: 1, ease: "power1.inOut" },
       "scene1-out"
     );
-    scrollTl.to(scrollIndicatorRef.current, { opacity: 0, duration: 0.5 }, "scene1-out");
-    scrollTl.to(videoWrapRef.current, { opacity: 0, duration: 1.5 }, "scene1-out");
+    // fromTo keeps FROM=1 even if initTl hasn't finished when ScrollTrigger inits
+    scrollTl.fromTo(scrollIndicatorRef.current, { opacity: 1 }, { opacity: 0, duration: 0.5 }, "scene1-out");
+    scrollTl.fromTo(videoWrapRef.current,       { opacity: 1 }, { opacity: 0, duration: 1.5 }, "scene1-out");
 
     // SCENE 2: PHASE A — ТАКИЕВ
     scrollTl.fromTo(
       takievWrapRef.current,
-      { autoAlpha: 0, display: "none", top: "50%", left: "15%", yPercent: -50 },
-      { autoAlpha: 1, display: "flex", duration: 0.1 }
+      { autoAlpha: 0, top: "50%", left: "15%", yPercent: -50 },
+      { autoAlpha: 1, duration: 0.1 }
     );
 
     scrollTl.from(
@@ -258,8 +279,8 @@ export function HeroSection({ motto }: HeroSectionProps) {
     // SCENE 2: PHASE B — ФИНАНС
     scrollTl.fromTo(
       finansWrapRef.current,
-      { autoAlpha: 0, display: "none", top: "50%", left: "50%", xPercent: -50, yPercent: -50 },
-      { autoAlpha: 1, display: "flex", duration: 0.1 }
+      { autoAlpha: 0, top: "50%", left: "50%", xPercent: -50, yPercent: -50 },
+      { autoAlpha: 1, duration: 0.1 }
     );
 
     scrollTl.from(
@@ -317,6 +338,48 @@ export function HeroSection({ motto }: HeroSectionProps) {
     );
   }, { scope: containerRef });
 
+  // Mobile stats: year countdown + 150 count-up
+  useEffect(() => {
+    const el = mobileStatsRef.current;
+    if (!el) return;
+    const currentYear = new Date().getFullYear();
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || statsAnimated.current) return;
+        statsAnimated.current = true;
+
+        // Year: currentYear → 2021
+        const yearDuration = 1800;
+        const yearRange = currentYear - 2021;
+        const yearT0 = performance.now();
+        const animateYear = (now: number) => {
+          const p = Math.min((now - yearT0) / yearDuration, 1);
+          const e = 1 - Math.pow(1 - p, 3);
+          setYearCount(Math.round(currentYear - e * yearRange));
+          if (p < 1) requestAnimationFrame(animateYear);
+          else { setYearCount(2021); setYearLabelVisible(true); }
+        };
+        requestAnimationFrame(animateYear);
+
+        // 150: 0 → 150, then + spring-in
+        const countDuration = 1600;
+        const countT0 = performance.now() + 300;
+        const animateCount = (now: number) => {
+          if (now < countT0) { requestAnimationFrame(animateCount); return; }
+          const p = Math.min((now - countT0) / countDuration, 1);
+          const e = 1 - Math.pow(1 - p, 3);
+          setCount150(Math.round(e * 150));
+          if (p < 1) requestAnimationFrame(animateCount);
+          else { setCount150(150); setPlusVisible(true); }
+        };
+        requestAnimationFrame(animateCount);
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section
       ref={containerRef}
@@ -337,12 +400,7 @@ export function HeroSection({ motto }: HeroSectionProps) {
         {/* ============================== */}
         <div
           ref={videoWrapRef}
-          className="absolute top-0 right-0 w-full md:w-[55%] h-full z-0 overflow-hidden"
-          style={{
-            borderTopLeftRadius: "10% 50%",
-            borderBottomLeftRadius: "10% 50%",
-            boxShadow: "-18px 24px 60px -8px rgba(0,0,0,0.55)",
-          }}
+          className="hero-video-arc absolute top-0 right-0 w-full md:w-[55%] h-full z-0 overflow-hidden"
         >
           <video
             ref={videoRef}
@@ -360,129 +418,149 @@ export function HeroSection({ motto }: HeroSectionProps) {
           />
         </div>
 
+        {/* Mobile-only cinematic overlay — darkens video for text legibility */}
+        <div
+          className="absolute inset-0 z-[2] pointer-events-none md:hidden"
+          style={{
+            background: "linear-gradient(to bottom, rgba(var(--color-dark-rgb),0.72) 0%, rgba(var(--color-dark-rgb),0.38) 45%, rgba(var(--color-dark-rgb),0.78) 100%)",
+          }}
+        />
+
         {/* ============================== */}
         {/* SCENE 1: THE FIRST FOLD        */}
         {/* ============================== */}
         <div className="absolute inset-0 z-10 pointer-events-none">
-
-          {/* FIX #4: H1 + Buttons grouped in one container — no more visual gap */}
           <div
             ref={scene1ContentRef}
-            className="absolute inset-0 flex items-center justify-start pl-[3%] md:pl-[4%] pt-[13%] pointer-events-auto"
+            className="absolute inset-0 flex items-center justify-center md:justify-start pl-0 md:pl-[4%] pt-0 md:pt-[13%] pointer-events-auto"
           >
-            <div className="flex flex-col gap-20 relative z-20 md:max-w-[42%]">
+            {/* Desktop layout */}
+            <div className="hidden md:flex flex-col gap-20 relative z-20 md:max-w-[42%]">
               <div className="flex flex-col gap-5">
+                <h1
+                  className="leading-[1.1] text-white"
+                  style={{
+                    fontFamily: "'Hubot Sans', sans-serif",
+                    fontVariationSettings: "'wght' 900, 'wdth' 125",
+                    fontWeight: 900,
+                    fontStretch: "125%",
+                    fontSize: "clamp(1.6rem, 0.6rem + 2.5vw, 3.4rem)",
+                    letterSpacing: "0.01em",
+                    textShadow: "0 2px 24px rgba(0,0,0,0.75), 0 0 80px rgba(0,0,0,0.35)",
+                  }}
+                >
+                  <span style={{ fontSize: "clamp(2.2rem, 0.8rem + 3.5vw, 4.6rem)" }}>ИЗБЕРИ СВОЯ</span><br />
+                  <span className="text-primary" style={{ fontVariationSettings: "'wght' 900, 'wdth' 125", fontWeight: 900, fontStretch: "125%" }}>
+                    Доверен
+                  </span><br />
+                  <span style={{ fontVariationSettings: "'wght' 900, 'wdth' 125", fontWeight: 900, fontStretch: "125%" }}>
+                    БИЗНЕС ПАРТНЬОР
+                  </span>
+                </h1>
+                <p
+                  className="font-body text-white/65 max-w-sm"
+                  style={{
+                    fontSize: "clamp(1rem, 1.3vw, 1.2rem)",
+                    fontVariationSettings: "'wght' 350, 'wdth' 95",
+                    letterSpacing: "0.025em",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  Счетоводството е{" "}
+                  <span className="text-primary" style={{ fontVariationSettings: "'wght' 500, 'wdth' 95", fontStyle: "italic" }}>
+                    движеща сила
+                  </span>{" "}
+                  за всеки успешен бизнес.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href="/kontakti" className="group rounded-full px-8 py-4 bg-primary text-dark font-bold border-2 border-primary hover:bg-transparent hover:text-primary transition-colors duration-300 shadow-xl overflow-hidden">
+                  <span className="relative overflow-hidden inline-flex flex-col text-sm tracking-wide" style={{ height: "1.2em", lineHeight: "1.2em" }}>
+                    <span className="block transition-transform duration-420 ease-expo-out group-hover:-translate-y-full">Изпрати запитване</span>
+                    <span aria-hidden className="absolute inset-x-0 top-full block transition-transform duration-420 ease-expo-out group-hover:-translate-y-full">Изпрати запитване</span>
+                  </span>
+                </Link>
+                <Link href="/uslugi" className="group rounded-full px-7 py-4 border border-white/25 text-white hover:border-white/60 transition-colors duration-300 backdrop-blur-sm bg-black/10 shadow-lg overflow-hidden">
+                  <span className="relative overflow-hidden inline-flex flex-col text-sm font-medium tracking-wide" style={{ height: "1.2em", lineHeight: "1.2em" }}>
+                    <span className="block transition-transform duration-420 ease-expo-out group-hover:-translate-y-full">Нашите услуги</span>
+                    <span aria-hidden className="absolute inset-x-0 top-full block transition-transform duration-420 ease-expo-out group-hover:-translate-y-full">Към услуги</span>
+                  </span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Mobile layout — centered cinematic */}
+            <div className="md:hidden flex flex-col items-center text-center gap-8 px-7 w-full z-20">
+              {/* Brand tag */}
+              <span
+                className="font-body text-primary/80 tracking-[0.35em] uppercase"
+                style={{ fontSize: "0.65rem", fontVariationSettings: "'wght' 500, 'wdth' 100" }}
+              >
+                Счетоводна Кантора
+              </span>
+
+              {/* H1 */}
               <h1
-                className="leading-[1.1] text-white"
+                className="leading-[1.05] text-white"
                 style={{
                   fontFamily: "'Hubot Sans', sans-serif",
                   fontVariationSettings: "'wght' 900, 'wdth' 125",
                   fontWeight: 900,
                   fontStretch: "125%",
-                  fontSize: "clamp(1.6rem, 0.6rem + 2.5vw, 3.4rem)",
+                  fontSize: "clamp(2.4rem, 9vw, 3.6rem)",
                   letterSpacing: "0.01em",
-                  textShadow: "0 2px 24px rgba(0,0,0,0.75), 0 0 80px rgba(0,0,0,0.35)",
+                  textShadow: "0 2px 32px rgba(0,0,0,0.8)",
                 }}
               >
-                <span style={{ fontSize: "clamp(2.2rem, 0.8rem + 3.5vw, 4.6rem)" }}>ИЗБЕРИ СВОЯ</span><br />
-                <span
-                  className="text-primary"
-                  style={{ fontVariationSettings: "'wght' 900, 'wdth' 125", fontWeight: 900, fontStretch: "125%" }}
-                >
-                  Доверен
-                </span><br />
-                <span style={{ fontVariationSettings: "'wght' 900, 'wdth' 125", fontWeight: 900, fontStretch: "125%" }}>
-                  БИЗНЕС ПАРТНЬОР
-                </span>
+                ИЗБЕРИ СВОЯ<br />
+                <span className="text-primary">Доверен</span><br />
+                БИЗНЕС ПАРТНЬОР
               </h1>
 
+              {/* Subtitle */}
               <p
-                className="font-body text-white/65 max-w-sm"
+                className="font-body text-white/60 max-w-[280px]"
                 style={{
-                  fontSize: "clamp(1rem, 1.3vw, 1.2rem)",
+                  fontSize: "0.92rem",
                   fontVariationSettings: "'wght' 350, 'wdth' 95",
-                  letterSpacing: "0.025em",
-                  lineHeight: 1.6,
+                  letterSpacing: "0.02em",
+                  lineHeight: 1.65,
                 }}
               >
                 Счетоводството е{" "}
-                <span
-                  className="text-primary"
-                  style={{ fontVariationSettings: "'wght' 500, 'wdth' 95", fontStyle: "italic" }}
-                >
+                <span className="text-primary" style={{ fontVariationSettings: "'wght' 500, 'wdth' 95", fontStyle: "italic" }}>
                   движеща сила
                 </span>{" "}
                 за всеки успешен бизнес.
               </p>
-              </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                {/* Primary CTA */}
-                <Link
-                  href="/kontakti"
-                  className="group rounded-full px-8 py-4 bg-primary text-dark font-bold border-2 border-primary hover:bg-transparent hover:text-primary transition-colors duration-300 shadow-xl overflow-hidden"
-                >
-                  <span
-                    className="relative overflow-hidden inline-flex flex-col text-sm tracking-wide"
-                    style={{ height: "1.2em", lineHeight: "1.2em" }}
-                  >
-                    <span className="block transition-transform duration-420 ease-expo-out group-hover:-translate-y-full">
-                      Изпрати запитване
-                    </span>
-                    <span aria-hidden className="absolute inset-x-0 top-full block transition-transform duration-420 ease-expo-out group-hover:-translate-y-full">
-                      Изпрати запитване
-                    </span>
-                  </span>
+              {/* CTAs */}
+              <div className="flex flex-col gap-3 w-full max-w-[260px]">
+                <Link href="/kontakti" className="rounded-full px-8 py-4 bg-primary text-dark font-bold text-sm tracking-wide text-center shadow-xl">
+                  Изпрати запитване
                 </Link>
-
-                {/* Secondary CTA */}
-                <Link
-                  href="/uslugi"
-                  className="group rounded-full px-7 py-4 border border-white/25 text-white hover:border-white/60 transition-colors duration-300 backdrop-blur-sm bg-black/10 shadow-lg overflow-hidden"
-                >
-                  <span
-                    className="relative overflow-hidden inline-flex flex-col text-sm font-medium tracking-wide"
-                    style={{ height: "1.2em", lineHeight: "1.2em" }}
-                  >
-                    <span className="block transition-transform duration-420 ease-expo-out group-hover:-translate-y-full">
-                      Нашите услуги
-                    </span>
-                    <span aria-hidden className="absolute inset-x-0 top-full block transition-transform duration-420 ease-expo-out group-hover:-translate-y-full">
-                      Към услуги
-                    </span>
-                  </span>
+                <Link href="/uslugi" className="rounded-full px-7 py-3.5 border border-white/30 text-white text-sm font-medium tracking-wide text-center backdrop-blur-sm bg-black/10">
+                  Нашите услуги
                 </Link>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Scroll indicator — hidden on mobile since no scrollytelling there (FIX #1) */}
+        {/* Desktop scroll indicator */}
         <div
           ref={scrollIndicatorRef}
           className="absolute bottom-8 left-[72.5%] -translate-x-1/2 flex-col items-center gap-2 z-20 hidden md:flex"
         >
-          {/* Brand icon — same bounce as chevron */}
           <motion.img
-            src="/icon.svg"
-            alt=""
-            aria-hidden
-            width={32}
-            height={32}
+            src="/icon.svg" alt="" aria-hidden width={32} height={32}
             className="opacity-60"
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
           />
-
           <span className="text-[10px] tracking-[0.3em] uppercase text-white/50">Скролни надолу</span>
-
-          {/* Single largest chevron */}
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <motion.svg
-              width={22} height={13} viewBox="0 0 22 13" fill="none"
+          <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}>
+            <motion.svg width={22} height={13} viewBox="0 0 22 13" fill="none"
               animate={{ stroke: ["rgba(255,255,255,0.25)", "#19BFB7", "rgba(255,255,255,0.25)"] }}
               transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
             >
@@ -490,6 +568,9 @@ export function HeroSection({ motto }: HeroSectionProps) {
             </motion.svg>
           </motion.div>
         </div>
+
+        {/* Scenes 2+3 — desktop scrollytelling ONLY, completely hidden on mobile */}
+        <div className="hidden md:block absolute inset-0 pointer-events-none">
 
         {/* ============================== */}
         {/* SCENE 2: THE DEEP DIVE         */}
@@ -665,7 +746,169 @@ export function HeroSection({ motto }: HeroSectionProps) {
           </Link>
         </div>
 
+        {/* End scenes 2+3 desktop wrapper */}
+        </div>
+
       </div>
+
+      {/* ============================== */}
+      {/* MOBILE FINAL SECTION           */}
+      {/* ============================== */}
+      <motion.div
+        className="md:hidden flex flex-col px-6 pt-12 pb-16 gap-10"
+        style={{ backgroundColor: "var(--color-dark)" }}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.15 }}
+        variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.24, delayChildren: 0.06 } } }}
+      >
+        {/* Divider + brand label — lines grow outward from center */}
+        <motion.div
+          className="flex items-center gap-3"
+          variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+        >
+          <motion.div
+            className="flex-1 h-px bg-white/10 origin-right"
+            variants={{ hidden: { scaleX: 0 }, visible: { scaleX: 1, transition: { duration: 1.0, ease: [0.22, 1, 0.36, 1] } } }}
+          />
+          <span
+            className="font-body text-white/30 tracking-[0.38em] uppercase shrink-0"
+            style={{ fontSize: "0.58rem", fontVariationSettings: "'wght' 500, 'wdth' 100" }}
+          >
+            Такиев Финанс
+          </span>
+          <motion.div
+            className="flex-1 h-px bg-white/10 origin-left"
+            variants={{ hidden: { scaleX: 0 }, visible: { scaleX: 1, transition: { duration: 1.0, ease: [0.22, 1, 0.36, 1] } } }}
+          />
+        </motion.div>
+
+        {/* Statement — blur-fade + slide up */}
+        <motion.h2
+          className="leading-[1.15] text-white"
+          style={{
+            fontFamily: "'Hubot Sans', sans-serif",
+            fontVariationSettings: "'wght' 820, 'wdth' 115",
+            fontSize: "clamp(1.75rem, 7.5vw, 2.5rem)",
+            letterSpacing: "0.005em",
+          }}
+          variants={{
+            hidden: { opacity: 0, y: 26, filter: "blur(6px)" },
+            visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 1.05, ease: [0.22, 1, 0.36, 1] } },
+          }}
+        >
+          Нашият екип ще осигури{" "}
+          <span className="text-primary">сигурност и защита</span>{" "}
+          на Вашия бизнес.
+        </motion.h2>
+
+        {/* Stats — typographic, no cards, counter animated separately */}
+        <motion.div
+          ref={mobileStatsRef}
+          className="flex gap-10 pt-1 justify-center"
+          variants={{
+            hidden: { opacity: 0, y: 24 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.95, ease: [0.22, 1, 0.36, 1] } },
+          }}
+        >
+          {/* 2021 — counts down from current year */}
+          <div className="flex flex-col gap-1.5">
+            <span
+              className="font-body uppercase tracking-[0.2em] text-primary/60"
+              style={{
+                fontSize: "0.58rem",
+                fontVariationSettings: "'wght' 500",
+                opacity: yearLabelVisible ? 1 : 0,
+                transform: yearLabelVisible ? "translateY(0)" : "translateY(5px)",
+                transition: "opacity 0.55s ease, transform 0.55s ease",
+              }}
+            >
+              Основана
+            </span>
+            <div
+              className="leading-none text-white"
+              style={{
+                fontFamily: "'Hubot Sans', sans-serif",
+                fontVariationSettings: "'wght' 900, 'wdth' 125",
+                fontSize: "clamp(2.6rem, 9.5vw, 3.4rem)",
+              }}
+            >
+              {yearCount}
+            </div>
+          </div>
+
+          {/* 150+ — counts up */}
+          <div className="flex flex-col gap-1.5">
+            <div
+              className="leading-none text-white flex items-baseline"
+              style={{
+                fontFamily: "'Hubot Sans', sans-serif",
+                fontVariationSettings: "'wght' 900, 'wdth' 125",
+                fontSize: "clamp(2.6rem, 9.5vw, 3.4rem)",
+              }}
+            >
+              {count150}
+              <AnimatePresence>
+                {plusVisible && (
+                  <motion.span
+                    key="plus"
+                    initial={{ scale: 3.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 280, damping: 17 }}
+                    style={{ display: "inline-block", transformOrigin: "left bottom", marginLeft: "0.04em" }}
+                  >
+                    +
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+            <span
+              className="font-body uppercase text-primary/60 tracking-[0.2em]"
+              style={{ fontSize: "0.58rem", fontVariationSettings: "'wght' 500" }}
+            >
+              Доволни клиенти
+            </span>
+          </div>
+        </motion.div>
+
+        {/* CTAs — underline style with text flip on hover */}
+        <motion.div
+          className="flex flex-row gap-8 pt-2 justify-center"
+          variants={{
+            hidden: { opacity: 0, y: 18 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] } },
+          }}
+        >
+          {[
+            { href: "/za-nas", label: "За нас" },
+            { href: "/blog", label: "Нашият блог" },
+          ].map(({ href, label }) => (
+            <Link key={href} href={href} className="group inline-flex flex-col gap-2 w-fit">
+              <span
+                className="relative overflow-hidden inline-flex flex-col font-body text-white"
+                style={{
+                  height: "1.3em",
+                  lineHeight: "1.3em",
+                  fontSize: "0.95rem",
+                  fontVariationSettings: "'wght' 500, 'wdth' 100",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                <span className="block uppercase transition-transform duration-420 ease-expo-out group-hover:-translate-y-full">
+                  {label}
+                </span>
+                <span aria-hidden className="absolute inset-x-0 top-full uppercase block text-primary transition-transform duration-420 ease-expo-out group-hover:-translate-y-full">
+                  {label}
+                </span>
+              </span>
+              <span className="block h-px bg-white/15 relative overflow-hidden">
+                <span className="absolute inset-0 bg-primary -translate-x-full group-hover:translate-x-0 transition-transform duration-420 ease-expo-out" />
+              </span>
+            </Link>
+          ))}
+        </motion.div>
+      </motion.div>
+
     </section>
   );
 }

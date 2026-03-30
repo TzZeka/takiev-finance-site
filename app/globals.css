@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hero video arc + shadow — desktop only */
+@media (min-width: 768px) {
+  .hero-video-arc {
+    border-top-left-radius: 10% 50%;
+    border-bottom-left-radius: 10% 50%;
+    box-shadow: -18px 24px 60px -8px rgba(0, 0, 0, 0.55);
+  }
+}
+
 /* ============================================================
    DESIGN TOKENS — CSS Custom Properties
    Mirror of tailwind.config.ts for use inside inline styles

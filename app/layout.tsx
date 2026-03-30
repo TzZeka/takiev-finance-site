@@ -7,6 +7,7 @@ import { PremiumLoader } from "@/components/shared/PremiumLoader";
 import { ScrollToTop } from "@/components/shared/ScrollToTop";
 import { LocalBusinessJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
+import { NavDirectionProvider } from "@/components/providers/NavDirectionProvider";
 import { QuickPanelProvider } from "@/components/layout/QuickPanelContext";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
@@ -164,7 +165,9 @@ export default function RootLayout({
             <Header />
             <QuickPanel />
           </QuickPanelProvider>
-          <main className="min-h-screen w-full">{children}</main>
+          <NavDirectionProvider>
+            <main className="min-h-screen w-full">{children}</main>
+          </NavDirectionProvider>
           <Footer />
           <ScrollToTop />
         </SmoothScrollProvider>

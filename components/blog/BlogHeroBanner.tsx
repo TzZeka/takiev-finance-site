@@ -3,7 +3,14 @@
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 export function BlogHeroBanner() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -15,6 +22,14 @@ export function BlogHeroBanner() {
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
+
+  // Curtain lift reveal — matches About page hero animation
+  useGSAP(() => {
+    gsap.fromTo(sectionRef.current,
+      { clipPath: "inset(100% 0% 0% 0%)" },
+      { clipPath: "inset(0% 0% 0% 0%)", duration: 1.5, ease: "power4.inOut", delay: 0.5 }
+    );
+  }, { scope: sectionRef });
 
   // Track how far the section has scrolled out of view
   const { scrollYProgress } = useScroll({
@@ -61,7 +76,7 @@ export function BlogHeroBanner() {
           </div>
 
           {/* Glassmorphism card */}
-          <div className="inline-block bg-white/[0.07] backdrop-blur-xl rounded-2xl md:rounded-3xl px-8 py-7 md:px-14 md:py-10 border border-white/[0.13] shadow-[0_8px_40px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.1)]">
+          <div className="inline-block bg-white/[0.02] backdrop-blur-xl rounded-2xl md:rounded-3xl px-8 py-7 md:px-14 md:py-10 border border-white/[0.05] shadow-[0_8px_40px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.04)]">
             <h1 className="text-4xl md:text-5xl lg:text-[3.75rem] font-bold text-white mb-4 tracking-tight">
               Блог
             </h1>

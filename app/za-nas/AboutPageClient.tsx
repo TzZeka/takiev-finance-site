@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -516,29 +516,27 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
     const displayMembers = teamMembers && teamMembers.length > 0 ? teamMembers : globalTeamMembers;
 
     const mainRef = useRef<HTMLDivElement>(null);
-    const heroImgRef = useRef<HTMLDivElement>(null);
+    const heroImgRef = useRef<HTMLElement>(null);
+
+    const [isDesktop, setIsDesktop] = useState(false);
+    useEffect(() => {
+        const check = () => setIsDesktop(window.innerWidth >= 1024);
+        check();
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
+    }, []);
+
+    const { scrollYProgress } = useScroll({
+        target: heroImgRef,
+        offset: ["start start", "end start"],
+    });
+    const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
 
     useGSAP(() => {
         // Top hero reveal — delay to ensure page transition completes first
         gsap.fromTo(heroImgRef.current,
-            { clipPath: "inset(100% 0% 0% 0%)", scale: 1.1 },
-            { clipPath: "inset(0% 0% 0% 0%)", scale: 1, duration: 1.8, ease: "power4.inOut", delay: 0.9 }
-        );
-
-        // Hero inner parallax
-        gsap.fromTo(".hero-parallax-img",
-            { yPercent: -10 },
-            {
-                yPercent: 15,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: ".hero-container",
-                    start: "top top",
-                    end: "bottom top",
-                    scrub: 1,
-                    invalidateOnRefresh: true,
-                }
-            }
+            { clipPath: "inset(100% 0% 0% 0%)" },
+            { clipPath: "inset(0% 0% 0% 0%)", duration: 1.5, ease: "power4.inOut", delay: 0.5 }
         );
 
         // Founder 3D Image Parallax (Pop-out effect)
@@ -607,20 +605,45 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
       `}} />
 
             {/* ===== HERO SECTION ===== */}
-            <section className="hero-container relative h-[95vh] w-full flex flex-col items-center justify-center pt-24 pb-32">
-                <div ref={heroImgRef} className="absolute inset-4 sm:inset-6 lg:inset-x-12 lg:inset-y-8 rounded-[3rem] overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)]">
+            <section
+                ref={heroImgRef}
+                className="hero-container relative overflow-hidden pt-36 pb-24 md:pt-52 md:pb-40 rounded-b-[2.5rem] md:rounded-b-[4rem]"
+            >
+                {/* Parallax image wrapper — 125% tall so y-translate never shows gaps */}
+                <motion.div
+                    className="absolute w-full pointer-events-none"
+                    style={isDesktop
+                        ? { y: imageY, height: "125%", top: "-12.5%" }
+                        : { height: "100%", top: 0 }
+                    }
+                >
                     <Image
                         src="/firm-logo/banners/banner-for-us.png"
-                        alt="Takiev Finance Team"
+                        alt="Takiev Finance - Екипът"
                         fill
-                        className="hero-parallax-img object-cover object-center scale-[1.25] "
                         priority
+                        className="object-cover object-[center_25%]"
                         sizes="100vw"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60" />
+                </motion.div>
 
-                    <div className="absolute top-8 left-6 sm:left-10 md:top-12 md:left-12 z-20">
-                        <Breadcrumbs />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[#06121c]/65 via-[#06121c]/35 to-[#06121c]/70 pointer-events-none" />
+
+                {/* Content */}
+                <div className="container mx-auto px-4 relative z-10 mt-16 md:mt-24">
+                    <div className="max-w-3xl mx-auto text-center">
+                        <div className="flex justify-center mb-8">
+                            <Breadcrumbs />
+                        </div>
+                        <div className="inline-block bg-white/[0.02] backdrop-blur-xl rounded-2xl md:rounded-3xl px-8 py-7 md:px-14 md:py-10 border border-white/[0.05] shadow-[0_8px_40px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.04)]">
+                            <h1 className="text-4xl md:text-5xl lg:text-[3.75rem] font-bold text-white mb-4 tracking-tight">
+                                За нас
+                            </h1>
+                            <p className="text-[16px] md:text-[18px] text-white/72 leading-relaxed max-w-xl mx-auto font-medium">
+                                Лично отношение. Професионален подход.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>
