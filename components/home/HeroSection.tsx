@@ -186,7 +186,7 @@ export function HeroSection({ motto }: HeroSectionProps) {
       {
         opacity: 1, filter: "blur(0px)", y: 0, duration: 1.5, ease: "cinematic",
         // Clear filter after animation so scroll-back doesn't glitch
-        onComplete: () => gsap.set(scene1ContentRef.current, { clearProps: "filter" }),
+        onComplete: () => { gsap.set(scene1ContentRef.current, { clearProps: "filter" }); },
       }
     );
 
