@@ -13,8 +13,8 @@ const pageVariants = {
     x: 0,
     opacity: 1,
     transition: {
-      x: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
-      opacity: { duration: 0.25, ease: "easeOut" },
+      duration: 0.4,
+      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
     },
   },
 };
