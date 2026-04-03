@@ -1,28 +1,33 @@
+"use client";
+
 /**
- * FlipLabel — reusable text-flip hover animation.
- * Requires a parent with the `group` Tailwind class to trigger the animation.
- *
- * height should match lineHeight so `translate-y-full` moves exactly one text line.
- * 1.2em is the correct value for Cyrillic text (descenders reach ~0.2em below baseline).
+ * FlipLabel — clean vertical text-flip on hover.
+ * Parent must have the `group` Tailwind class.
  */
 export function FlipLabel({
   text,
-  height = "1.2em",
+  height = "1.1em",
 }: {
   text: string;
   height?: string;
 }) {
   return (
     <span
-      className="relative overflow-hidden inline-flex flex-col"
-      style={{ height, lineHeight: height }}
+      className="relative inline-block overflow-hidden"
+      style={{ height, lineHeight: height, verticalAlign: "middle" }}
     >
-      <span className="block will-change-transform transition-transform duration-300 ease-expo-out group-hover:-translate-y-full">
+      {/* Visible line */}
+      <span
+        className="flex transition-transform duration-300 group-hover:-translate-y-full"
+        style={{ transitionTimingFunction: "cubic-bezier(0.76, 0, 0.24, 1)" }}
+      >
         {text}
       </span>
+      {/* Hidden duplicate — slides in from below */}
       <span
         aria-hidden
-        className="absolute inset-x-0 top-full block will-change-transform transition-transform duration-300 ease-expo-out group-hover:-translate-y-full"
+        className="absolute inset-x-0 top-full flex transition-transform duration-300 group-hover:-translate-y-full"
+        style={{ transitionTimingFunction: "cubic-bezier(0.76, 0, 0.24, 1)" }}
       >
         {text}
       </span>

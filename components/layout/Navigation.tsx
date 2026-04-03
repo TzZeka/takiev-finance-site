@@ -17,12 +17,17 @@ const navItems = [
   { href: "/za-nas", label: "За нас" },
   { href: "/uslugi", label: "Услуги", hasDropdown: true },
   // QuickPanel button is inserted here (between index 2 and 3)
-  { href: "/blog", label: "Блог" },
-  { href: "/novini", label: "Новини" },
+  { href: "/blog", label: "Блог", hasBlogDropdown: true },
   { href: "/video", label: "Видео" },
+  { href: "/kontakti", label: "Контакти" },
+];
+
+const blogItems = [
+  { href: "/novini", label: "Новини" },
 ];
 
 const DROPDOWN_ID = "services-dropdown-menu";
+const BLOG_DROPDOWN_ID = "blog-dropdown-menu";
 
 // Clean minimal trigger button
 function QuickPanelNavButton() {
@@ -70,21 +75,25 @@ export function Navigation() {
   const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
+  const [blogDropdownOpen, setBlogDropdownOpen] = useState(false);
+  const [blogDropdownPos, setBlogDropdownPos] = useState({ top: 0, left: 0 });
   const [mounted, setMounted] = useState(false);
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const blogDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const dropdownBtnRef = useRef<HTMLButtonElement>(null);
   const firstItemRef = useRef<HTMLAnchorElement>(null);
+  const blogTriggerRef = useRef<HTMLDivElement>(null);
+  const blogDropdownBtnRef = useRef<HTMLButtonElement>(null);
+  const blogFirstItemRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => { setMounted(true); }, []);
 
   const openDropdown = () => {
-    const header = document.querySelector("header");
     const trigger = triggerRef.current;
-    if (header && trigger) {
-      const hRect = header.getBoundingClientRect();
+    if (trigger) {
       const tRect = trigger.getBoundingClientRect();
-      setDropdownPos({ top: hRect.bottom + 8, left: tRect.left });
+      setDropdownPos({ top: tRect.bottom + 8, left: tRect.left });
     }
     setDropdownOpen(true);
   };
@@ -125,12 +134,173 @@ export function Navigation() {
     }
   };
 
+  const openBlogDropdown = () => {
+    const trigger = blogTriggerRef.current;
+    if (trigger) {
+      const tRect = trigger.getBoundingClientRect();
+      setBlogDropdownPos({ top: tRect.bottom + 8, left: tRect.left });
+    }
+    setBlogDropdownOpen(true);
+  };
+
+  const handleBlogMouseEnter = () => {
+    if (blogDropdownTimeoutRef.current) clearTimeout(blogDropdownTimeoutRef.current);
+    openBlogDropdown();
+  };
+
+  const handleBlogMouseLeave = () => {
+    blogDropdownTimeoutRef.current = setTimeout(() => setBlogDropdownOpen(false), 150);
+  };
+
+  const handleBlogToggleClick = () => {
+    if (blogDropdownOpen) {
+      setBlogDropdownOpen(false);
+    } else {
+      openBlogDropdown();
+    }
+  };
+
+  const handleBlogBtnKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      openBlogDropdown();
+      setTimeout(() => blogFirstItemRef.current?.focus(), 50);
+    } else if (e.key === "Escape") {
+      setBlogDropdownOpen(false);
+    }
+  };
+
+  const handleBlogDropdownKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Escape") {
+      setBlogDropdownOpen(false);
+      blogDropdownBtnRef.current?.focus();
+    }
+  };
+
   return (
-    <nav className="flex items-center justify-center gap-1 lg:gap-2">
+    <nav
+      className="flex items-center justify-center gap-1 lg:gap-2"
+      style={{
+        fontFamily: "'Hubot Sans', sans-serif",
+        fontVariationSettings: "'wght' 500, 'wdth' 100",
+        fontWeight: 500,
+        fontSize: "0.9rem",
+      }}
+    >
       {navItems.map((item) => {
         const isActive =
           pathname === item.href ||
-          (item.href === "/uslugi" && pathname.startsWith("/uslugi"));
+          (item.href === "/uslugi" && pathname.startsWith("/uslugi")) ||
+          (item.href === "/blog" && (pathname.startsWith("/blog") || pathname.startsWith("/novini")));
+
+        if (item.hasBlogDropdown) {
+          return (
+            <React.Fragment key={item.href}>
+              <motion.div
+                ref={blogTriggerRef}
+                className="group relative"
+                onMouseEnter={handleBlogMouseEnter}
+                onMouseLeave={handleBlogMouseLeave}
+                transition={{ type: "spring", stiffness: 450, damping: 22 }}
+              >
+                <div
+                  className={cn(
+                    "relative transition-colors duration-300 rounded-lg whitespace-nowrap flex items-center gap-1 px-3 lg:px-4 py-2",
+                    isActive ? "text-primary" : "text-white/85 hover:text-white"
+                  )}
+                >
+                  <Link href={item.href}>
+                    <FlipLabel text={item.label} />
+                  </Link>
+                  <button
+                    ref={blogDropdownBtnRef}
+                    aria-expanded={blogDropdownOpen}
+                    aria-haspopup="menu"
+                    aria-controls={BLOG_DROPDOWN_ID}
+                    aria-label="Показване на подменю Блог"
+                    onClick={handleBlogToggleClick}
+                    onKeyDown={handleBlogBtnKeyDown}
+                    className="p-0.5 flex items-center leading-none"
+                  >
+                    <ChevronDown
+                      className={cn(
+                        "w-3 h-3 flex-shrink-0 transition-transform duration-200",
+                        blogDropdownOpen && "rotate-180"
+                      )}
+                    />
+                  </button>
+                  {isActive && (
+                    <motion.span
+                      layoutId="activeNavIndicator"
+                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                </div>
+              </motion.div>
+
+              {mounted && createPortal(
+                <AnimatePresence>
+                  {blogDropdownOpen && (
+                    <motion.div
+                      id={BLOG_DROPDOWN_ID}
+                      role="menu"
+                      aria-label="Блог"
+                      onKeyDown={handleBlogDropdownKeyDown}
+                      onMouseEnter={handleBlogMouseEnter}
+                      onMouseLeave={handleBlogMouseLeave}
+                      initial={{ clipPath: "inset(0 0 100% 0 round 14px)", opacity: 0 }}
+                      animate={{ clipPath: "inset(0 0 0% 0 round 14px)", opacity: 1 }}
+                      exit={{
+                        clipPath: "inset(0 0 100% 0 round 14px)",
+                        opacity: 0,
+                        transition: { duration: 0.28, ease: [0.76, 0, 0.24, 1] as [number, number, number, number] },
+                      }}
+                      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+                      style={{
+                        position: "fixed",
+                        top: blogDropdownPos.top,
+                        left: blogDropdownPos.left,
+                        width: "180px",
+                        zIndex: 9999,
+                        background: "rgba(16, 30, 26, 0.96)",
+                        border: "1px solid rgba(255,255,255,0.07)",
+                        borderTop: "1px solid rgba(25, 191, 183, 0.18)",
+                        borderRadius: "14px",
+                        backdropFilter: "blur(24px) saturate(180%)",
+                        WebkitBackdropFilter: "blur(24px) saturate(180%)",
+                        boxShadow: "0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(25,191,183,0.05)",
+                      }}
+                    >
+                      <div className="py-2">
+                        {blogItems.map((blogItem, i) => (
+                          <motion.div
+                            key={blogItem.href}
+                            role="none"
+                            initial={{ opacity: 0, x: -8 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.3, delay: 0.07 + i * 0.04, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+                          >
+                            <Link
+                              ref={i === 0 ? blogFirstItemRef : undefined}
+                              role="menuitem"
+                              href={blogItem.href}
+                              className="block px-5 py-3 text-sm text-white/55 hover:text-white hover:bg-white/[0.05] transition-colors"
+                              onClick={() => setBlogDropdownOpen(false)}
+                            >
+                              {blogItem.label}
+                            </Link>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>,
+                document.body
+              )}
+            </React.Fragment>
+          );
+        }
 
         if (item.hasDropdown) {
           return (
@@ -140,12 +310,11 @@ export function Navigation() {
                 className="group relative"
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                whileHover={{ scale: 1.06 }}
                 transition={{ type: "spring", stiffness: 450, damping: 22 }}
               >
                 <div
                   className={cn(
-                    "relative font-medium transition-colors duration-300 rounded-lg whitespace-nowrap flex items-center gap-1 px-3 lg:px-4 py-2 text-sm",
+                    "relative transition-colors duration-300 rounded-lg whitespace-nowrap flex items-center gap-1 px-3 lg:px-4 py-2",
                     isActive ? "text-primary" : "text-white/85 hover:text-white"
                   )}
                 >
@@ -201,9 +370,9 @@ export function Navigation() {
                       exit={{
                         clipPath: "inset(0 0 100% 0 round 14px)",
                         opacity: 0,
-                        transition: { duration: 0.28, ease: [0.76, 0, 0.24, 1] },
+                        transition: { duration: 0.28, ease: [0.76, 0, 0.24, 1] as [number, number, number, number] },
                       }}
-                      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
                       style={{
                         position: "fixed",
                         top: dropdownPos.top,
@@ -229,7 +398,7 @@ export function Navigation() {
                             transition={{
                               duration: 0.3,
                               delay: 0.07 + i * 0.04,
-                              ease: [0.22, 1, 0.36, 1],
+                              ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
                             }}
                           >
                             <Link
@@ -258,7 +427,7 @@ export function Navigation() {
             key={item.href}
             href={item.href}
             className={cn(
-              "group relative font-medium transition-colors duration-300 rounded-lg whitespace-nowrap px-3 lg:px-4 py-2 text-sm",
+              "group relative transition-colors duration-300 rounded-lg whitespace-nowrap px-3 lg:px-4 py-2",
               isActive ? "text-primary" : "text-white/85 hover:text-white"
             )}
           >

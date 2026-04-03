@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { useRef, useEffect, useCallback, RefObject, useState } from "react";
+import { motion, useMotionValue, useAnimationFrame } from "framer-motion";
 import { Globe } from "lucide-react";
 
 const partners = [
@@ -15,13 +16,13 @@ const partners = [
     name: "Finance Academy",
     logo: "/firm-logo/partners/Finance Academy.png",
     description: "Професионално обучение по счетоводство и финанси",
-    url: "#",
+    url: "https://financeacademy.bg/",
   },
   {
-    name: "Nexia Zaharinova",
+    name: "Zaharinova Nexia",
     logo: "/firm-logo/partners/Zaharinova_Nexia_logo-300x128.png",
     description: "Водеща одиторска компания в България",
-    url: "#",
+    url: "https://zaharinovanexia.com/",
   },
   {
     name: "Nula.bg",
@@ -31,146 +32,250 @@ const partners = [
   },
 ];
 
-export function PartnersCarousel() {
+const ITEMS = [...partners, ...partners, ...partners];
+const SPEED = 0.65;
+const GAP = 20; // gap-5 = 1.25rem = 20px
+const FADE_ZONE = 260; // px from edge where card starts fading
+
+function PartnerCard({
+  partner,
+  containerRef,
+}: {
+  partner: (typeof partners)[0];
+  containerRef: RefObject<HTMLDivElement | null>;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const opacity = useMotionValue(1);
+  const scale = useMotionValue(1);
+  const [tapped, setTapped] = useState(false);
+
+  useAnimationFrame(() => {
+    if (!cardRef.current || !containerRef.current) return;
+    const card = cardRef.current.getBoundingClientRect();
+    const box = containerRef.current.getBoundingClientRect();
+
+    let progress = 1;
+    const fromLeft = card.right - box.left;
+    const fromRight = box.right - card.left;
+
+    if (fromLeft < FADE_ZONE) {
+      progress = Math.max(0, fromLeft / FADE_ZONE);
+    } else if (fromRight < FADE_ZONE) {
+      progress = Math.max(0, fromRight / FADE_ZONE);
+    }
+
+    opacity.set(progress);
+    scale.set(0.88 + 0.12 * progress);
+  });
+
   return (
-    <div className="relative w-full mt-10 md:mt-20">
-      <div className="relative z-10 w-full max-w-[100rem] mx-auto px-4 sm:px-6">
+    <motion.div
+      ref={cardRef}
+      className="flex-shrink-0 w-72 relative pb-14"
+      style={{ opacity, scale }}
+      whileHover="hovered"
+      animate={tapped ? "hovered" : "rest"}
+      initial="rest"
+      onTap={() => setTapped(t => !t)}
+    >
+      {/* Card */}
+      <div
+        className="flex flex-col items-center gap-6 px-6 py-8 rounded-3xl"
+        style={{ backgroundColor: "#40514E" }}
+      >
+        {/* Elliptical logo container */}
+        <div className="w-56 h-[6.5rem] rounded-full overflow-hidden bg-white/95 flex items-center justify-center p-5">
+          <Image
+            src={partner.logo}
+            alt={partner.name}
+            width={180}
+            height={72}
+            className="object-contain w-full h-full"
+            draggable={false}
+          />
+        </div>
 
-        {/* Main Editorial Grid Wrapper */}
-        <div className="flex flex-col border-t border-l border-r border-primary/30">
-
-          {partners.map((partner, index) => {
-            const isEven = index % 2 === 0;
-
-            return (
-              <div
-                key={partner.name}
-                className="relative grid grid-cols-1 md:grid-cols-2 border-b border-primary/30 group"
-              >
-                {/* Crosshairs - top left, top right, bottom left, bottom right */}
-                {/* These give the architectural "blueprint" feel from the images */}
-                <span className="absolute -top-[7px] -left-[3.5px] text-primary/50 text-xs font-light pointer-events-none">+</span>
-                <span className="absolute -top-[7px] -right-[3.5px] text-primary/50 text-xs font-light pointer-events-none">+</span>
-                <span className="absolute -bottom-[7px] -left-[3.5px] text-primary/50 text-xs font-light pointer-events-none z-10">+</span>
-                <span className="absolute -bottom-[7px] -right-[3.5px] text-primary/50 text-xs font-light pointer-events-none z-10">+</span>
-
-                {/* Center crosshair for desktop split */}
-                <span className="hidden md:block absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-primary/50 text-xs font-light pointer-events-none z-10">+</span>
-
-                {/* --- BLOCK 1 (Left on desktop) --- */}
-                <div className={`relative flex items-center justify-center p-8 sm:p-12 md:p-20 border-primary/30 ${!isEven ? 'order-2 md:order-1 border-t md:border-t-0 md:border-r' : 'order-1 md:border-r'}`}>
-                  {isEven ? (
-                    // IMAGE BLOCK
-                    <motion.div
-                      initial={{ opacity: 0, filter: 'blur(10px)' }}
-                      whileInView={{ opacity: 1, filter: 'blur(0px)' }}
-                      viewport={{ once: true, margin: "-100px" }}
-                      transition={{ duration: 0.8 }}
-                      className="relative w-full aspect-video md:aspect-square lg:aspect-[4/3] flex items-center justify-center p-4 transition-transform duration-700 group-hover:scale-[1.03]"
-                    >
-                      <div className="relative w-[75%] sm:w-[65%] lg:w-[55%] flex items-center justify-center aspect-video lg:aspect-[3/2]">
-                        <Image
-                          src={partner.logo}
-                          alt={partner.name}
-                          fill
-                          className="object-contain rounded-3xl filter transition-all duration-700 brightness-[1.5] drop-shadow-[0_0_15px_rgba(25,191,183,0.1)]"
-                        />
-                      </div>
-                    </motion.div>
-                  ) : (
-                    // TEXT BLOCK
-                    <motion.div
-                      initial={{ opacity: 0, x: -30 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true, margin: "-100px" }}
-                      transition={{ duration: 0.8 }}
-                      className="w-full h-full flex flex-col justify-center"
-                    >
-                      <h3 className="text-3xl md:text-4xl lg:text-5xl font-light text-dark-muted mb-6 tracking-wide uppercase">
-                        {partner.name}
-                      </h3>
-
-                      <p className="text-dark-muted/80 text-lg md:text-xl font-light leading-relaxed mb-auto max-w-lg">
-                        {partner.description}
-                      </p>
-
-                      <div className="mt-12 flex items-center gap-3">
-                        <a
-                          href={partner.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="peer flex items-center justify-center w-12 h-12 shrink-0 rounded-full border border-primary/30 text-primary/50 hover:bg-primary hover:border-primary hover:text-white transition-all duration-500 relative z-10"
-                        >
-                          <Globe className="w-5 h-5" />
-                        </a>
-                        <span className="overflow-hidden whitespace-nowrap text-sm font-medium text-primary/80 transition-all duration-500 max-w-[200px] opacity-100 peer-hover:max-w-0 peer-hover:opacity-0 peer-hover:-translate-x-4 pointer-events-none">
-                          Посетете сайта
-                        </span>
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-
-                {/* --- BLOCK 2 (Right on desktop) --- */}
-                <div className={`relative flex items-center justify-center p-8 sm:p-12 md:p-20 border-primary/30 ${!isEven ? 'order-1 md:order-2' : 'order-2 border-t md:border-t-0'}`}>
-                  {isEven ? (
-                    // TEXT BLOCK
-                    <motion.div
-                      initial={{ opacity: 0, x: 30 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true, margin: "-100px" }}
-                      transition={{ duration: 0.8 }}
-                      className="w-full h-full flex flex-col justify-center"
-                    >
-                      <h3 className="text-3xl md:text-4xl lg:text-5xl font-light text-dark-muted mb-6 tracking-wide uppercase">
-                        {partner.name}
-                      </h3>
-
-                      <p className="text-dark-muted/80 text-lg md:text-xl font-light leading-relaxed mb-auto max-w-lg">
-                        {partner.description}
-                      </p>
-
-                      <div className="mt-12 flex items-center gap-3">
-                        <a
-                          href={partner.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="peer flex items-center justify-center w-12 h-12 shrink-0 rounded-full border border-primary/30 text-primary/50 hover:bg-primary hover:border-primary hover:text-white transition-all duration-500 relative z-10"
-                        >
-                          <Globe className="w-5 h-5" />
-                        </a>
-                        <span className="overflow-hidden whitespace-nowrap text-sm font-medium text-primary/80 transition-all duration-500 max-w-[200px] opacity-100 peer-hover:max-w-0 peer-hover:opacity-0 peer-hover:-translate-x-4 pointer-events-none">
-                          Посетете сайта
-                        </span>
-                      </div>
-                    </motion.div>
-                  ) : (
-                    // IMAGE BLOCK
-                    <motion.div
-                      initial={{ opacity: 0, filter: 'blur(10px)' }}
-                      whileInView={{ opacity: 1, filter: 'blur(0px)' }}
-                      viewport={{ once: true, margin: "-100px" }}
-                      transition={{ duration: 0.8 }}
-                      className="relative w-full aspect-video md:aspect-square lg:aspect-[4/3] flex items-center justify-center p-4 transition-transform duration-700 group-hover:scale-[1.03]"
-                    >
-                      <div className="relative w-[75%] sm:w-[65%] lg:w-[55%] aspect-video lg:aspect-[3/2] flex items-center justify-center">
-                        <Image
-                          src={partner.logo}
-                          alt={partner.name}
-                          fill
-                          className="object-contain rounded-3xl filter transition-all duration-700 brightness-[1.5] drop-shadow-[0_0_15px_rgba(25,191,183,0.1)]"
-                        />
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-
-              </div>
-            );
-          })}
-
+        {/* Text */}
+        <div className="flex flex-col items-center gap-2 text-center">
+          <h3
+            className="text-xl text-white"
+            style={{
+              fontFamily: "'Hubot Sans', sans-serif",
+              fontVariationSettings: "'wght' 720, 'wdth' 105",
+              fontWeight: 720,
+            }}
+          >
+            {partner.name}
+          </h3>
+          <p
+            className="text-white/85 text-sm"
+            style={{
+              fontFamily: "'Mona Sans', sans-serif",
+              fontVariationSettings: "'wght' 400, 'wdth' 95",
+              fontWeight: 400,
+              lineHeight: 1.55,
+            }}
+          >
+            {partner.description}
+          </p>
         </div>
       </div>
+
+      {/* Button — slides in below card on hover */}
+      <motion.div
+        variants={{
+          rest: { opacity: 0, y: -6 },
+          hovered: { opacity: 1, y: 0 },
+        }}
+        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+        className="absolute bottom-0 left-0 right-0 flex justify-center"
+      >
+        <a
+          href={partner.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#40514E] text-white text-sm border border-white/20 hover:bg-primary hover:border-primary transition-colors duration-250"
+          style={{
+            fontFamily: "'Mona Sans', sans-serif",
+            fontVariationSettings: "'wght' 500, 'wdth' 100",
+            fontWeight: 500,
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Globe className="w-3.5 h-3.5" />
+          Посетете сайта
+        </a>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+export function PartnersCarousel() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const singleWidth = useRef(0);
+  const isPaused = useRef(false);
+  const isDragging = useRef(false);
+  const dragStartClientX = useRef(0);
+  const dragStartMotionX = useRef(0);
+  const velocityRef = useRef(0);
+  const lastClientX = useRef(0);
+  const lastTime = useRef(0);
+
+  useEffect(() => {
+    const measure = () => {
+      if (!trackRef.current) return;
+      const sw = (trackRef.current.scrollWidth + GAP) / 3;
+      singleWidth.current = sw;
+      x.set(-sw);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [x]);
+
+  const wrap = useCallback((val: number) => {
+    const sw = singleWidth.current;
+    if (!sw) return val;
+    if (val < -2 * sw) return val + sw;
+    if (val > 0) return val - sw;
+    return val;
+  }, []);
+
+  useAnimationFrame((_, delta) => {
+    if (isDragging.current) return;
+    if (Math.abs(velocityRef.current) > 0.08) {
+      velocityRef.current *= 0.9;
+      x.set(wrap(x.get() + velocityRef.current));
+      return;
+    }
+    velocityRef.current = 0;
+    if (isPaused.current) return;
+    const step = SPEED * (delta / 16.667);
+    x.set(wrap(x.get() - step));
+  });
+
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      isDragging.current = true;
+      velocityRef.current = 0;
+      dragStartClientX.current = e.clientX;
+      dragStartMotionX.current = x.get();
+      lastClientX.current = e.clientX;
+      lastTime.current = performance.now();
+    },
+    [x]
+  );
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      if (!isDragging.current) return;
+      const now = performance.now();
+      const dt = now - lastTime.current;
+      if (dt > 0) velocityRef.current = ((e.clientX - lastClientX.current) / dt) * 16;
+      lastClientX.current = e.clientX;
+      lastTime.current = now;
+      x.set(wrap(dragStartMotionX.current + (e.clientX - dragStartClientX.current)));
+    };
+    const onUp = () => { isDragging.current = false; };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+  }, [wrap, x]);
+
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      isDragging.current = true;
+      velocityRef.current = 0;
+      dragStartClientX.current = e.touches[0].clientX;
+      dragStartMotionX.current = x.get();
+      lastClientX.current = e.touches[0].clientX;
+      lastTime.current = performance.now();
+    },
+    [x]
+  );
+
+  useEffect(() => {
+    const onMove = (e: TouchEvent) => {
+      if (!isDragging.current) return;
+      const now = performance.now();
+      const dt = now - lastTime.current;
+      if (dt > 0) velocityRef.current = ((e.touches[0].clientX - lastClientX.current) / dt) * 16;
+      lastClientX.current = e.touches[0].clientX;
+      lastTime.current = now;
+      x.set(wrap(dragStartMotionX.current + (e.touches[0].clientX - dragStartClientX.current)));
+    };
+    const onEnd = () => { isDragging.current = false; };
+    window.addEventListener("touchmove", onMove, { passive: true });
+    window.addEventListener("touchend", onEnd);
+    return () => {
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onEnd);
+    };
+  }, [wrap, x]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="overflow-hidden cursor-grab active:cursor-grabbing select-none"
+      onMouseEnter={() => { isPaused.current = true; }}
+      onMouseLeave={() => { isPaused.current = false; }}
+    >
+      <motion.div
+        ref={trackRef}
+        style={{ x }}
+        className="flex gap-5 w-max py-6"
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
+      >
+        {ITEMS.map((partner, i) => (
+          <PartnerCard key={i} partner={partner} containerRef={containerRef} />
+        ))}
+      </motion.div>
     </div>
   );
 }

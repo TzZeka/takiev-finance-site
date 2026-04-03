@@ -257,29 +257,7 @@ export function Header() {
             {/* ── Col 3: Контакти pill + CTA + Hamburger ── */}
             <div className="flex items-center justify-end gap-2">
 
-              {/* Контакти pill — transparent ghost, collapses on scroll */}
-              <Link
-                href="/kontakti"
-                className="hidden md:inline-flex items-center whitespace-nowrap text-sm font-medium overflow-hidden flex-shrink-0"
-                style={{
-                  height: "2.25rem",
-                  borderRadius: "9999px",
-                  maxWidth: scrolled ? "0px" : "110px",
-                  paddingLeft: scrolled ? "0" : "1rem",
-                  paddingRight: scrolled ? "0" : "1rem",
-                  opacity: scrolled ? 0 : 1,
-                  pointerEvents: scrolled ? "none" : "auto",
-                  color: pathname === "/kontakti" ? "var(--color-primary)" : "rgba(255,255,255,0.80)",
-                  border: `1px solid ${pathname === "/kontakti" ? "rgba(25,191,183,0.45)" : "rgba(255,255,255,0.18)"}`,
-                  background: pathname === "/kontakti" ? "rgba(25,191,183,0.08)" : "rgba(255,255,255,0.06)",
-                  transition:
-                    "max-width 0.45s cubic-bezier(0.22,1,0.36,1), padding 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease",
-                }}
-              >
-                Контакти
-              </Link>
-
-              {/* Desktop CTA — mail → paper-plane on hover, collapses on scroll */}
+{/* Desktop CTA — mail → paper-plane on hover, collapses on scroll */}
               <motion.button
                 whileHover="hover"
                 initial="idle"

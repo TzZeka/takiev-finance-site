@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { HeroSection } from "@/components/home/HeroSection";
+import { CinematicScrollSection } from "@/components/home/CinematicScrollSection";
 import { MessagesSection } from "@/components/home/MessagesSection";
 import { CompanyHistory, CompanyValues } from "@/components/home/CompanyPresentation";
 import { ServicesPreview } from "@/components/home/ServicesPreview";
@@ -100,6 +101,7 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection motto={motto} />
+      <CinematicScrollSection />
       <div className="pb-3 md:pb-4">
         <div className="relative" style={{ zIndex: 1 }}>
           <MessagesSection messages={messages} />
