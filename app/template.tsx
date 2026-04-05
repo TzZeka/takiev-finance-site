@@ -2,34 +2,16 @@
 
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
-import { useNavDirection } from "@/components/providers/NavDirectionProvider";
-
-const pageVariants = {
-  initial: (dir: number) => ({
-    x: dir > 0 ? "30%" : "-30%",
-    opacity: 0,
-  }),
-  animate: {
-    x: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.4,
-      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
-    },
-  },
-};
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const direction = useNavDirection();
 
   return (
     <motion.div
       key={pathname}
-      custom={direction}
-      variants={pageVariants}
-      initial="initial"
-      animate="animate"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
       className="min-h-screen"
     >
       {children}

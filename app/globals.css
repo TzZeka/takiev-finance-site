@@ -194,6 +194,13 @@ h4.font-bold, h4.font-semibold {
   }
 }
 
+/* Prevent horizontal overflow globally — guards against animation transforms
+   (e.g. page transitions) temporarily pushing content outside the viewport */
+html,
+body {
+  overflow-x: hidden;
+}
+
 /* Prevent scroll during loader */
 body:has(.loader-active) {
   overflow: hidden;
@@ -748,4 +755,50 @@ h1, h2, h3 { font-variation-settings: 'wght' 700, 'wdth' 100; transition: font-v
 
 @media (prefers-reduced-motion: reduce) {
   .fluid-orb-a,.fluid-orb-b,.fluid-orb-c,.fluid-orb-d { animation: none; }
+}
+
+/* ============================================
+   HERO: ДОВЕРЕН — gradient shimmer sweep
+   Starts white, teal washes through, returns to white.
+   Pauses 1.8s on each end, sweeps 2.4s in the middle.
+   ============================================ */
+@keyframes hero-shimmer {
+  0%, 30%  { background-position: 0% center; }
+  70%, 100% { background-position: 100% center; }
+}
+
+.hero-shimmer {
+  background: linear-gradient(
+    90deg,
+    #ffffff  0%,
+    #ffffff  18%,
+    #19BFB7  45%,
+    #a5efec  60%,
+    #ffffff  80%,
+    #ffffff  100%
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: hero-shimmer 6s ease-in-out infinite;
+  animation-delay: 1.2s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-shimmer {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: white;
+    color: white;
+  }
+}
+
+/* ── Button ripple effect ── */
+@keyframes btn-ripple {
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
 }
