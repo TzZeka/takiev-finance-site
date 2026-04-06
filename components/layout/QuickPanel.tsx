@@ -151,24 +151,36 @@ function useRipple() {
   return { addRipple, dots };
 }
 
-// Omit HTML drag handlers that conflict with Framer Motion's drag types.
-type SafeAnchorProps = Omit<
-  React.AnchorHTMLAttributes<HTMLAnchorElement>,
-  "onDrag" | "onDragStart" | "onDragEnd" | "onDragEnter" | "onDragLeave" | "onDragOver" | "onDrop"
->;
-type SafeButtonProps = Omit<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  "onDrag" | "onDragStart" | "onDragEnd" | "onDragEnter" | "onDragLeave" | "onDragOver" | "onDrop"
->;
+interface RippleLinkProps {
+  href?: string;
+  target?: string;
+  rel?: string;
+  className?: string;
+  style?: React.CSSProperties;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
+  children?: React.ReactNode;
+}
+interface RippleButtonProps {
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  className?: string;
+  style?: React.CSSProperties;
+  type?: "button" | "submit" | "reset";
+  "aria-label"?: string;
+  children?: React.ReactNode;
+}
 
-function RippleLink({ children, className = "", ...rest }: SafeAnchorProps & { children?: React.ReactNode }) {
+function RippleLink({ children, className = "", href, target, rel, style, onClick }: RippleLinkProps) {
   const { addRipple, dots } = useRipple();
   return (
     <motion.a
+      href={href}
+      target={target}
+      rel={rel}
+      style={style}
+      onClick={onClick}
       className={`relative overflow-hidden ${className}`}
       onMouseDown={(e) => addRipple(e)}
       whileTap={{ scale: 0.95, transition: { duration: 0.1 } }}
-      {...rest}
     >
       {children}
       {dots}
@@ -176,14 +188,17 @@ function RippleLink({ children, className = "", ...rest }: SafeAnchorProps & { c
   );
 }
 
-function RippleButton({ children, className = "", ...rest }: SafeButtonProps & { children?: React.ReactNode }) {
+function RippleButton({ children, className = "", style, onClick, type, "aria-label": ariaLabel }: RippleButtonProps) {
   const { addRipple, dots } = useRipple();
   return (
     <motion.button
+      type={type}
+      aria-label={ariaLabel}
+      style={style}
+      onClick={onClick}
       className={`relative overflow-hidden ${className}`}
       onMouseDown={(e) => addRipple(e)}
       whileTap={{ scale: 0.95, transition: { duration: 0.1 } }}
-      {...rest}
     >
       {children}
       {dots}
