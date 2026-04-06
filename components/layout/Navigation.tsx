@@ -33,14 +33,18 @@ const BLOG_DROPDOWN_ID = "blog-dropdown-menu";
 function QuickPanelNavButton() {
   const { isOpen, setIsOpen, isVisible } = useQuickPanel();
   const [spinAngle, setSpinAngle] = useState(0);
+  const [hovered, setHovered] = useState(false);
 
   return (
+    <div className="relative flex flex-col items-center">
     <motion.button
       onClick={() => setIsOpen((v) => !v)}
       onMouseEnter={() => {
+        setHovered(true);
         // Spin only when opening — no animation while panel is already open
         if (!isOpen) setSpinAngle((a) => a + 360);
       }}
+      onMouseLeave={() => setHovered(false)}
       aria-label="Бързо меню"
       className="flex items-center justify-center flex-shrink-0"
       animate={{
@@ -68,6 +72,31 @@ function QuickPanelNavButton() {
         <BricksIcon className="w-5 h-5 text-white/90" isOpen={isOpen} />
       </motion.span>
     </motion.button>
+
+    {/* Tooltip */}
+    <AnimatePresence>
+      {hovered && !isOpen && (
+        <motion.span
+          initial={{ opacity: 0, x: -4 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -4 }}
+          transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 whitespace-nowrap pointer-events-none rounded-md px-2.5 py-1"
+          style={{
+            fontFamily: "'Mona Sans', sans-serif",
+            fontVariationSettings: "'wght' 430, 'wdth' 100",
+            fontSize: "0.68rem",
+            letterSpacing: "0.06em",
+            color: "#0d1f1c",
+            background: "#ffffff",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+          }}
+        >
+          Бърз панел
+        </motion.span>
+      )}
+    </AnimatePresence>
+    </div>
   );
 }
 

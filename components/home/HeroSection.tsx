@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
+import { motion, useReducedMotion, AnimatePresence, useScroll, useTransform, useMotionTemplate } from "framer-motion";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Link from "next/link";
@@ -43,7 +43,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ motto }: HeroSectionProps) {
-  useReducedMotion();
+  const prefersReducedMotion = useReducedMotion();
 
   const containerRef  = useRef<HTMLElement>(null);
   const videoRef      = useRef<HTMLVideoElement>(null);
@@ -225,6 +225,23 @@ export function HeroSection({ motto }: HeroSectionProps) {
     );
   }, { scope: containerRef });
 
+  // ── SCROLL EXIT ANIMATION ───────────────────────────────────────────────
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+
+  const contentOpacity  = useTransform(scrollYProgress, [0, 0.42], [1, 0]);
+  const contentY        = useTransform(scrollYProgress, [0, 0.50], [0, -60]);
+  const contentScale    = useTransform(scrollYProgress, [0, 0.42], [1, 0.93]);
+  const blurPx          = useTransform(scrollYProgress, [0.06, 0.38], [0, 16]);
+  const contentFilter   = useMotionTemplate`blur(${blurPx}px)`;
+  const indicatorOpacity = useTransform(scrollYProgress, [0, 0.18], [1, 0]);
+  // Background parallax — moves slower than scroll (0.35x ratio)
+  const bgY      = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"]);
+  const bgBlurPx = useTransform(scrollYProgress, [0, 0.5], [0, 7]);
+  const bgFilter = useMotionTemplate`blur(${bgBlurPx}px)`;
+
   // ── MOBILE STATS COUNTER ────────────────────────────────────────────────
   useEffect(() => {
     const el = mobileStatsRef.current;
@@ -317,24 +334,43 @@ export function HeroSection({ motto }: HeroSectionProps) {
       />
 
       {/* ── SVG BACKGROUND + DARK OVERLAY ────────────────────────────── */}
-      <div
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{
-          backgroundImage: "url('/firm-logo/banners/hero-section-banner.svg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
-      <div
-        className="absolute inset-0 z-[1] pointer-events-none"
-        style={{ background: "rgba(6,14,12,0.72)" }}
-      />
+      {/* overflow-hidden clips the oversize parallax bg without affecting fixed cursor */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <motion.div
+          style={{
+            position: "absolute",
+            top: "-8%",
+            bottom: "-8%",
+            left: 0,
+            right: 0,
+            backgroundImage: "url('/firm-logo/banners/hero-section-banner.svg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            willChange: "transform, filter",
+            ...(prefersReducedMotion ? {} : { y: bgY, filter: bgFilter }),
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: "rgba(6,14,12,0.72)" }}
+        />
+      </div>
 
       {/* ── h-screen VIEWPORT ────────────────────────────────────────── */}
       <div className="relative z-10 h-screen w-full">
 
         <div className="absolute inset-0 pointer-events-none">
-          <div ref={scene1ContentRef} className="absolute inset-0 pointer-events-auto">
+          <motion.div
+            ref={scene1ContentRef}
+            className="absolute inset-0 pointer-events-auto"
+            style={prefersReducedMotion ? {} : {
+              opacity: contentOpacity,
+              y: contentY,
+              scale: contentScale,
+              filter: contentFilter,
+              willChange: "opacity, transform, filter",
+            }}
+          >
 
             {/* ── DESKTOP: two-column ─────────────────────────────── */}
             <div className="hidden md:grid md:grid-cols-2 h-full items-center px-12 xl:px-20 gap-8 xl:gap-12">
@@ -388,9 +424,7 @@ export function HeroSection({ motto }: HeroSectionProps) {
                     }}
                   >
                     <LetterHover text="СВОЯ " />
-                    <span className="hero-shimmer">
-                      <LetterHover text="ДОВЕРЕН" />
-                    </span>
+                    <span className="hero-shimmer">ДОВЕРЕН</span>
                   </span>
                   {/* Line 3: БИЗНЕС ПАРТНЬОР */}
                   <span
@@ -636,13 +670,14 @@ export function HeroSection({ motto }: HeroSectionProps) {
               </div>
             </div>
 
-          </div>
+          </motion.div>
         </div>
 
         {/* ── SCROLL INDICATOR ─────────────────────────────────────── */}
-        <div
+        <motion.div
           ref={scrollIndicatorRef}
           className="absolute hidden md:flex flex-col items-center gap-2 z-20 bottom-7 left-1/2 -translate-x-1/2"
+          style={prefersReducedMotion ? {} : { opacity: indicatorOpacity }}
         >
           <div
             className="relative w-px overflow-hidden"
@@ -656,12 +691,15 @@ export function HeroSection({ motto }: HeroSectionProps) {
           </div>
           <motion.svg
             width={10} height={16} viewBox="0 0 12 20" fill="none"
-            animate={{ stroke: ["rgba(255,255,255,0.3)", "#19BFB7", "rgba(255,255,255,0.3)"] }}
+            animate={{
+              stroke: ["rgba(255,255,255,0.3)", "#19BFB7", "rgba(255,255,255,0.3)"],
+              y: [0, 6, 0],
+            }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           >
             <path d="M6 1L6 19M1 14L6 19L11 14" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </motion.svg>
-        </div>
+        </motion.div>
 
       </div>
 

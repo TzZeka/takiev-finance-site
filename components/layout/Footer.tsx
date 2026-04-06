@@ -135,22 +135,26 @@ export function Footer() {
             <FooterAccordion title="Бързи връзки">
               <ul className="space-y-3">
                 <li>
-                  <Link href="/za-nas" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                  <Link href="/za-nas" className="group flex items-center text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0" />
                     За нас
                   </Link>
                 </li>
                 <li>
-                  <Link href="/uslugi" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                  <Link href="/uslugi" className="group flex items-center text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0" />
                     Услуги
                   </Link>
                 </li>
                 <li>
-                  <Link href="/blog" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                  <Link href="/blog" className="group flex items-center text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0" />
                     Блог
                   </Link>
                 </li>
                 <li>
-                  <Link href="/video" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                  <Link href="/video" className="group flex items-center text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0" />
                     Видео
                   </Link>
                 </li>
@@ -161,22 +165,26 @@ export function Footer() {
             <FooterAccordion title="Услуги">
               <ul className="space-y-3">
                 <li>
-                  <Link href="/uslugi/schetovodni-uslugi" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                  <Link href="/uslugi/schetovodni-uslugi" className="group flex items-center text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0" />
                     Счетоводни услуги
                   </Link>
                 </li>
                 <li>
-                  <Link href="/uslugi/danachni-konsultacii" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                  <Link href="/uslugi/danachni-konsultacii" className="group flex items-center text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0" />
                     Данъчни консултации
                   </Link>
                 </li>
                 <li>
-                  <Link href="/uslugi/pravni-uslugi" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                  <Link href="/uslugi/pravni-uslugi" className="group flex items-center text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0" />
                     Правни услуги
                   </Link>
                 </li>
                 <li>
-                  <Link href="/uslugi/registraciq-na-firmi" className="text-sm text-white/45 hover:text-white transition-colors duration-200">
+                  <Link href="/uslugi/registraciq-na-firmi" className="group flex items-center text-sm text-white/45 hover:text-white transition-colors duration-200">
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0" />
                     Регистрация на фирми
                   </Link>
                 </li>
@@ -191,10 +199,11 @@ export function Footer() {
                     href="https://nula.bg"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-white/45 hover:text-white transition-colors duration-200 inline-flex items-center gap-1.5"
+                    className="group text-sm text-white/45 hover:text-white transition-colors duration-200 flex items-center gap-1.5"
                   >
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-0 flex-shrink-0" />
                     Nula.bg
-                    <ExternalLink className="w-3 h-3 opacity-35" />
+                    <ExternalLink className="w-3 h-3 opacity-35 flex-shrink-0" />
                   </a>
                 </li>
                 <li>
@@ -202,10 +211,11 @@ export function Footer() {
                     href="https://www.portalschetovodstvo.bg/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-white/45 hover:text-white transition-colors duration-200 inline-flex items-center gap-1.5"
+                    className="group text-sm text-white/45 hover:text-white transition-colors duration-200 flex items-center gap-1.5"
                   >
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-0 flex-shrink-0" />
                     Портал Счетоводство
-                    <ExternalLink className="w-3 h-3 opacity-35" />
+                    <ExternalLink className="w-3 h-3 opacity-35 flex-shrink-0" />
                   </a>
                 </li>
                 <li>
@@ -213,10 +223,11 @@ export function Footer() {
                     href="https://nap.bg"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-white/45 hover:text-white transition-colors duration-200 inline-flex items-center gap-1.5"
+                    className="group text-sm text-white/45 hover:text-white transition-colors duration-200 flex items-center gap-1.5"
                   >
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-0 flex-shrink-0" />
                     НАП
-                    <ExternalLink className="w-3 h-3 opacity-35" />
+                    <ExternalLink className="w-3 h-3 opacity-35 flex-shrink-0" />
                   </a>
                 </li>
               </ul>
@@ -228,16 +239,18 @@ export function Footer() {
                 <li>
                   <a
                     href="mailto:office@takiev.bg"
-                    className="text-sm text-white/45 hover:text-white transition-colors duration-200"
+                    className="group flex items-center text-sm text-white/45 hover:text-white transition-colors duration-200"
                   >
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0" />
                     office@takiev.bg
                   </a>
                 </li>
                 <li>
                   <a
                     href="tel:+359899080016"
-                    className="text-sm text-white/45 hover:text-white transition-colors duration-200"
+                    className="group flex items-center text-sm text-white/45 hover:text-white transition-colors duration-200"
                   >
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0" />
                     +359 89 908 0016
                   </a>
                 </li>
@@ -246,8 +259,9 @@ export function Footer() {
                     href="https://maps.app.goo.gl/K4z9hmq1RbuuUfQy6"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-white/35 leading-relaxed block hover:text-primary transition-colors"
+                    className="group flex items-start text-sm text-white/35 leading-relaxed hover:text-primary transition-colors"
                   >
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0 mt-[0.45em]" />
                     бул. „Александър Стамболийски" 30Б, 1000 София
                   </a>
                 </li>

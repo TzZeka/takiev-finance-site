@@ -7,6 +7,7 @@ import { PremiumLoader } from "@/components/shared/PremiumLoader";
 import { ScrollToTop } from "@/components/shared/ScrollToTop";
 import { LocalBusinessJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
+import { GlobalRipple } from "@/components/effects/GlobalRipple";
 import { NavDirectionProvider } from "@/components/providers/NavDirectionProvider";
 import { QuickPanelProvider } from "@/components/layout/QuickPanelContext";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -123,6 +124,10 @@ export default function RootLayout({
   return (
     <html lang="bg" data-scroll-behavior="smooth">
       <head>
+        {/* Disable browser scroll restoration before React hydrates so page
+            refreshes always start from the top, not the previous position. */}
+        {/* eslint-disable-next-line @next/next/no-before-interactive-script-outside-document */}
+        <script dangerouslySetInnerHTML={{ __html: "history.scrollRestoration='manual';" }} />
         {/* Preload Hubot Sans — headings variable font */}
         <link
           rel="preload"
@@ -159,6 +164,7 @@ export default function RootLayout({
         <WebSiteJsonLd />
       </head>
       <body>
+        <GlobalRipple />
         <SmoothScrollProvider>
           <PremiumLoader />
           <QuickPanelProvider>

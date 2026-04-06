@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Phone, MapPin, Facebook, Linkedin, Youtube, ExternalLink } from "lucide-react";
 import { useQuickPanel } from "@/components/layout/QuickPanelContext";
 import { FlipLabel } from "@/components/ui/FlipLabel";
+import { SiteMapModal } from "@/components/layout/SiteMapModal";
 
 // ── BricksIcon ─────────────────────────────────────────────────────────────
 // Exported so Navigation.tsx can render the trigger button
@@ -125,10 +126,104 @@ const socials = [
   },
 ];
 
+// ── Ripple helpers ─────────────────────────────────────────────────────────
+type RippleEntry = { x: number; y: number; id: number };
+
+function useRipple() {
+  const [ripples, setRipples] = useState<RippleEntry[]>([]);
+  const addRipple = useCallback((e: React.MouseEvent) => {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const id = Date.now() + Math.random();
+    setRipples(p => [...p, { x: e.clientX - rect.left, y: e.clientY - rect.top, id }]);
+    setTimeout(() => setRipples(p => p.filter(r => r.id !== id)), 700);
+  }, []);
+  const dots = ripples.map(({ x, y, id }) => (
+    <motion.span
+      key={id}
+      aria-hidden
+      className="absolute rounded-full pointer-events-none"
+      style={{ left: x, top: y, translateX: "-50%", translateY: "-50%", background: "rgba(25,191,183,0.28)" }}
+      initial={{ width: 0, height: 0, opacity: 1 }}
+      animate={{ width: 130, height: 130, opacity: 0 }}
+      transition={{ duration: 0.55, ease: [0.0, 0.0, 0.2, 1] }}
+    />
+  ));
+  return { addRipple, dots };
+}
+
+function RippleLink({ children, className = "", ...rest }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { children?: React.ReactNode }) {
+  const { addRipple, dots } = useRipple();
+  return (
+    <motion.a
+      className={`relative overflow-hidden ${className}`}
+      onMouseDown={(e) => addRipple(e)}
+      whileTap={{ scale: 0.95, transition: { duration: 0.1 } }}
+      {...rest}
+    >
+      {children}
+      {dots}
+    </motion.a>
+  );
+}
+
+function RippleButton({ children, className = "", ...rest }: React.ButtonHTMLAttributes<HTMLButtonElement> & { children?: React.ReactNode }) {
+  const { addRipple, dots } = useRipple();
+  return (
+    <motion.button
+      className={`relative overflow-hidden ${className}`}
+      onMouseDown={(e) => addRipple(e)}
+      whileTap={{ scale: 0.95, transition: { duration: 0.1 } }}
+      {...rest}
+    >
+      {children}
+      {dots}
+    </motion.button>
+  );
+}
+
+function SocialItem({ href, label, renderIcon }: { href: string; label: string; renderIcon: (cls: string) => React.ReactNode }) {
+  const { addRipple, dots } = useRipple();
+  return (
+    <motion.a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group relative flex items-center gap-2.5 px-3 py-2 rounded-lg overflow-hidden"
+      style={{
+        backgroundColor: "rgba(64,81,78,0.07)",
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "rgba(64,81,78,0.18)",
+      }}
+      whileHover={{
+        scale: 1.035,
+        y: -2,
+        backgroundColor: "#19BFB7",
+        borderColor: "#19BFB7",
+        transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
+      }}
+      whileTap={{ scale: 0.97, y: 0 }}
+      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+      onMouseDown={(e) => addRipple(e)}
+      aria-label={label}
+    >
+      {renderIcon("h-4 w-4 flex-shrink-0 transition-colors duration-300 group-hover:text-white")}
+      <span
+        className="text-xs font-semibold transition-colors duration-300 group-hover:text-white leading-none"
+        style={{ color: "var(--color-surface-raised)" }}
+      >
+        <FlipLabel text={label} height="1.5em" />
+      </span>
+      {dots}
+    </motion.a>
+  );
+}
+
 // ── QuickPanel ─────────────────────────────────────────────────────────────
 export function QuickPanel() {
   const { isOpen, setIsOpen, setIsVisible } = useQuickPanel();
   const [headerHeight, setHeaderHeight] = useState(80);
+  const [siteMapOpen, setSiteMapOpen] = useState(false);
 
   const getHeaderHeight = useCallback(() => {
     if (typeof window === "undefined") return 80;
@@ -241,11 +336,11 @@ export function QuickPanel() {
               style={{
                 maxWidth: "1480px",
                 pointerEvents: "auto",
-                background: "rgba(232, 245, 241, 0.82)",
-                backdropFilter: "blur(40px) saturate(220%) brightness(1.03)",
-                WebkitBackdropFilter: "blur(40px) saturate(220%) brightness(1.03)",
-                border: "1px solid rgba(255,255,255,0.88)",
-                boxShadow: "0 8px 40px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.95), 0 1px 3px rgba(0,0,0,0.06)",
+                background: "rgba(236, 249, 245, 0.97)",
+                backdropFilter: "blur(56px) saturate(160%) brightness(1.01)",
+                WebkitBackdropFilter: "blur(56px) saturate(160%) brightness(1.01)",
+                border: "1px solid rgba(255,255,255,0.98)",
+                boxShadow: "0 12px 48px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,1), inset 0 -1px 0 rgba(25,191,183,0.06), 0 1px 3px rgba(0,0,0,0.06)",
               }}
             >
               {/* Film grain — subtle texture on glass */}
@@ -307,7 +402,7 @@ export function QuickPanel() {
 
                   {/* ── Useful Sites ── */}
                   <motion.div variants={itemVariants}>
-                    <p className="text-sm font-bold mb-4 flex items-center" style={{ color: "var(--color-surface-deeper)" }}>
+                    <p className="mb-4 flex items-center" style={{ color: "var(--color-surface-deeper)", fontFamily: "'Cormorant Garamond', serif", fontVariationSettings: "'wght' 650", fontWeight: 650, fontSize: "1.3rem", letterSpacing: "0.01em" }}>
                       <span className="text-primary">—</span>
                       <span className="ml-2">Полезни сайтове</span>
                     </p>
@@ -318,17 +413,17 @@ export function QuickPanel() {
                         { href: "https://nap.bg", label: "НАП" },
                       ].map((link) => (
                         <li key={link.href}>
-                          <a
+                          <RippleLink
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group text-sm hover:text-primary transition-colors flex items-center py-0.5"
+                            className="group text-sm font-medium hover:text-primary transition-colors flex items-center py-0.5 rounded"
                             style={{ color: "var(--color-surface-raised)" }}
                           >
                             <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0" />
                             <FlipLabel text={link.label} height="1.5em" />
                             <ExternalLink className="w-3 h-3 ml-1.5 flex-shrink-0" style={{ color: "var(--color-dark)", opacity: 0.5 }} />
-                          </a>
+                          </RippleLink>
                         </li>
                       ))}
                     </ul>
@@ -336,7 +431,7 @@ export function QuickPanel() {
 
                   {/* ── Contact Info (no address) ── */}
                   <motion.div variants={itemVariants}>
-                    <p className="text-sm font-bold mb-4 flex items-center" style={{ color: "var(--color-surface-deeper)" }}>
+                    <p className="mb-4 flex items-center" style={{ color: "var(--color-surface-deeper)", fontFamily: "'Cormorant Garamond', serif", fontVariationSettings: "'wght' 650", fontWeight: 650, fontSize: "1.3rem", letterSpacing: "0.01em" }}>
                       <span className="text-primary">—</span>
                       <span className="ml-2">Контакти</span>
                     </p>
@@ -348,13 +443,19 @@ export function QuickPanel() {
                         >
                           <Mail className="h-3.5 w-3.5 text-primary" />
                         </div>
-                        <a
+                        <RippleLink
                           href="mailto:office@takiev.bg"
-                          className="group text-sm hover:text-primary transition-colors"
-                          style={{ color: "var(--color-surface-raised)" }}
+                          className="group/link hover:text-primary transition-colors flex items-center rounded"
+                          style={{
+                            color: "var(--color-surface-raised)",
+                            fontFamily: "'Mona Sans', sans-serif",
+                            fontVariationSettings: "'wght' 620, 'wdth' 110",
+                            fontSize: "0.95rem",
+                          }}
                         >
-                          <FlipLabel text="office@takiev.bg" height="1.5em" />
-                        </a>
+                          <span className="w-0 group-hover/link:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover/link:mr-2 flex-shrink-0" />
+                          office@takiev.bg
+                        </RippleLink>
                       </li>
                       <li className="group flex items-center space-x-3">
                         <div
@@ -363,45 +464,32 @@ export function QuickPanel() {
                         >
                           <Phone className="h-3.5 w-3.5 text-primary" />
                         </div>
-                        <a
+                        <RippleLink
                           href="tel:+359899080016"
-                          className="group text-sm hover:text-primary transition-colors"
-                          style={{ color: "var(--color-surface-raised)" }}
+                          className="group/link hover:text-primary transition-colors flex items-center rounded"
+                          style={{
+                            color: "var(--color-surface-raised)",
+                            fontFamily: "'Mona Sans', sans-serif",
+                            fontVariationSettings: "'wght' 620, 'wdth' 110",
+                            fontSize: "0.95rem",
+                          }}
                         >
-                          <FlipLabel text="+359 89 908 0016" height="1.5em" />
-                        </a>
+                          <span className="w-0 group-hover/link:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover/link:mr-2 flex-shrink-0" />
+                          +359 89 908 0016
+                        </RippleLink>
                       </li>
                     </ul>
                   </motion.div>
 
                   {/* ── Social Media — icon + label ── */}
                   <motion.div variants={itemVariants}>
-                    <p className="text-sm font-bold mb-4 flex items-center" style={{ color: "var(--color-surface-deeper)" }}>
+                    <p className="mb-4 flex items-center" style={{ color: "var(--color-surface-deeper)", fontFamily: "'Cormorant Garamond', serif", fontVariationSettings: "'wght' 650", fontWeight: 650, fontSize: "1.3rem", letterSpacing: "0.01em" }}>
                       <span className="text-primary">—</span>
                       <span className="ml-2">Социални мрежи</span>
                     </p>
                     <div className="flex flex-col gap-2">
-                      {socials.map(({ href, label, renderIcon }) => (
-                        <a
-                          key={label}
-                          href={href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all duration-300 hover:bg-primary"
-                          style={{
-                            background: "rgba(64,81,78,0.07)",
-                            border: "1px solid rgba(64,81,78,0.18)",
-                          }}
-                          aria-label={label}
-                        >
-                          {renderIcon("h-4 w-4 flex-shrink-0 transition-colors duration-300 group-hover:text-white")}
-                          <span
-                            className="text-xs font-medium transition-colors duration-300 group-hover:text-white leading-none"
-                            style={{ color: "var(--color-surface-raised)" }}
-                          >
-                            <FlipLabel text={label} height="1.5em" />
-                          </span>
-                        </a>
+                      {socials.map((s) => (
+                        <SocialItem key={s.label} {...s} />
                       ))}
                     </div>
                   </motion.div>
@@ -442,7 +530,7 @@ export function QuickPanel() {
                   className="flex items-center justify-center gap-4 mt-6 pt-5"
                   style={{ borderTop: "1px solid rgba(64,81,78,0.15)" }}
                 >
-                  <p className="text-sm font-bold flex items-center flex-shrink-0" style={{ color: "var(--color-surface-deeper)" }}>
+                  <p className="flex items-center flex-shrink-0" style={{ color: "var(--color-surface-deeper)", fontFamily: "'Cormorant Garamond', serif", fontVariationSettings: "'wght' 650", fontWeight: 650, fontSize: "1.3rem", letterSpacing: "0.01em" }}>
                     <span className="text-primary">—</span>
                     <span className="ml-2">Офис</span>
                   </p>
@@ -453,16 +541,47 @@ export function QuickPanel() {
                     >
                       <MapPin className="h-3.5 w-3.5 text-primary" />
                     </div>
-                    <a
+                    <RippleLink
                       href="https://maps.app.goo.gl/K4z9hmq1RbuuUfQy6"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm hover:text-primary transition-colors leading-relaxed"
-                      style={{ color: "var(--color-surface-raised)" }}
+                      className="group/addr hover:text-primary transition-colors leading-relaxed flex items-center rounded"
+                      style={{
+                        color: "var(--color-surface-raised)",
+                        fontFamily: "'Mona Sans', sans-serif",
+                        fontVariationSettings: "'wght' 720, 'wdth' 110",
+                        fontSize: "0.95rem",
+                      }}
                     >
+                      <span className="w-0 group-hover/addr:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover/addr:mr-2 flex-shrink-0" />
                       бул. Александър Стамболийски 30Б, гр. София
-                    </a>
+                    </RippleLink>
                   </div>
+                </motion.div>
+
+                {/* ── Site map button — bottom right ── */}
+                <motion.div
+                  variants={itemVariants}
+                  className="flex justify-end mt-2"
+                >
+                  <RippleButton
+                    onClick={() => { setSiteMapOpen(true); setIsOpen(false); }}
+                    className="group flex items-center gap-1.5 px-3.5 py-2 rounded-full transition-all duration-300 hover:bg-primary/10 hover:shadow-[0_0_12px_rgba(25,191,183,0.18)]"
+                    style={{
+                      fontFamily: "'Mona Sans', sans-serif",
+                      fontVariationSettings: "'wght' 520, 'wdth' 100",
+                      fontSize: "0.78rem",
+                      color: "#19BFB7",
+                      border: "1.5px solid rgba(25,191,183,0.45)",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {/* Footsteps / shoe prints icon */}
+                    <svg className="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9 1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z"/>
+                    </svg>
+                    Карта на сайта
+                  </RippleButton>
                 </motion.div>
 
               </motion.div>
@@ -470,6 +589,8 @@ export function QuickPanel() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <SiteMapModal isOpen={siteMapOpen} onClose={() => setSiteMapOpen(false)} />
     </>
   );
 }

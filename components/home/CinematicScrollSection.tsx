@@ -226,6 +226,7 @@ export function CinematicScrollSection() {
   const s5L1  = useRef<HTMLSpanElement>(null);
   const s5L2  = useRef<HTMLSpanElement>(null);
   const s5Cta = useRef<HTMLDivElement>(null);
+  const s5Indicator = useRef<HTMLDivElement>(null);
 
   const progressRef = useRef<HTMLDivElement>(null);
 
@@ -249,6 +250,7 @@ export function CinematicScrollSection() {
       gsap.set(s5L1.current, { opacity: 0, x: -70 });
       gsap.set(s5L2.current, { opacity: 0 });
       gsap.set(s5Cta.current, { opacity: 0, x: -50 });
+      gsap.set(s5Indicator.current, { autoAlpha: 0 });
 
       const E = "power3.out";
       const tl = gsap.timeline({
@@ -306,6 +308,7 @@ export function CinematicScrollSection() {
       tl.set(s5Ref.current, { autoAlpha: 1 });
       tl.to(s5L1.current,  { opacity: 1, x: 0, duration: 1.0, ease: E });
       tl.to(s5Cta.current, { opacity: 1, x: 0, duration: 0.8, ease: E }, "-=0.3");
+      tl.to(s5Indicator.current, { autoAlpha: 1, duration: 0.75, ease: E }, "-=0.1");
       tl.to({}, { duration: 2.5 });
     },
     { scope: containerRef }
@@ -508,6 +511,33 @@ export function CinematicScrollSection() {
               <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
           </div>
+        </div>
+
+        {/* ── SCROLL INDICATOR (appears at end of scene 5) ─────────── */}
+        <div
+          ref={s5Indicator}
+          className="absolute bottom-7 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20"
+        >
+          <div
+            className="relative w-px overflow-hidden"
+            style={{ height: "40px", backgroundColor: "rgba(255,255,255,0.1)" }}
+          >
+            <motion.div
+              className="absolute left-0 w-full bg-white/50"
+              animate={{ height: ["0%", "100%", "0%"], top: ["0%", "0%", "100%"] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+          <motion.svg
+            width={10} height={16} viewBox="0 0 12 20" fill="none"
+            animate={{
+              stroke: ["rgba(255,255,255,0.3)", "#19BFB7", "rgba(255,255,255,0.3)"],
+              y: [0, 6, 0],
+            }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <path d="M6 1L6 19M1 14L6 19L11 14" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </motion.svg>
         </div>
       </section>
 
