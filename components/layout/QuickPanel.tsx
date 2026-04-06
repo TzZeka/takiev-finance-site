@@ -151,7 +151,17 @@ function useRipple() {
   return { addRipple, dots };
 }
 
-function RippleLink({ children, className = "", ...rest }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { children?: React.ReactNode }) {
+// Omit HTML drag handlers that conflict with Framer Motion's drag types.
+type SafeAnchorProps = Omit<
+  React.AnchorHTMLAttributes<HTMLAnchorElement>,
+  "onDrag" | "onDragStart" | "onDragEnd" | "onDragEnter" | "onDragLeave" | "onDragOver" | "onDrop"
+>;
+type SafeButtonProps = Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "onDrag" | "onDragStart" | "onDragEnd" | "onDragEnter" | "onDragLeave" | "onDragOver" | "onDrop"
+>;
+
+function RippleLink({ children, className = "", ...rest }: SafeAnchorProps & { children?: React.ReactNode }) {
   const { addRipple, dots } = useRipple();
   return (
     <motion.a
@@ -166,7 +176,7 @@ function RippleLink({ children, className = "", ...rest }: React.AnchorHTMLAttri
   );
 }
 
-function RippleButton({ children, className = "", ...rest }: React.ButtonHTMLAttributes<HTMLButtonElement> & { children?: React.ReactNode }) {
+function RippleButton({ children, className = "", ...rest }: SafeButtonProps & { children?: React.ReactNode }) {
   const { addRipple, dots } = useRipple();
   return (
     <motion.button
