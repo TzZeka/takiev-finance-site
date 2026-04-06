@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X, ArrowUpRight } from "lucide-react";
+import { X, ArrowUpRight, ScrollText } from "lucide-react";
+import { FlipLabel } from "@/components/ui/FlipLabel";
 
 interface SiteMapModalProps {
   isOpen: boolean;
@@ -77,12 +78,13 @@ const sections = [
 ];
 
 const legal = [
-  { label: "Условия за ползване", href: "/terms" },
   { label: "Политика за поверителност", href: "/privacy" },
+  { label: "Общи условия", href: "/terms" },
 ];
 
 export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
   const pathname = usePathname();
+  const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
 
   // A section is "active" if the current path matches it or one of its children
   const isActive = (section: typeof sections[number]) => {
@@ -116,6 +118,8 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
           animate={{ clipPath: "inset(0 0 0% 0)" }}
           exit={{ clipPath: "inset(0 0 100% 0)", transition: { duration: 0.52, ease: [0.76, 0, 0.24, 1] } }}
           transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
+          onMouseMove={(e) => setCursor({ x: e.clientX, y: e.clientY })}
+          onMouseLeave={() => setCursor(null)}
         >
           {/* Teal glow — decorative */}
           <div
@@ -125,6 +129,20 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
               background: "radial-gradient(ellipse 65% 40% at 50% 0%, rgba(25,191,183,0.08) 0%, transparent 60%)",
             }}
           />
+
+          {/* Cursor flashlight */}
+          {cursor && (
+            <div
+              aria-hidden
+              className="pointer-events-none fixed inset-0 z-20"
+              style={{
+                background: `radial-gradient(circle 300px at ${cursor.x}px ${cursor.y}px,
+                  rgba(25,191,183,0.07) 0%,
+                  rgba(25,191,183,0.03) 40%,
+                  transparent 70%)`,
+              }}
+            />
+          )}
 
           {/* Film grain — decorative */}
           <div
@@ -145,20 +163,6 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
             style={{ borderBottom: "1px solid rgba(25,191,183,0.14)" }}
           >
             <div className="flex flex-col gap-0.5">
-              <motion.p
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                  fontFamily: "'Berkslund', sans-serif",
-                  fontSize: "0.68rem",
-                  /* WCAG AA: teal #19BFB7 on #060e0c ≈ 8.6:1 */
-                  color: "rgba(25,191,183,0.80)",
-                  letterSpacing: "0.08em",
-                }}
-              >
-                Takiev Finance
-              </motion.p>
               <motion.h2
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -254,8 +258,8 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
                   {/* Index — decorative, no contrast req */}
                   <span
                     style={{
-                      ...cg(400, true),
-                      fontSize: "0.68rem",
+                      ...cg(700),
+                      fontSize: "0.95rem",
                       color: "rgba(25,191,183,0.65)",
                       letterSpacing: "0.16em",
                     }}
@@ -283,7 +287,7 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
                       {section.label}
                     </h3>
                     <ArrowUpRight
-                      className="w-3.5 h-3.5 flex-shrink-0 mt-1 text-primary opacity-0 group-hover/link:opacity-100 transition-opacity duration-200"
+                      className="w-3.5 h-3.5 flex-shrink-0 mt-1 text-primary opacity-0 stroke-1 group-hover/link:opacity-100 group-hover/link:w-9 group-hover/link:h-9 group-hover/link:stroke-[2.5] transition-all duration-200"
                       aria-hidden
                     />
                   </Link>
@@ -292,7 +296,7 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
                   <p
                     style={{
                       ...cg(400, true),
-                      fontSize: "0.82rem",
+                      fontSize: "0.93rem",
                       /* WCAG AA normal text: need 4.5:1 — rgba(255,255,255,0.58) ≈ 7.1:1 ✓ */
                       color: "rgba(255,255,255,0.58)",
                       lineHeight: 1.45,
@@ -361,46 +365,33 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
               transition={{ duration: 0.5, delay: 0.72 }}
               className="flex-shrink-0 flex flex-wrap items-center justify-between gap-3 pt-2.5"
             >
-              <div className="flex flex-wrap items-center gap-1.5 md:gap-4">
-                <span
-                  style={{
-                    ...mona(380),
-                    fontSize: "0.68rem",
-                    /* WCAG AA: rgba(255,255,255,0.45) ≈ 4.5:1 ✓ */
-                    color: "rgba(255,255,255,0.45)",
-                    letterSpacing: "0.10em",
-                    textTransform: "uppercase",
-                  }}
-                >
+              <div className="flex flex-wrap items-center gap-2 md:gap-5">
+                <span style={{ ...cg(650), fontSize: "1.05rem", color: "white", letterSpacing: "0.01em" }}>
                   Правна информация
                 </span>
-                <span style={{ color: "rgba(255,255,255,0.18)", fontSize: "0.6rem" }}>—</span>
-                {legal.map(({ label, href }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    onClick={onClose}
-                    className="transition-colors duration-200 hover:text-primary"
-                    style={{
-                      ...mona(400),
-                      fontSize: "0.73rem",
-                      /* WCAG AA: rgba(255,255,255,0.55) ≈ 6.3:1 ✓ */
-                      color: "rgba(255,255,255,0.55)",
-                    }}
-                  >
-                    {label}
-                  </Link>
+                <span style={{ color: "#19BFB7", fontSize: "0.6rem" }}>—</span>
+                {legal.map(({ label, href }, i) => (
+                  <>
+                    <Link
+                      key={href}
+                      href={href}
+                      onClick={onClose}
+                      className="group flex items-center transition-colors duration-200 hover:text-primary"
+                      style={{ ...mona(420), fontSize: "0.85rem", color: "rgba(255,255,255,0.55)" }}
+                    >
+                      <span className="w-0 group-hover:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover:mr-2 flex-shrink-0" />
+                      <FlipLabel text={label} />
+                      {i === 1 && <ScrollText className="w-3 h-3 ml-1.5 opacity-35 flex-shrink-0" />}
+                    </Link>
+                    {i === 0 && <span style={{ color: "#19BFB7", fontSize: "0.6rem" }}>·</span>}
+                  </>
                 ))}
               </div>
-              <span
-                style={{
-                  fontFamily: "'Berkslund', sans-serif",
-                  fontSize: "0.75rem",
-                  /* Decorative — rgba(255,255,255,0.45) ≈ 4.5:1 ✓ */
-                  color: "rgba(255,255,255,0.45)",
-                }}
-              >
-                © {new Date().getFullYear()} Takiev Finance
+              <span style={{ fontFamily: "'Berkslund', sans-serif", fontSize: "1rem", color: "rgba(255,255,255,0.55)" }}>
+                © {new Date().getFullYear()}{" "}
+                <span style={{ fontFamily: "'Berkslund', sans-serif", fontSize: "1.15rem", color: "#19BFB7" }}>
+                  Takiev Finance
+                </span>
               </span>
             </motion.div>
           </div>

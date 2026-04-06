@@ -559,29 +559,22 @@ export function QuickPanel() {
                     <span className="text-primary">—</span>
                     <span className="ml-2">Офис</span>
                   </p>
-                  <div className="flex items-center gap-2.5">
-                    <div
-                      className="p-1.5 rounded-lg border flex-shrink-0"
-                      style={{ background: "rgba(64,81,78,0.07)", borderColor: "rgba(64,81,78,0.20)" }}
-                    >
-                      <MapPin className="h-3.5 w-3.5 text-primary" />
-                    </div>
-                    <RippleLink
-                      href="https://maps.app.goo.gl/K4z9hmq1RbuuUfQy6"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group/addr hover:text-primary transition-colors leading-relaxed flex items-center rounded"
-                      style={{
-                        color: "var(--color-surface-raised)",
-                        fontFamily: "'Mona Sans', sans-serif",
-                        fontVariationSettings: "'wght' 720, 'wdth' 110",
-                        fontSize: "0.95rem",
-                      }}
-                    >
-                      <span className="w-0 group-hover/addr:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover/addr:mr-2 flex-shrink-0" />
-                      бул. Александър Стамболийски 30Б, гр. София
-                    </RippleLink>
-                  </div>
+                  <RippleLink
+                    href="https://maps.app.goo.gl/K4z9hmq1RbuuUfQy6"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group/addr hover:text-primary transition-colors leading-relaxed flex items-center rounded"
+                    style={{
+                      color: "var(--color-surface-raised)",
+                      fontFamily: "'Mona Sans', sans-serif",
+                      fontVariationSettings: "'wght' 720, 'wdth' 110",
+                      fontSize: "0.95rem",
+                    }}
+                  >
+                    <span className="w-0 group-hover/addr:w-2 h-0.5 bg-primary transition-all duration-300 mr-0 group-hover/addr:mr-2 flex-shrink-0" />
+                    бул. Александър Стамболийски 30Б, гр. София
+                    <MapPin className="h-3.5 w-3.5 text-primary ml-1.5 flex-shrink-0 opacity-60" />
+                  </RippleLink>
                 </motion.div>
 
                 {/* ── Site map button — bottom right ── */}
@@ -591,7 +584,7 @@ export function QuickPanel() {
                 >
                   <RippleButton
                     onClick={() => { setSiteMapOpen(true); setIsOpen(false); }}
-                    className="group flex items-center gap-1.5 px-3.5 py-2 rounded-full transition-all duration-300 hover:bg-primary/10 hover:shadow-[0_0_12px_rgba(25,191,183,0.18)]"
+                    className="group flex items-center gap-1.5 px-3.5 py-2 rounded-full transition-all duration-300 hover:bg-primary/10"
                     style={{
                       fontFamily: "'Mona Sans', sans-serif",
                       fontVariationSettings: "'wght' 520, 'wdth' 100",
@@ -601,11 +594,10 @@ export function QuickPanel() {
                       letterSpacing: "0.04em",
                     }}
                   >
-                    {/* Footsteps / shoe prints icon */}
                     <svg className="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9 1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z"/>
                     </svg>
-                    Карта на сайта
+                    <FlipLabel text="Карта на сайта" />
                   </RippleButton>
                 </motion.div>
 

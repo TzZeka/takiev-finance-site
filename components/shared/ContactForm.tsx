@@ -13,15 +13,50 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { CheckCircle, Send } from "lucide-react";
-import { motion } from "framer-motion";
+import { CheckCircle, Loader2, Mail } from "lucide-react";
+import { motion, useAnimation } from "framer-motion";
 import { contactFormSchema, type ContactFormValues } from "@/lib/validations";
+
+function PaperPlaneIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}
+      strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M22 2L11 13" />
+      <path d="M22 2L15 22l-4-9-9-4 20-7z" />
+    </svg>
+  );
+}
 
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isFlying, setIsFlying] = useState(false);
+
+  const mailControls = useAnimation();
+  const planeControls = useAnimation();
+
+  const handleBtnHoverStart = () => {
+    if (isFlying || isSubmitting) return;
+    mailControls.start({ opacity: 0, x: 5, y: -8, transition: { duration: 0.2, ease: [0.4, 0, 1, 1] } });
+    planeControls.start({ opacity: 1, x: 0, y: 0, rotate: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } });
+  };
+
+  const handleBtnHoverEnd = () => {
+    if (isFlying || isSubmitting) return;
+    mailControls.start({ opacity: 1, x: 0, y: 0, transition: { duration: 0.2, ease: [0.4, 0, 1, 1] } });
+    planeControls.start({ opacity: 0, x: -5, y: 8, rotate: 0, transition: { duration: 0.2, ease: [0.4, 0, 1, 1] } });
+  };
+
+  const handleBtnClick = async () => {
+    if (isFlying || isSubmitting) return;
+    setIsFlying(true);
+    await planeControls.start({ x: -5, y: 3, rotate: -12, transition: { duration: 0.14, ease: "easeOut" } });
+    await planeControls.start({ x: 70, y: -70, rotate: 20, opacity: 0, transition: { duration: 0.38, ease: [0.4, 0, 0.6, 1] } });
+    planeControls.set({ x: -5, y: 8, opacity: 0, rotate: 0 });
+    mailControls.set({ opacity: 1, x: 0, y: 0 });
+    setIsFlying(false);
+  };
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
@@ -203,7 +238,7 @@ export function ContactForm() {
                 </FormControl>
                 <label
                   htmlFor="terms-cf"
-                  className="text-sm text-slate-600 leading-relaxed cursor-pointer select-none"
+                  className="text-sm text-slate-700 font-medium leading-relaxed cursor-pointer select-none"
                 >
                   Запознат съм и приемам{" "}
                   <a
@@ -224,7 +259,7 @@ export function ContactForm() {
                     Политиката за поверителност
                   </a>
                   .{" "}
-                  <span className="text-slate-400 text-xs">(Задължително)</span>
+                  <span className="text-slate-500 text-xs">(Задължително)</span>
                 </label>
               </div>
               <FormMessage className="ml-7 text-xs" />
@@ -238,25 +273,43 @@ export function ContactForm() {
           </div>
         )}
 
-        {/* Uses Button component for consistent focus ring, disabled, and isLoading states */}
-        <Button
-          type="submit"
-          isLoading={isSubmitting}
-          className="w-full rounded-full bg-primary text-dark font-bold py-4 px-8 border-2 border-primary hover:bg-transparent hover:text-primary transition-colors duration-base"
-        >
-          <motion.span
-            animate={
-              isSubmitting
-                ? { x: 28, y: -28, opacity: 0, rotate: -45 }
-                : { x: 0, y: 0, opacity: 1, rotate: 0 }
-            }
-            transition={{ duration: 0.4, ease: "easeIn" }}
-            className="flex items-center gap-3"
+        <div className="flex justify-end">
+          <motion.button
+            type="submit"
+            disabled={isSubmitting}
+            onHoverStart={handleBtnHoverStart}
+            onHoverEnd={handleBtnHoverEnd}
+            onClick={handleBtnClick}
+            className="flex items-center gap-2.5 bg-teal-700 hover:bg-teal-800 text-white font-semibold px-8 py-3 rounded-full transition-colors duration-200 disabled:opacity-60 disabled:pointer-events-none overflow-hidden"
           >
-            <span className="tracking-wide text-sm">Изпрати запитване</span>
-            <Send className="w-5 h-5 flex-shrink-0" />
-          </motion.span>
-        </Button>
+            {isSubmitting && !isFlying ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Изпращане...
+              </>
+            ) : (
+              <>
+                Изпрати запитване
+                <span className="relative w-4 h-4 flex-shrink-0">
+                  <motion.span
+                    className="absolute inset-0 flex items-center justify-center"
+                    animate={mailControls}
+                    initial={{ opacity: 1, x: 0, y: 0 }}
+                  >
+                    <Mail className="w-4 h-4" />
+                  </motion.span>
+                  <motion.span
+                    className="absolute inset-0 flex items-center justify-center"
+                    animate={planeControls}
+                    initial={{ opacity: 0, x: -5, y: 8 }}
+                  >
+                    <PaperPlaneIcon className="w-4 h-4" />
+                  </motion.span>
+                </span>
+              </>
+            )}
+          </motion.button>
+        </div>
       </form>
     </Form>
   );

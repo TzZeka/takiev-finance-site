@@ -559,7 +559,7 @@ export function ContactSection() {
                           onHoverStart={handleBtnHoverStart}
                           onHoverEnd={handleBtnHoverEnd}
                           onClick={handleBtnClick}
-                          className="flex items-center gap-2.5 bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-3 rounded-full transition-colors duration-200 disabled:opacity-60 disabled:pointer-events-none overflow-hidden"
+                          className="flex items-center gap-2.5 bg-teal-700 hover:bg-teal-800 text-white font-semibold px-8 py-3 rounded-full transition-colors duration-200 disabled:opacity-60 disabled:pointer-events-none overflow-hidden"
                         >
                           {isSubmitting && !isFlying ? (
                             <>

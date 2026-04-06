@@ -102,7 +102,7 @@ export default async function HomePage() {
     <>
       <HeroSection motto={motto} />
       <CinematicScrollSection />
-      <div className="pb-3 md:pb-4">
+      <div>
         <div className="relative" style={{ zIndex: 1 }}>
           <MessagesSection messages={messages} />
         </div>
