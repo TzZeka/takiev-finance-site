@@ -4,6 +4,16 @@ import { generateBlogBanner } from "@/lib/gemini-image";
 
 export const maxDuration = 60;
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: CORS_HEADERS });
+}
+
 export async function POST(req: NextRequest) {
   let title: string;
   let extraPrompt: string | undefined;
@@ -31,12 +41,9 @@ export async function POST(req: NextRequest) {
       contentType: mimeType,
     });
 
-    return NextResponse.json({
-      assetId: asset._id,
-      previewUrl: asset.url,
-    });
+    return NextResponse.json({ assetId: asset._id, previewUrl: asset.url }, { headers: CORS_HEADERS });
   } catch (err) {
     console.error("[Preview Banner] Failed:", err);
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    return NextResponse.json({ error: String(err) }, { status: 500, headers: CORS_HEADERS });
   }
 }

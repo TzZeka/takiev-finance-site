@@ -24,7 +24,8 @@ export function GenerateImageInput(props: ObjectInputProps) {
     setPreviewUrl(null);
 
     try {
-      const res = await fetch("/api/generate-preview-image", {
+      const base = process.env.SANITY_STUDIO_APP_URL ?? "http://localhost:3000";
+      const res = await fetch(`${base}/api/generate-preview-image`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, extraPrompt: extraPrompt.trim() || undefined }),
