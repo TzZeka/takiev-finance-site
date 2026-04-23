@@ -44,7 +44,7 @@ export async function generateBlogBanner(
   const apiKey = process.env.GOOGLE_AI_API_KEY;
   if (!apiKey) throw new Error("GOOGLE_AI_API_KEY not configured");
 
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = new GoogleGenAI({ apiKey, httpOptions: { apiVersion: "v1" } });
 
   let prompt = MASTER_PROMPT.replace("[INSERT_ARTICLE_TITLE]", title);
   if (extraPrompt?.trim()) {
