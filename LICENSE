@@ -1,21 +1,37 @@
-MIT License
+─────────────────────────────────────────────────────────────
+БЪЛГАРСКИ
+─────────────────────────────────────────────────────────────
 
-Copyright (c) 2026 Tsvetomir
+Авторско право (c) 2026 Такиев Финанс. Всички права запазени.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Този софтуер и неговият изходен код са собственост на Такиев Финанс
+и са поверителни. Забранено е неоторизираното копиране, разпространение,
+модифициране, публично показване или публично изпълнение на този софтуер
+чрез каквото и да е средство.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Кодът е разработен единствено за нуждите на Такиев Финанс и не може
+да бъде повторно използван, възпроизвеждан или адаптиран за други цели
+без предварително писмено съгласие от притежателя на правата.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+СОФТУЕРЪТ СЕ ПРЕДОСТАВЯ „ТАКЪВ, КАКЪВТО Е", БЕЗ КАКВАТО И ДА Е ГАРАНЦИЯ.
+АВТОРИТЕ ИЛИ НОСИТЕЛИТЕ НА АВТОРСКИ ПРАВА НЕ НОСЯТ ОТГОВОРНОСТ ЗА НИКАКВИ
+ПРЕТЕНЦИИ, ЩЕТИ ИЛИ ДРУГА ОТГОВОРНОСТ, ПРОИЗТИЧАЩИ ОТ ИЗПОЛЗВАНЕТО НА СОФТУЕРА.
+
+─────────────────────────────────────────────────────────────
+ENGLISH
+─────────────────────────────────────────────────────────────
+
+Copyright (c) 2026 Takiev Finance. All Rights Reserved.
+
+This software and its source code are the property of Takiev Finance
+and are confidential. Unauthorized copying, distribution, modification,
+public display, or public performance of this software, via any medium,
+is strictly prohibited.
+
+This codebase was developed exclusively for Takiev Finance and may not be
+reused, reproduced, or repurposed for any other purpose without prior
+written consent from the copyright holder.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OF THIS SOFTWARE.
