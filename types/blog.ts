@@ -27,6 +27,7 @@ export interface BlogPost {
   featured?: boolean;
   readingTime?: number;
   accentColor?: string;
+  aiSummary?: string;
 }
 
 export interface NewsItem {

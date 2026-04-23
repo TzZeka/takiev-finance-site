@@ -1,11 +1,13 @@
 "use client";
 
-import { motion, AnimatePresence, useInView, useReducedMotion, type MotionProps } from "framer-motion";
+import {
+  motion, AnimatePresence, useInView, useReducedMotion,
+  type MotionProps,
+} from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import { Award, Users, TrendingUp, Shield, CheckCircle, Sparkles, ChevronUp, ChevronDown } from "lucide-react";
+import { Award, Users, TrendingUp, Shield, CheckCircle, Sparkles, ChevronUp, ChevronDown, X, Grid3X3 } from "lucide-react";
 import { SectionBadge } from "@/components/shared/SectionBadge";
 import { PremiumCTA } from "@/components/ui/PremiumCTA";
-import { FluidBackground } from "@/components/ui/FluidBackground";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 
@@ -498,7 +500,7 @@ export function CompanyHistory() {
           {/* RIGHT — Forest text panel */}
           <div
             className="relative h-full overflow-hidden"
-            style={{ backgroundColor: "var(--color-dark)", cursor: "none", borderTopLeftRadius: "1.5rem", borderBottomLeftRadius: "1.5rem" }}
+            style={{ backgroundColor: "#0d1f1c", cursor: "none", borderTopLeftRadius: "1.5rem", borderBottomLeftRadius: "1.5rem" }}
             onMouseMove={handleRightMouseMove}
             onMouseLeave={handleRightMouseLeave}
             onClick={handleRightClick}
@@ -586,30 +588,52 @@ export function CompanyHistory() {
                   exit={{ opacity: 0, y: -24, filter: "blur(8px)" }}
                   transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  {/* Title with per-word swell on hover */}
-                  <InflatableTitle
-                    text={timeline[activeIndex].title}
+                  {/* Title — Cormorant Garamond bold italic */}
+                  <h3
                     style={{
-                      fontVariationSettings: "'wght' 900, 'wdth' 130",
+                      fontFamily: "'Cormorant Garamond', serif",
+                      fontWeight: 700,
+                      fontStyle: "italic",
                       fontSize: "clamp(2.2rem, 4vw, 3.75rem)",
                       color: "#ffffff",
-                      lineHeight: 1.15,
+                      lineHeight: 1.1,
                       maxWidth: 580,
                     }}
-                  />
+                  >
+                    {timeline[activeIndex].title.split(/(\d+)/).map((part, i) =>
+                      /^\d+$/.test(part) ? (
+                        <span
+                          key={i}
+                          style={{
+                            fontWeight: 900,
+                            fontSize: "1.3em",
+                            letterSpacing: "0.06em",
+                            display: "inline-block",
+                          }}
+                        >
+                          {part}
+                        </span>
+                      ) : part
+                    )}
+                  </h3>
 
-                  {/* Body */}
+                  {/* Body — each sentence on its own line, shifted right */}
                   <div
                     style={{
-                      fontSize: "1.05rem",
-                      lineHeight: 1.75,
+                      fontSize: "1.13rem",
+                      lineHeight: 1.82,
                       color: "rgba(255,255,255,0.65)",
-                      maxWidth: 520,
+                      maxWidth: 600,
                       marginTop: "1.25rem",
+                      marginLeft: "1.25rem",
                     }}
-                    
                   >
-                    {timeline[activeIndex].body}
+                    {timeline[activeIndex].body
+                      .split(/(?<=\.)\s+/)
+                      .filter(s => s.trim())
+                      .map((sentence, i) => (
+                        <span key={i} style={{ display: "block" }}>{sentence}</span>
+                      ))}
                   </div>
                 </motion.div>
               </AnimatePresence>
@@ -634,17 +658,47 @@ export function CompanyHistory() {
 
 /* ==========================================
    Section 3: CompanyValues
-   Auto-scrolling carousel
+   Split layout — left heading, right auto-cycling diagonal card
    ========================================== */
-export function CompanyValues() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-  const prefersReducedMotion = useReducedMotion();
 
-  const carouselItems = [...values, ...values, ...values, ...values];
+function cgStyle(wght = 700, italic = false) {
+  return {
+    fontFamily: "'Cormorant Garamond', serif",
+    fontWeight: wght,
+    fontStyle: italic ? "italic" : "normal",
+  };
+}
+
+export function CompanyValues() {
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const prefersReducedMotion = useReducedMotion() ?? false;
+
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+
+  // Auto-cycle every 1.8 s — pauses while card is hovered/focused
+  useEffect(() => {
+    if (isHovered || prefersReducedMotion) return;
+    const t = setInterval(() => setActiveIdx(prev => (prev + 1) % values.length), 1800);
+    return () => clearInterval(t);
+  }, [isHovered, prefersReducedMotion]);
+
+  const anim = (delay: number): MotionProps =>
+    prefersReducedMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 24 },
+          animate: isInView ? { opacity: 1, y: 0 } : {},
+          transition: { type: "spring", stiffness: 200, damping: 30, mass: 1, delay },
+        };
+
+  const v = values[activeIdx];
 
   return (
     <motion.section
+      ref={sectionRef}
       {...(prefersReducedMotion ? {} : {
         initial: { y: 120 },
         whileInView: { y: 0 },
@@ -653,85 +707,296 @@ export function CompanyValues() {
       })}
       className="relative py-20 md:py-28 overflow-hidden shadow-sm"
       style={{
-        backgroundColor: "var(--color-dark)",
+        backgroundColor: "#0d1f1c",
         borderTopLeftRadius: "50% 2rem",
         borderTopRightRadius: "50% 2rem",
         filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
       }}
     >
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-primary/10 rounded-full blur-[100px]" />
+      {/* ── Decorative — same palette as BlogPreview ── */}
+      <div aria-hidden className="absolute pointer-events-none" style={{ top: "-30%", left: "50%", transform: "translateX(-50%)", width: "900px", height: "500px", background: "radial-gradient(ellipse at center, rgba(25,191,183,0.14) 0%, rgba(25,191,183,0.04) 50%, transparent 70%)", filter: "blur(30px)" }} />
+      <div aria-hidden className="absolute pointer-events-none" style={{ bottom: "-10%", right: "-5%", width: "500px", height: "400px", background: "radial-gradient(ellipse at center, rgba(25,191,183,0.07) 0%, transparent 65%)", filter: "blur(50px)" }} />
+      <div aria-hidden className="absolute top-0 left-0 right-0 h-px pointer-events-none" style={{ background: "linear-gradient(90deg, transparent, rgba(25,191,183,0.3), transparent)" }} />
+      <div aria-hidden className="absolute inset-0 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, backgroundSize: "200px 200px", mixBlendMode: "overlay" as const, opacity: 0.04 }} />
 
-      {/* Split header */}
-      <div className="container mx-auto px-4 sm:px-6 relative z-10 mb-12 md:mb-16" ref={ref}>
-        <motion.div
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ type: "spring", stiffness: 200, damping: 30 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-end"
-        >
-          <div>
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+
+          {/* ── Left: heading + indicators + show-all button ── */}
+          <motion.div {...anim(0)} className="flex flex-col justify-center">
             <SectionBadge>Ценности</SectionBadge>
             <h2
-              className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.05] text-white"
-              style={{ fontVariationSettings: "'wght' 900, 'wdth' 125", fontWeight: 900 }}
+              className="mt-4 text-4xl sm:text-5xl lg:text-[3.5rem] font-black leading-[1.05] text-white"
+              style={{ fontVariationSettings: "'wght' 900, 'wdth' 125" }}
             >
               Нашите<br />
               <span className="text-primary">ценности</span>
             </h2>
-          </div>
-          <div className="lg:text-right">
-            <p className="text-white/50 text-base leading-relaxed max-w-sm lg:ml-auto">
+            <p
+              className="mt-5 text-white/50 text-base leading-relaxed max-w-sm"
+              style={{ fontFamily: "'Mona Sans', sans-serif" }}
+            >
               Принципите, които ръководят нашата работа всеки ден и правят разликата за нашите клиенти.
             </p>
-          </div>
-        </motion.div>
+
+            {/* Pill dot indicators */}
+            <div className="flex items-center gap-2.5 mt-8">
+              {values.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveIdx(i)}
+                  aria-label={`Ценност ${i + 1}`}
+                  className="flex items-center justify-center p-1"
+                >
+                  <motion.div
+                    animate={{
+                      width: i === activeIdx ? 28 : 7,
+                      backgroundColor: i === activeIdx ? "#19BFB7" : "rgba(255,255,255,0.2)",
+                      opacity: i === activeIdx ? 1 : 0.55,
+                    }}
+                    transition={{ type: "spring", stiffness: 380, damping: 28 }}
+                    style={{ height: 3, borderRadius: 99 }}
+                  />
+                </button>
+              ))}
+            </div>
+
+            {/* Show all cards button */}
+            <button
+              onClick={() => setShowAll(true)}
+              className="mt-6 group inline-flex items-center gap-2 text-xs text-white/40 hover:text-primary transition-colors duration-200 self-start"
+              style={{ fontFamily: "'Mona Sans', sans-serif", letterSpacing: "0.1em", textTransform: "uppercase" }}
+            >
+              <Grid3X3 className="w-3.5 h-3.5 flex-shrink-0" />
+              <span>Всички ценности</span>
+            </button>
+          </motion.div>
+
+          {/* ── Right: diagonal auto-cycling card ── */}
+          <motion.div {...anim(0.18)} className="relative">
+            <div
+              className="relative select-none"
+              style={{ height: "clamp(360px, 54vh, 500px)" }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              {/* Parallelogram clip wrapper */}
+              <div
+                className="relative h-full"
+                style={{ clipPath: "polygon(4% 0%, 100% 0%, 96% 100%, 0% 100%)" }}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeIdx}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute inset-0 flex flex-col justify-end p-8 md:p-10"
+                    style={{
+                      background: "linear-gradient(155deg, rgba(25,191,183,0.06) 0%, rgba(6,14,12,0.99) 55%)",
+                      border: "1px solid rgba(25,191,183,0.22)",
+                    }}
+                  >
+                    {/* Decorative ghost index — Cormorant Garamond thin italic */}
+                    <div
+                      aria-hidden
+                      style={{
+                        ...cgStyle(300, true),
+                        position: "absolute",
+                        top: "1.25rem",
+                        right: "2.5rem",
+                        fontSize: "clamp(6rem, 12vw, 9rem)",
+                        lineHeight: 1,
+                        color: "rgba(25,191,183,0.07)",
+                        userSelect: "none",
+                        pointerEvents: "none",
+                      }}
+                    >
+                      {String(activeIdx + 1).padStart(2, "0")}
+                    </div>
+
+                    {/* Card content */}
+                    <div className="relative z-10">
+                      {/* Title — Cormorant Garamond bold italic */}
+                      <h3
+                        style={{
+                          ...cgStyle(700, true),
+                          fontSize: "clamp(1.9rem, 3.8vw, 3rem)",
+                          color: "white",
+                          lineHeight: 1.1,
+                        }}
+                      >
+                        {v.title}
+                      </h3>
+                      {/* Description — Cormorant Garamond regular */}
+                      <p
+                        style={{
+                          ...cgStyle(400, false),
+                          fontSize: "clamp(1rem, 1.6vw, 1.15rem)",
+                          color: "rgba(255,255,255,0.55)",
+                          lineHeight: 1.65,
+                          marginTop: "0.75rem",
+                        }}
+                      >
+                        {v.description}
+                      </p>
+                      {/* Teal accent line */}
+                      <motion.div
+                        key={`line-${activeIdx}`}
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        transition={{ duration: 0.6, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                        className="origin-left"
+                        style={{
+                          marginTop: "1.5rem",
+                          height: "1px",
+                          width: "3.5rem",
+                          background: "linear-gradient(90deg, #19BFB7, rgba(25,191,183,0.25))",
+                        }}
+                      />
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Top blur fade into section background */}
+                <div
+                  aria-hidden
+                  className="absolute inset-x-0 top-0 z-20 pointer-events-none"
+                  style={{
+                    height: "100px",
+                    background: "linear-gradient(to bottom, rgba(13,31,28,0.88) 0%, transparent 100%)",
+                  }}
+                />
+                {/* Bottom blur fade */}
+                <div
+                  aria-hidden
+                  className="absolute inset-x-0 bottom-0 z-20 pointer-events-none"
+                  style={{
+                    height: "70px",
+                    background: "linear-gradient(to top, rgba(13,31,28,0.65) 0%, transparent 100%)",
+                  }}
+                />
+              </div>
+            </div>
+          </motion.div>
+
+        </div>
       </div>
 
-      {/* Full-width carousel */}
-      <motion.div
-        initial={prefersReducedMotion ? false : { opacity: 0 }}
-        animate={isInView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.6, delay: 0.2 }}
-      >
-        <div className="relative overflow-hidden group/carousel">
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[var(--color-dark)] to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[var(--color-dark)] to-transparent z-10 pointer-events-none" />
-
-          <div
-            className="flex gap-5 animate-scroll-left group-hover/carousel:[animation-play-state:paused]"
-            style={{
-              animationDuration: `${carouselItems.length * 4}s`,
-              width: "max-content",
-            }}
+      {/* ── "Show all" overlay grid ── */}
+      <AnimatePresence>
+        {showAll && (
+          <motion.div
+            key="cv-all-grid"
+            className="fixed inset-0 z-[9000] flex items-center justify-center p-5 md:p-12"
+            style={{ backgroundColor: "rgba(6,14,12,0.96)", backdropFilter: "blur(20px)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.32 }}
+            onClick={() => setShowAll(false)}
           >
-            {carouselItems.map((value, index) => (
-              <div key={`val-${index}`} className="flex-shrink-0 w-72 sm:w-80">
-                <div className="rounded-2xl bg-white/[0.06] border border-white/[0.10] p-8 h-full hover:border-primary/40 hover:bg-white/[0.09] transition-all duration-300">
-                  {/* Index number instead of icon */}
-                  <div
-                    className="text-4xl font-black text-primary/25 mb-4 leading-none"
-                    style={{ fontVariationSettings: "'wght' 900, 'wdth' 125" }}
-                  >
-                    0{(index % values.length) + 1}
-                  </div>
-                  <h3
-                    className="text-xl font-black text-white mb-3"
-                    style={{ fontVariationSettings: "'wght' 900, 'wdth' 110" }}
-                  >
-                    {value.title}
-                  </h3>
-                  <p
-                    className="text-sm text-white/55 leading-relaxed"
-                    style={{ fontVariationSettings: "'wght' 300" }}
-                  >
-                    {value.description}
-                  </p>
-                </div>
+            {/* Teal top glow */}
+            <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 35% at 50% 0%, rgba(25,191,183,0.07) 0%, transparent 60%)" }} />
+
+            <motion.div
+              className="relative w-full max-w-2xl"
+              initial={{ scale: 0.95, y: 18 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 18 }}
+              transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Modal header */}
+              <div className="flex items-end justify-between mb-7">
+                <h2
+                  style={{
+                    ...cgStyle(700, true),
+                    fontSize: "clamp(1.8rem, 3vw, 2.6rem)",
+                    color: "white",
+                    lineHeight: 1,
+                  }}
+                >
+                  Нашите ценности
+                </h2>
+                <button
+                  onClick={() => setShowAll(false)}
+                  className="flex items-center justify-center w-8 h-8 rounded-full border border-white/20 text-white/55 hover:text-white hover:border-primary/50 transition-colors duration-200 flex-shrink-0 mb-1"
+                  aria-label="Затвори"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
               </div>
-            ))}
-          </div>
-        </div>
-      </motion.div>
+
+              {/* 2×2 grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {values.map((val, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.38, delay: 0.06 + i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                    className="relative rounded-2xl p-7 overflow-hidden"
+                    style={{
+                      background: "rgba(255,255,255,0.04)",
+                      border: i === activeIdx
+                        ? "1px solid rgba(25,191,183,0.35)"
+                        : "1px solid rgba(255,255,255,0.08)",
+                    }}
+                  >
+                    {/* Ghost index */}
+                    <div
+                      aria-hidden
+                      style={{
+                        ...cgStyle(300, true),
+                        position: "absolute",
+                        top: "0.5rem",
+                        right: "1rem",
+                        fontSize: "4rem",
+                        lineHeight: 1,
+                        color: "rgba(25,191,183,0.06)",
+                        userSelect: "none",
+                      }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </div>
+                    <h3
+                      style={{
+                        ...cgStyle(700, true),
+                        fontSize: "1.45rem",
+                        color: "white",
+                        lineHeight: 1.15,
+                      }}
+                    >
+                      {val.title}
+                    </h3>
+                    <p
+                      style={{
+                        ...cgStyle(400),
+                        fontSize: "0.95rem",
+                        color: "rgba(255,255,255,0.5)",
+                        marginTop: "0.55rem",
+                        lineHeight: 1.65,
+                      }}
+                    >
+                      {val.description}
+                    </p>
+                    <div
+                      style={{
+                        marginTop: "1.1rem",
+                        height: "1px",
+                        width: "2.25rem",
+                        background: "linear-gradient(90deg, #19BFB7, transparent)",
+                      }}
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.section>
   );
 }

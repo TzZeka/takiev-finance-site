@@ -3,10 +3,26 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import { motion, useInView, useReducedMotion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, Star, ArrowUpRight } from "lucide-react";
 import { SectionBadge } from "@/components/shared/SectionBadge";
-import { getImageUrl } from "@/lib/sanity/client";
+import { urlFor } from "@/lib/sanity/client";
 import type { Testimonial } from "@/types";
+
+// Opens directly to the Reviews tab on Google Maps
+const GOOGLE_REVIEWS_URL =
+  "https://www.google.com/maps/place/Takiev+Finance+EOOD/@42.6977079,23.3198779,17z/data=!4m7!3m6!1s0x40aa855eff40e335:0xa7cffc05e42a4e56!8m2!3d42.6977079!4d23.3198779!9m1!1b1";
+
+
+function GoogleGIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+    </svg>
+  );
+}
 
 interface TestimonialsSectionProps {
   testimonials: Testimonial[];
@@ -57,7 +73,7 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
           <div>
             <SectionBadge>Отзиви</SectionBadge>
             <h2
-              className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.05]"
+              className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-black leading-[1.05]"
               style={{
                 color: "var(--color-dark)",
                 fontVariationSettings: "'wght' 900, 'wdth' 125",
@@ -65,9 +81,47 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
                 fontStretch: "125%",
               }}
             >
-              Клиентите<br />
-              <span className="text-primary">говорят</span>
+              Какво казват<br />
+              <span className="text-primary">нашите клиенти</span>
             </h2>
+            {/* Google Rating Badge */}
+            <a
+              href={GOOGLE_REVIEWS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Такиев Финанс — отзиви в Google"
+              className="mt-5 inline-flex items-stretch overflow-hidden rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200 transition-all duration-300 group cursor-pointer"
+            >
+              {/* Google branding column */}
+              <div className="flex flex-col items-center justify-center gap-1.5 px-4 py-3.5 bg-white">
+                <GoogleGIcon size={24} />
+                <span
+                  className="font-body font-semibold text-slate-400 uppercase leading-none"
+                  style={{ fontSize: 8, letterSpacing: "0.18em" }}
+                >
+                  Google
+                </span>
+              </div>
+
+              {/* Hairline */}
+              <div className="w-px bg-slate-100 self-stretch" />
+
+              {/* Stars column */}
+              <div className="flex items-center gap-3 px-5 py-3.5 bg-white group-hover:bg-slate-50/60 transition-colors duration-300">
+                <div className="flex gap-[3px]">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      style={{ width: 16, height: 16, color: "#F59E0B", fill: "#F59E0B" }}
+                    />
+                  ))}
+                </div>
+
+                <ArrowUpRight
+                  className="w-4 h-4 text-slate-300 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200"
+                />
+              </div>
+            </a>
           </div>
 
           {/* Counter + nav */}
@@ -84,14 +138,14 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
               <div className="flex gap-2">
                 <button
                   onClick={goToPrevious}
-                  className="w-11 h-11 rounded-full border-2 border-slate-200 text-slate-400 hover:border-dark hover:text-dark transition-all duration-300 flex items-center justify-center"
+                  className="w-11 h-11 rounded-full border-2 border-slate-200 text-slate-400 hover:border-primary hover:text-primary transition-all duration-300 flex items-center justify-center"
                   aria-label="Previous"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <button
                   onClick={goToNext}
-                  className="w-11 h-11 rounded-full border-2 border-slate-200 text-slate-400 hover:border-dark hover:text-dark transition-all duration-300 flex items-center justify-center"
+                  className="w-11 h-11 rounded-full border-2 border-slate-200 text-slate-400 hover:border-primary hover:text-primary transition-all duration-300 flex items-center justify-center"
                   aria-label="Next"
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -113,15 +167,18 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
           >
             {/* Left — quote */}
             <div>
-              {/* Ghost number */}
+              {/* Ghost company name watermark */}
               <div
-                className="text-[7rem] md:text-[10rem] font-black leading-none select-none -mb-6 md:-mb-10"
+                className="text-[3.5rem] md:text-[5.5rem] leading-none select-none -mb-4 md:-mb-6 overflow-hidden whitespace-nowrap"
                 style={{
                   color: "#f1f5f9",
-                  fontVariationSettings: "'wght' 900, 'wdth' 125",
+                  fontFamily: "var(--font-cormorant)",
+                  fontStyle: "italic",
+                  fontWeight: 700,
+                  maxWidth: "100%",
                 }}
               >
-                {idx}
+                {current.clientCompany}
               </div>
               <p className="text-2xl md:text-3xl lg:text-4xl text-slate-700 leading-relaxed font-light relative z-10">
                 &ldquo;{current.content}&rdquo;
@@ -146,12 +203,12 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
               {/* Avatar + name */}
               <div className="flex items-center gap-4">
                 {current.avatar && (
-                  <div className="relative w-14 h-14 rounded-full overflow-hidden ring-2 ring-primary/20 ring-offset-2 flex-shrink-0">
+                  <div className="relative w-20 h-20 rounded-full overflow-hidden ring-2 ring-primary/20 ring-offset-2 flex-shrink-0">
                     <Image
-                      src={getImageUrl(current.avatar)}
+                      src={urlFor(current.avatar).width(160).height(160).fit("crop").auto("format").url()}
                       alt={current.clientName}
                       fill
-                      sizes="56px"
+                      sizes="80px"
                       className="object-cover"
                     />
                   </div>
@@ -164,7 +221,17 @@ export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) 
                     {current.clientName}
                   </p>
                   <p className="text-sm text-slate-400">{current.clientRole}</p>
-                  <p className="text-sm text-primary font-semibold mt-0.5">
+                  <p
+                    className="mt-1"
+                    style={{
+                      fontFamily: "var(--font-cormorant)",
+                      fontStyle: "italic",
+                      fontWeight: 700,
+                      fontSize: "1.125rem",
+                      lineHeight: 1.3,
+                      color: "#0a7267",
+                    }}
+                  >
                     {current.clientCompany}
                   </p>
                 </div>

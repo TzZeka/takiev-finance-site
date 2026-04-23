@@ -1,5 +1,14 @@
 import type { Metadata, Viewport } from "next";
+import { Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
+
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ["latin", "cyrillic"],
+  weight: ["600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-cormorant",
+  display: "swap",
+});
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { QuickPanel } from "@/components/layout/QuickPanel";
@@ -122,7 +131,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="bg" data-scroll-behavior="smooth">
+    <html lang="bg" data-scroll-behavior="smooth" className={cormorantGaramond.variable}>
       <head>
         {/* Disable browser scroll restoration before React hydrates so page
             refreshes always start from the top, not the previous position. */}
@@ -163,7 +172,7 @@ export default function RootLayout({
         <OrganizationJsonLd />
         <WebSiteJsonLd />
       </head>
-      <body>
+      <body style={{ backgroundColor: "#0d1f1c" }}>
         <GlobalRipple />
         <SmoothScrollProvider>
           <PremiumLoader />

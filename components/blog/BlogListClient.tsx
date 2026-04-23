@@ -57,12 +57,22 @@ function HighlightedTitle({ title, query }: { title: string; query: string }) {
   );
 }
 
+interface NapNoiNewsItem {
+  _id: string;
+  source: "nap" | "noi";
+  title: string;
+  slug?: { current: string };
+  url: string;
+  publishedAt: string;
+}
+
 interface BlogListClientProps {
   posts: BlogPost[];
   news?: NewsItem[];
+  napNoiNews?: NapNoiNewsItem[];
 }
 
-export function BlogListClient({ posts, news }: BlogListClientProps) {
+export function BlogListClient({ posts, news, napNoiNews }: BlogListClientProps) {
   const router = useRouter();
 
   // ── State ──────────────────────────────────────────────────────────────────
@@ -926,7 +936,7 @@ export function BlogListClient({ posts, news }: BlogListClientProps) {
 
       {/* ── FIRM NEWS DASHBOARD ─────────────────────────────────────────── */}
       <div ref={newsSectionRef}>
-        <FirmNewsDashboard news={news ?? []} />
+        <FirmNewsDashboard news={news ?? []} napNoiNews={napNoiNews ?? []} />
       </div>
 
       {/* ── SVG SCROLL PROGRESS PATH (desktop only, absolute) ───────────── */}

@@ -6,7 +6,7 @@ import { motion, useInView, useReducedMotion, type MotionProps, type Variants } 
 import { ArrowUpRight } from "lucide-react";
 import { getImageUrl } from "@/lib/sanity/client";
 import type { Client } from "@/types";
-import { useImageParallax } from "@/hooks/useScrollAnim";
+import { SectionBadge } from "@/components/shared/SectionBadge";
 
 
 interface ClientsSectionProps {
@@ -78,9 +78,6 @@ function PartnerCard({
   reduced: boolean;
 }) {
   const hasCard = !!partner.cardImage?.asset?._ref;
-  const imgContainerRef = useRef<HTMLDivElement>(null);
-  const imgInnerRef = useRef<HTMLDivElement>(null);
-  useImageParallax(imgContainerRef, imgInnerRef);
 
   const spring = reduced
     ? { duration: 0 }
@@ -95,10 +92,10 @@ function PartnerCard({
    * "block" is required on <a> because <a> is inline by default
    * and height has no effect on inline elements.
    */
-  const CARD_H = "clamp(300px, 32vw, 500px)";
+  const CARD_H = undefined;
 
   const sharedCardClass =
-    "group relative block w-full rounded-2xl overflow-hidden border border-white/[0.08] hover:border-primary/40 shadow-lg hover:shadow-2xl hover:shadow-primary/15 transition-[border-color,box-shadow] duration-300";
+    "group relative block w-full rounded-2xl overflow-hidden border border-white/[0.08] hover:border-primary/40 shadow-[0_8px_32px_rgba(0,0,0,0.45)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.6),0_0_0_2px_rgba(25,191,183,0.4)] transition-[border-color,box-shadow] duration-300";
 
   /*
    * Inner layers — all absolutely positioned relative to the card.
@@ -114,24 +111,14 @@ function PartnerCard({
          * position:relative on its direct parent, which conflicts with
          * the scale() animation wrapper needing absolute positioning.
          */
-        <motion.div
-          ref={imgContainerRef}
-          variants={imageVariants}
-          transition={spring}
-          className="absolute inset-0 overflow-hidden"
-        >
-          <div
-            ref={imgInnerRef}
-            style={{ position: "absolute", inset: "-15%", willChange: "transform" }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={getImageUrl(partner.cardImage!)}
-              alt={partner.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </motion.div>
+        <div className="absolute inset-0 overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={getImageUrl(partner.cardImage!)}
+            alt={partner.name}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        </div>
       ) : (
         /*
          * Layer 0 — fallback dark card (no cardImage uploaded).
@@ -245,7 +232,7 @@ function PartnerCard({
           animate="rest"
           transition={spring}
           className={sharedCardClass}
-          style={{ height: CARD_H }}
+          style={{ aspectRatio: "16/10" }}
         >
           {inner}
         </motion.a>
@@ -257,7 +244,7 @@ function PartnerCard({
           animate="rest"
           transition={spring}
           className={sharedCardClass}
-          style={{ height: CARD_H }}
+          style={{ aspectRatio: "16/10" }}
         >
           {inner}
         </motion.div>
@@ -295,32 +282,46 @@ export function ClientsSection({ clients }: ClientsSectionProps) {
       })}
       className="relative py-20 md:py-28 overflow-hidden shadow-sm"
       style={{
-        backgroundColor: "var(--color-dark)",
         borderTopLeftRadius: "50% 2rem",
         borderTopRightRadius: "50% 2rem",
         filter: "drop-shadow(0 -10px 20px rgba(0,0,0,0.10))",
       }}
     >
+      {/* Blurred background image */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "url('/firm-logo/partners/partners-cards/home-partners.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          filter: "blur(12px)",
+          transform: "scale(1.05)",
+        }}
+      />
+      {/* Dark overlay */}
+      <div aria-hidden className="absolute inset-0 bg-black/40 pointer-events-none" />
+
       {/* Radial glow */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-primary/5 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}
         <motion.div {...(anim(0) as object)} className="text-left md:text-center mb-12 md:mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+          <SectionBadge>Партньори</SectionBadge>
+          <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-white" style={{ textShadow: "0 2px 16px rgba(0,0,0,0.55)" }}>
             Нашите <span className="text-primary">партньори</span>
           </h2>
-          <p className="text-lg text-white/50 max-w-2xl md:mx-auto">
+          <p className="text-lg text-white/50 max-w-2xl md:mx-auto" style={{ textShadow: "0 1px 8px rgba(0,0,0,0.5)" }}>
             Сътрудничим с водещи компании за цялостни решения на Вашия бизнес
           </p>
         </motion.div>
 
-        {/* Fluid auto-fill grid — columns reflow continuously, no breakpoint jumps */}
+        {/* Equal grid */}
         <div
-          className="grid gap-4 md:gap-5"
-          style={{
-            gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))",
-          }}
+          className="grid gap-3 md:gap-4"
+          style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))" }}
         >
           {clients.map((partner, index) => (
             <PartnerCard

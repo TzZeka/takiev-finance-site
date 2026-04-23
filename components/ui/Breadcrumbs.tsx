@@ -12,6 +12,7 @@ const routeNames: Record<string, string> = {
     kontakti: "Контакти",
     blog: "Блог",
     video: "Видео",
+    novini: "Новини",
 };
 
 // Build a dynamic lookup from servicesConfig
@@ -19,7 +20,7 @@ servicesConfig.forEach((service) => {
     routeNames[service.slug] = service.label; // Label is usually shorter, like "Счетоводни услуги"
 });
 
-export function Breadcrumbs({ className = "" }: { className?: string }) {
+export function Breadcrumbs({ className = "", overrides = {} }: { className?: string; overrides?: Record<string, string> }) {
     const pathname = usePathname();
 
     // Don't render on home page
@@ -46,10 +47,10 @@ export function Breadcrumbs({ className = "" }: { className?: string }) {
                 const href = "/" + paths.slice(0, index + 1).join("/");
 
                 // Use dictionary or decode the URI.
-                let name = routeNames[path] || decodeURIComponent(path).replace(/-/g, " ");
+                let name = overrides[path] ?? routeNames[path] ?? decodeURIComponent(path).replace(/-/g, " ");
 
                 // Capitalize first letter if it's a fallback string
-                if (!routeNames[path] && typeof name === "string") {
+                if (!overrides[path] && !routeNames[path] && typeof name === "string") {
                     name = name.charAt(0).toUpperCase() + name.slice(1);
                 }
 

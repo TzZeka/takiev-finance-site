@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getAllBlogPosts, getAllNews } from "@/lib/sanity/queries";
+import { getAllBlogPosts, getAllNews, getNewsArticlesForDashboard } from "@/lib/sanity/queries";
 import { BlogListClient } from "@/components/blog/BlogListClient";
 import { BlogHeroBanner } from "@/components/blog/BlogHeroBanner";
 import { QuoteCarousel } from "@/components/blog/QuoteCarousel";
@@ -51,7 +51,11 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  const [posts, news] = await Promise.all([getAllBlogPosts(), getAllNews()]);
+  const [posts, news, napNoiNews] = await Promise.all([
+    getAllBlogPosts(),
+    getAllNews(),
+    getNewsArticlesForDashboard(),
+  ]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -67,7 +71,7 @@ export default async function BlogPage() {
       <div className="px-4 md:px-8 relative z-20 pt-12 pb-28 md:pt-16 md:pb-32 bg-slate-50 rounded-t-[2.5rem] md:rounded-t-[3rem] border-t border-black/5">
         <h2 className="sr-only">Съдържание на блога</h2>
 
-        <BlogListClient posts={posts} news={news} />
+        <BlogListClient posts={posts} news={news} napNoiNews={napNoiNews} />
       </div>
     </div>
   );

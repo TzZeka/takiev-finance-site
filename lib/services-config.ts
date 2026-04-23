@@ -4,6 +4,7 @@ export interface ServiceConfig {
   id: string;
   slug: string;
   label: string;
+  shortLabel: string;
   title: string;
   description: string;
   icon: typeof Calculator;
@@ -15,6 +16,7 @@ export const servicesConfig: ServiceConfig[] = [
     id: "schetovodstvo",
     slug: "schetovodni-uslugi",
     label: "Счетоводни услуги",
+    shortLabel: "Счетоводство",
     title: "Счетоводни услуги",
     description: "Професионално счетоводно обслужване за вашия бизнес. Месечно счетоводство, годишно приключване, ТРЗ услуги и консултации.",
     icon: Calculator,
@@ -24,6 +26,7 @@ export const servicesConfig: ServiceConfig[] = [
     id: "danaci",
     slug: "danachni-konsultacii",
     label: "Данъчни консултации",
+    shortLabel: "Данъци",
     title: "Данъчни консултации",
     description: "Експертни данъчни консултации и оптимизация. ДДС регистрация, данъчно планиране и представителство пред НАП.",
     icon: Receipt,
@@ -33,6 +36,7 @@ export const servicesConfig: ServiceConfig[] = [
     id: "pravni",
     slug: "pravni-uslugi",
     label: "Правни услуги",
+    shortLabel: "Правни",
     title: "Правни услуги",
     description: "Правни консултации и услуги за бизнеса. Договори, трудово право, търговско право и правна защита.",
     icon: Scale,
@@ -42,6 +46,7 @@ export const servicesConfig: ServiceConfig[] = [
     id: "registraciq",
     slug: "registraciq-na-firmi",
     label: "Регистрация на фирми",
+    shortLabel: "Регистрация",
     title: "Регистрация на фирми",
     description: "Бърза и лесна регистрация на ЕООД, ООД и ЕТ. Пълно съдействие при стартиране на бизнес.",
     icon: Building2,

@@ -357,7 +357,7 @@ export function HeroSection({ motto }: HeroSectionProps) {
       </div>
 
       {/* ── h-screen VIEWPORT ────────────────────────────────────────── */}
-      <div className="relative z-10 h-screen w-full">
+      <div className="relative z-10 h-[100dvh] w-full">
 
         <div className="absolute inset-0 pointer-events-none">
           <motion.div
@@ -439,7 +439,6 @@ export function HeroSection({ motto }: HeroSectionProps) {
                       letterSpacing: "0.22em",
                       textTransform: "uppercase",
                       marginTop: "0.45rem",
-                      whiteSpace: "nowrap",
                     }}
                   >
                     <LetterHover text="БИЗНЕС ПАРТНЬОР" />
@@ -457,7 +456,6 @@ export function HeroSection({ motto }: HeroSectionProps) {
                     lineHeight: 1.7,
                     color: "rgba(255,255,255,0.55)",
                     cursor: "default",
-                    whiteSpace: "nowrap",
                   }}
                 >
                   <LetterHover text="Счетоводството е " />
@@ -598,7 +596,7 @@ export function HeroSection({ motto }: HeroSectionProps) {
             </div>
 
             {/* ── MOBILE: centered bottom-anchored ────────────────── */}
-            <div className="md:hidden flex flex-col items-center justify-end text-center gap-5 px-7 pb-16 w-full h-full">
+            <div className="md:hidden flex flex-col items-center justify-end text-center gap-4 sm:gap-5 px-5 sm:px-10 w-full h-full" style={{ paddingBottom: "max(3.5rem, calc(2.5rem + env(safe-area-inset-bottom, 0px)))" }}>
               <span
                 className="text-primary/60 tracking-[0.28em] uppercase"
                 style={{
@@ -633,8 +631,8 @@ export function HeroSection({ motto }: HeroSectionProps) {
                     fontFamily: "'Cormorant Garamond', serif",
                     fontVariationSettings: "'wght' 700",
                     fontWeight: 700,
-                    fontSize: "clamp(1.1rem, 5vw, 1.9rem)",
-                    letterSpacing: "0.2em",
+                    fontSize: "clamp(1.35rem, 5.5vw, 1.9rem)",
+                    letterSpacing: "0.14em",
                     textTransform: "uppercase",
                     marginTop: "0.45rem",
                   }}
@@ -660,11 +658,11 @@ export function HeroSection({ motto }: HeroSectionProps) {
                 </span>{" "}
                 за всеки успешен бизнес.
               </p>
-              <div className="flex flex-col gap-3 w-full max-w-[260px] mt-1">
-                <Link href="/kontakti" className="relative rounded-full px-8 py-4 bg-primary text-dark font-bold text-sm tracking-wide text-center overflow-hidden" onClick={createRipple}>
+              <div className="flex flex-col sm:flex-row gap-3 w-full max-w-xs sm:max-w-sm mt-1">
+                <Link href="/kontakti" className="relative rounded-full px-8 py-4 bg-primary text-dark font-bold text-sm tracking-wide text-center overflow-hidden sm:flex-1" onClick={createRipple}>
                   Изпрати запитване
                 </Link>
-                <Link href="/uslugi" className="relative rounded-full px-7 py-3.5 border border-white/20 text-white/85 text-sm font-medium tracking-wide text-center overflow-hidden" onClick={createRipple}>
+                <Link href="/uslugi" className="relative rounded-full px-7 py-4 border border-white/20 text-white/85 text-sm font-medium tracking-wide text-center overflow-hidden sm:flex-1" onClick={createRipple}>
                   Нашите услуги
                 </Link>
               </div>
@@ -705,7 +703,7 @@ export function HeroSection({ motto }: HeroSectionProps) {
 
       {/* ── MOBILE FINAL SECTION ─────────────────────────────────────── */}
       <motion.div
-        className="md:hidden flex flex-col px-6 pt-12 pb-16 gap-10"
+        className="md:hidden flex flex-col px-6 sm:px-10 pt-12 pb-16 gap-10"
         style={{ backgroundColor: "#060e0c" }}
         initial="hidden"
         whileInView="visible"

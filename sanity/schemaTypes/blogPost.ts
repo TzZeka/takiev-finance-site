@@ -56,6 +56,13 @@ export default defineType({
       validation: (Rule) => Rule.required().max(1000),
     }),
     defineField({
+      name: "aiSummary",
+      title: "AI Резюме",
+      type: "text",
+      rows: 6,
+      description: "Генерирано с AI или ръчно написано резюме на статията (ако е празно, се използва Кратко описание).",
+    }),
+    defineField({
       name: "body",
       title: "Съдържание",
       type: "array",

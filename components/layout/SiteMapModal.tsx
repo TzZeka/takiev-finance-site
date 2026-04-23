@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -136,7 +136,7 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
               aria-hidden
               className="pointer-events-none fixed inset-0 z-20"
               style={{
-                background: `radial-gradient(circle 300px at ${cursor.x}px ${cursor.y}px,
+                background: `radial-gradient(circle 150px at ${cursor.x}px ${cursor.y}px,
                   rgba(25,191,183,0.07) 0%,
                   rgba(25,191,183,0.03) 40%,
                   transparent 70%)`,
@@ -371,9 +371,8 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
                 </span>
                 <span style={{ color: "#19BFB7", fontSize: "0.6rem" }}>—</span>
                 {legal.map(({ label, href }, i) => (
-                  <>
+                  <Fragment key={href}>
                     <Link
-                      key={href}
                       href={href}
                       onClick={onClose}
                       className="group flex items-center transition-colors duration-200 hover:text-primary"
@@ -384,7 +383,7 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
                       {i === 1 && <ScrollText className="w-3 h-3 ml-1.5 opacity-35 flex-shrink-0" />}
                     </Link>
                     {i === 0 && <span style={{ color: "#19BFB7", fontSize: "0.6rem" }}>·</span>}
-                  </>
+                  </Fragment>
                 ))}
               </div>
               <span style={{ fontFamily: "'Berkslund', sans-serif", fontSize: "1rem", color: "rgba(255,255,255,0.55)" }}>

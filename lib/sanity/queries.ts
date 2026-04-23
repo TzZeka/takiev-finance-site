@@ -96,6 +96,7 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
       publishedAt,
       mainImage,
       excerpt,
+      aiSummary,
       body,
       nulaBgUrl,
       tags,
@@ -128,6 +129,7 @@ export async function getFeaturedBlogPosts(
       publishedAt,
       mainImage,
       excerpt,
+      aiSummary,
       body,
       nulaBgUrl,
       tags,
@@ -160,6 +162,7 @@ export async function getBlogPostBySlug(
       publishedAt,
       mainImage,
       excerpt,
+      aiSummary,
       body,
       nulaBgUrl,
       tags,
@@ -359,13 +362,100 @@ export async function getAllNews(): Promise<NewsItem[]> {
 // External News Articles (НАП / НОИ)
 export async function getNewsArticles(): Promise<import('@/types/novini').SanityNewsArticle[]> {
   return client.fetch(
-    `*[_type == "newsArticle"] | order(publishedAt desc) [0...10] {
+    `*[_type == "newsArticle"] | order(publishedAt desc) [0...20] {
       _id,
       source,
       url,
       title,
+      slug,
       publishedAt,
-      manualSummary
+      articleBody,
+      manualSummary,
+      aiTitle,
+      aiSummary,
+      keyPoints,
+      extractedDates,
+      affectedEntities,
+      actionRequired,
+      actionDescription,
+      aiProcessedAt
+    }`
+  )
+}
+
+export async function getNewsArticleBySlug(
+  slug: string
+): Promise<import('@/types/novini').SanityNewsArticle | null> {
+  return client.fetch(
+    `*[_type == "newsArticle" && slug.current == $slug][0] {
+      _id,
+      source,
+      url,
+      title,
+      slug,
+      publishedAt,
+      articleBody,
+      manualSummary,
+      aiTitle,
+      aiSummary,
+      keyPoints,
+      extractedDates,
+      affectedEntities,
+      actionRequired,
+      actionDescription,
+      aiProcessedAt
+    }`,
+    { slug }
+  )
+}
+
+export async function getAllNewsArticleSlugs(): Promise<{ slug: { current: string } }[]> {
+  return client.fetch(
+    `*[_type == "newsArticle" && defined(slug.current)] {
+      slug
+    }`
+  )
+}
+
+// Lightweight fetch for cross-linking from news pages
+export async function getRecentBlogPostsForLinking(limit: number = 3): Promise<{
+  _id: string
+  title: string
+  slug: { current: string }
+  excerpt: string
+  publishedAt: string
+  tags: string[]
+}[]> {
+  return client.fetch(
+    `*[_type == "blogPost"] | order(publishedAt desc) [0...$limit] {
+      _id,
+      title,
+      slug,
+      excerpt,
+      publishedAt,
+      tags
+    }`,
+    { limit }
+  )
+}
+
+// Lightweight fetch for blog dashboard — no AI processing triggered
+export async function getNewsArticlesForDashboard(): Promise<{
+  _id: string
+  source: 'nap' | 'noi'
+  title: string
+  slug?: { current: string }
+  url: string
+  publishedAt: string
+}[]> {
+  return client.fetch(
+    `*[_type == "newsArticle"] | order(publishedAt desc) [0...5] {
+      _id,
+      source,
+      title,
+      slug,
+      url,
+      publishedAt
     }`
   )
 }

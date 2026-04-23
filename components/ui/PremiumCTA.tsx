@@ -13,7 +13,7 @@ interface PremiumCTAProps {
   href?: string;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
-  variant?: "default" | "secondary";
+  variant?: "default" | "secondary" | "light";
   className?: string;
   disabled?: boolean;
   /** Required when the button contains only an icon and no visible text */
@@ -33,6 +33,7 @@ export function PremiumCTA({
 }: PremiumCTAProps) {
   const prefersReducedMotion = useReducedMotion();
   const isDefault = variant === "default";
+  const isLight = variant === "light";
 
   const [spotPos, setSpotPos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -55,7 +56,7 @@ export function PremiumCTA({
     "px-8 py-4 font-semibold text-sm tracking-wide",
     "cursor-pointer select-none overflow-hidden",
     "rounded-t-[1.25rem] md:rounded-t-[1.75rem]",
-    isDefault ? "bg-white/5 text-white" : "bg-white/[0.04] text-white/80",
+    isLight ? "bg-[#1e3a36] text-white" : isDefault ? "bg-white/5 text-white" : "bg-white/[0.04] text-white/80",
     disabled ? "opacity-50 pointer-events-none" : "",
     className,
   ]
@@ -65,7 +66,7 @@ export function PremiumCTA({
   const borderBase =
     "absolute h-px w-0 group-hover:w-full bg-primary/60 transition-[width] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]";
 
-  const spotBg = isDefault ? "rgba(25,191,183,0.18)" : "rgba(255,255,255,0.08)";
+  const spotBg = isLight || isDefault ? "rgba(25,191,183,0.18)" : "rgba(255,255,255,0.08)";
 
   const inner = (
     <>

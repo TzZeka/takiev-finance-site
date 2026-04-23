@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getAllBlogPosts, getBlogPostBySlug, getRelatedBlogPosts } from "@/lib/sanity/queries";
+import { getAllBlogPosts, getBlogPostBySlug, getRelatedBlogPosts, getNewsArticlesForDashboard } from "@/lib/sanity/queries";
 import { extractHeadings } from "@/components/blog/PortableTextComponents";
 import { RelatedPosts } from "@/components/blog/RelatedPosts";
 import { ArticleJsonLd } from "@/components/seo/ArticleJsonLd";
@@ -70,7 +70,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const headings = extractHeadings(post.body);
   const categories = post.tags ? [...new Set(post.tags)] : [];
-  const relatedPosts = await getRelatedBlogPosts(post._id, post.tags || [], 3);
+  const [relatedPosts, recentNews] = await Promise.all([
+    getRelatedBlogPosts(post._id, post.tags || [], 3),
+    getNewsArticlesForDashboard(),
+  ]);
   const canonicalUrl = `https://takiev.bg/blog/${slug}`;
 
   return (
@@ -100,6 +103,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         headings={headings}
         categories={categories}
         relatedPosts={relatedPosts}
+        recentNews={recentNews}
       />
     </>
   );

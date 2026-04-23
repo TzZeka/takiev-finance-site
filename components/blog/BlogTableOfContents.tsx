@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { List, ChevronRight, ChevronDown, ChevronUp, PanelRightClose, PanelRightOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { ReadingTheme } from "@/components/blog/PortableTextComponents";
 
 interface Heading {
   id: string;
@@ -15,9 +16,52 @@ interface BlogTableOfContentsProps {
   headings: Heading[];
   isCollapsed: boolean;
   onToggleCollapse: () => void;
+  theme?: ReadingTheme;
 }
 
-export function BlogTableOfContents({ headings, isCollapsed, onToggleCollapse }: BlogTableOfContentsProps) {
+function getTocColors(theme: ReadingTheme) {
+  if (theme === "light") {
+    return {
+      container:       "bg-white border border-[#dde9e7] shadow-sm",
+      headerBorder:    "border-b border-[#dde9e7]",
+      headerTitle:     "text-[#0d1f1c]",
+      progressTrack:   "bg-[#e4efed]",
+      navItemDefault:  "text-[#374151] hover:text-[#0d1f1c] hover:bg-[#f0f7f6]",
+      navItemActive:   "text-primary font-medium",
+      childBorder:     "border-l border-[#dde9e7]",
+      childDefault:    "text-[#6b7280] hover:text-[#374151] hover:bg-[#f0f7f6]",
+      childActive:     "text-primary font-medium bg-primary/10",
+      chevron:         "text-[#9ca3af]",
+      collapseBtn:     "bg-[#f0f7f6] hover:bg-[#e0f0ee]",
+      collapseBtnIcon: "text-[#374151] group-hover:text-primary",
+      collapsed:       "hover:bg-[#f5f8f7]",
+      collapsedIcon:   "text-[#374151] group-hover:text-primary",
+      collapsedText:   "text-[#6b7280]",
+      progressMini:    "bg-[#dde9e7]",
+    };
+  }
+  return {
+    container:       "bg-[#0e2118] border border-white/[0.08]",
+    headerBorder:    "border-b border-white/[0.08]",
+    headerTitle:     "text-white",
+    progressTrack:   "bg-white/[0.08]",
+    navItemDefault:  "text-white/70 hover:text-white hover:bg-white/[0.06]",
+    navItemActive:   "text-primary font-medium",
+    childBorder:     "border-l border-white/[0.08]",
+    childDefault:    "text-white/50 hover:text-white/80 hover:bg-white/[0.06]",
+    childActive:     "text-primary font-medium bg-primary/10",
+    chevron:         "text-white/50",
+    collapseBtn:     "bg-white/[0.08] hover:bg-white/[0.14]",
+    collapseBtnIcon: "text-white/70 group-hover:text-primary",
+    collapsed:       "hover:bg-white/[0.06]",
+    collapsedIcon:   "text-white/70 group-hover:text-primary",
+    collapsedText:   "text-white/50",
+    progressMini:    "bg-white/[0.08]",
+  };
+}
+
+export function BlogTableOfContents({ headings, isCollapsed, onToggleCollapse, theme = "dark" }: BlogTableOfContentsProps) {
+  const tc = getTocColors(theme);
   const [activeId, setActiveId] = useState<string>("");
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isStuck, setIsStuck] = useState(false);
@@ -233,7 +277,7 @@ export function BlogTableOfContents({ headings, isCollapsed, onToggleCollapse }:
           isStuck ? "relative" : "sticky top-24"
         )}
       >
-        <div className="bg-slate-900/95 backdrop-blur-sm rounded-xl border border-white/10 shadow-xl overflow-hidden relative">
+        <div className={cn("backdrop-blur-sm rounded-xl shadow-xl overflow-hidden relative transition-colors duration-300", tc.container)}>
           <AnimatePresence mode="wait">
             {isCollapsed ? (
               <motion.div
@@ -242,7 +286,7 @@ export function BlogTableOfContents({ headings, isCollapsed, onToggleCollapse }:
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-                className="py-6 px-2 flex flex-col items-center justify-center group cursor-pointer hover:bg-white/5 transition-all duration-300 min-h-[220px]"
+                className={cn("py-6 px-2 flex flex-col items-center justify-center group cursor-pointer transition-all duration-300 min-h-[220px]", tc.collapsed)}
                 onClick={() => {
                   wasManuallyExpanded.current = true;
                   setAutoCollapsed(false);
@@ -255,17 +299,16 @@ export function BlogTableOfContents({ headings, isCollapsed, onToggleCollapse }:
                     whileTap={{ scale: 0.95 }}
                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
-                    <PanelRightOpen className="w-5 h-5 text-white/70 group-hover:text-primary transition-colors duration-300" />
+                    <PanelRightOpen className={cn("w-5 h-5 transition-colors duration-300", tc.collapsedIcon)} />
                   </motion.div>
                   <List className="w-5 h-5 text-primary" />
                   <span
-                    className="text-xs text-white/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-0 translate-x-1"
+                    className={cn("text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300", tc.collapsedText)}
                     style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
                   >
                     Съдържание
                   </span>
-                  {/* Mini progress indicator */}
-                  <div className="w-1.5 h-20 bg-white/10 rounded-full overflow-hidden">
+                  <div className={cn("w-1.5 h-20 rounded-full overflow-hidden", tc.progressMini)}>
                     <motion.div
                       className="w-full bg-gradient-to-b from-primary to-primary/70 rounded-full"
                       initial={{ height: 0 }}
@@ -285,27 +328,24 @@ export function BlogTableOfContents({ headings, isCollapsed, onToggleCollapse }:
                 className="flex flex-col max-h-[calc(100vh-10rem)]"
               >
                 {/* Header */}
-                <div className="p-4 pb-3 border-b border-white/10 flex-shrink-0">
+                <div className={cn("p-4 pb-3 flex-shrink-0", tc.headerBorder)}>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <List className="w-4 h-4 text-primary" />
-                      <h3 className="font-semibold text-white text-sm">Съдържание</h3>
+                      <h3 className={cn("font-semibold text-sm", tc.headerTitle)}>Съдържание</h3>
                     </div>
                     <motion.button
-                      onClick={() => {
-                        wasManuallyExpanded.current = false;
-                        onToggleCollapse();
-                      }}
-                      className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg transition-colors group"
+                      onClick={() => { wasManuallyExpanded.current = false; onToggleCollapse(); }}
+                      className={cn("p-1.5 rounded-lg transition-colors group", tc.collapseBtn)}
                       aria-label="Скрий съдържанието"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       transition={{ type: "spring", stiffness: 400, damping: 17 }}
                     >
-                      <PanelRightClose className="w-4 h-4 text-white/70 group-hover:text-primary transition-colors duration-300" />
+                      <PanelRightClose className={cn("w-4 h-4 transition-colors duration-300", tc.collapseBtnIcon)} />
                     </motion.button>
                   </div>
-                  <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                  <div className={cn("w-full h-1 rounded-full overflow-hidden", tc.progressTrack)}>
                     <motion.div
                       className="h-full bg-gradient-to-r from-primary to-primary/70 rounded-full"
                       initial={{ width: 0 }}
@@ -327,48 +367,32 @@ export function BlogTableOfContents({ headings, isCollapsed, onToggleCollapse }:
                       return (
                         <li key={group.heading.id}>
                           <div className="relative">
-                            {/* Active indicator */}
                             <motion.div
                               className="absolute left-0 top-0 bottom-0 w-0.5 rounded-full bg-primary"
                               initial={false}
-                              animate={{
-                                opacity: isActive || isChildActive ? 1 : 0,
-                                scaleY: isActive || isChildActive ? 1 : 0,
-                              }}
+                              animate={{ opacity: isActive || isChildActive ? 1 : 0, scaleY: isActive || isChildActive ? 1 : 0 }}
                               transition={{ duration: 0.25, ease: "easeInOut" }}
                               style={{ originY: 0.5 }}
                             />
-
                             <div className="flex items-center gap-1">
                               {hasChildren && (
-                                <button
-                                  onClick={() => toggleSection(group.heading.id)}
-                                  className="p-1 hover:bg-white/10 rounded transition-colors"
-                                >
-                                  <motion.div
-                                    animate={{ rotate: isExpanded ? 90 : 0 }}
-                                    transition={{ duration: 0.2 }}
-                                  >
-                                    <ChevronRight className="w-3.5 h-3.5 text-white/50" />
+                                <button onClick={() => toggleSection(group.heading.id)} className="p-1 rounded transition-colors hover:bg-black/5">
+                                  <motion.div animate={{ rotate: isExpanded ? 90 : 0 }} transition={{ duration: 0.2 }}>
+                                    <ChevronRight className={cn("w-3.5 h-3.5", tc.chevron)} />
                                   </motion.div>
                                 </button>
                               )}
-
                               <button
                                 onClick={() => scrollToSection(group.heading.id)}
                                 className={cn(
                                   "flex-1 text-left text-[13px] py-1.5 px-2 rounded transition-all duration-200",
                                   hasChildren ? "" : "ml-6",
-                                  isActive || isChildActive
-                                    ? "text-primary font-medium"
-                                    : "text-white/70 hover:text-white hover:bg-white/5"
+                                  isActive || isChildActive ? tc.navItemActive : tc.navItemDefault
                                 )}
                               >
                                 {group.heading.text}
                               </button>
                             </div>
-
-                            {/* Nested children */}
                             <AnimatePresence initial={false}>
                               {hasChildren && isExpanded && (
                                 <motion.div
@@ -378,7 +402,7 @@ export function BlogTableOfContents({ headings, isCollapsed, onToggleCollapse }:
                                   transition={{ duration: 0.25, ease: "easeInOut" }}
                                   style={{ overflow: "hidden" }}
                                 >
-                                  <ul className="ml-6 mt-1 space-y-0.5 border-l border-white/10 pl-3">
+                                  <ul className={cn("ml-6 mt-1 space-y-0.5 pl-3", tc.childBorder)}>
                                     {group.children.map((child) => {
                                       const isChildItemActive = activeId === child.id;
                                       return (
@@ -387,9 +411,7 @@ export function BlogTableOfContents({ headings, isCollapsed, onToggleCollapse }:
                                             onClick={() => scrollToSection(child.id)}
                                             className={cn(
                                               "w-full text-left text-xs py-1 px-2 rounded transition-all duration-200",
-                                              isChildItemActive
-                                                ? "text-primary font-medium bg-primary/10"
-                                                : "text-white/50 hover:text-white/80 hover:bg-white/5"
+                                              isChildItemActive ? tc.childActive : tc.childDefault
                                             )}
                                           >
                                             {child.text}

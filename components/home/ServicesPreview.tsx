@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, useInView, useReducedMotion, type MotionProps } from "framer-motion";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import type { Service } from "@/types";
@@ -15,71 +16,34 @@ interface ServicesPreviewProps {
 const serviceItems = [
   {
     name: "Счетоводни услуги",
-    icon: "chart",
+    image: "/firm-logo/uslugi/счетоводни-услуги.png",
     description: "Пълно счетоводно обслужване за вашия бизнес — от първичните документи до годишното приключване.",
-    category: "Счетоводни",
+    href: "/uslugi/schetovodni-uslugi",
   },
   {
     name: "Данъчни консултации",
-    icon: "calculator",
+    image: "/firm-logo/uslugi/данъчни-консултации.png",
     description: "Експертни данъчни решения, планиране и оптимизация за спестяване на средства.",
-    category: "Данъчни",
+    href: "/uslugi/danachni-konsultacii",
   },
   {
     name: "Правни услуги",
-    icon: "scale",
+    image: "/firm-logo/uslugi/правни-услуги.png",
     description: "Правна защита, съвети и представителство по търговски и данъчни въпроси.",
-    category: "Правни",
+    href: "/uslugi/pravni-uslugi",
   },
   {
     name: "Регистрация на дружества",
-    icon: "building",
+    image: "/firm-logo/uslugi/регистрация-на-фирми.png",
     description: "Бърза и надеждна регистрация на ЕООД, ООД, ЕТ и всички видове дружества.",
-    category: "Регистрация",
+    href: "/uslugi/registraciq-na-firmi",
   },
 ];
-
-const renderIcon = (iconType: string) => {
-  const cls = "w-5 h-5";
-  switch (iconType) {
-    case "chart":
-      return (
-        <svg className={cls} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      );
-    case "calculator":
-      return (
-        <svg className={cls} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-        </svg>
-      );
-    case "scale":
-      return (
-        <svg className={cls} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-        </svg>
-      );
-    case "building":
-      return (
-        <svg className={cls} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-        </svg>
-      );
-    default:
-      return null;
-  }
-};
 
 export function ServicesPreview({ services }: ServicesPreviewProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const prefersReducedMotion = useReducedMotion();
-
-  const getServiceLink = (category: string) => {
-    const match = services.find((s) => s.category === category);
-    return match ? `/uslugi/${match.slug.current}` : "/uslugi";
-  };
 
   const anim = (delay: number): MotionProps =>
     prefersReducedMotion
@@ -99,7 +63,7 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
         viewport: { once: true, margin: "-40px" },
         transition: { type: "spring" as const, stiffness: 80, damping: 20 },
       })}
-      className="relative py-20 md:py-28 bg-white overflow-hidden shadow-sm"
+      className="relative pt-20 pb-28 md:pt-28 md:pb-36 bg-white overflow-hidden shadow-sm"
       style={{
         borderTopLeftRadius: "50% 2rem",
         borderTopRightRadius: "50% 2rem",
@@ -113,7 +77,7 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
           <motion.div {...anim(0)} className="lg:sticky lg:top-28">
             <SectionBadge>Какво предлагаме</SectionBadge>
             <h2
-              className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.05]"
+              className="mt-4 text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.05]"
               style={{
                 color: "var(--color-dark)",
                 fontVariationSettings: "'wght' 900, 'wdth' 125",
@@ -128,7 +92,7 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
               Комплексни финансови решения, създадени за Вашия бизнес.
             </p>
             <div className="mt-8">
-              <PremiumCTA href="/uslugi">
+              <PremiumCTA href="/uslugi" variant="light">
                 Всички услуги
                 <ArrowRight className="w-4 h-4" />
               </PremiumCTA>
@@ -139,33 +103,37 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
           <div className="space-y-3">
             {serviceItems.map((service, index) => (
               <motion.div key={service.name} {...anim(0.1 + index * 0.08)}>
-                <Link href={getServiceLink(service.category)} className="group block">
+                <Link href={service.href} className="group block">
                   <div className="relative rounded-2xl border border-slate-100 bg-slate-50 p-6 hover:border-primary/30 hover:bg-white hover:shadow-md transition-all duration-300">
-                    {/* Number */}
-                    <span
-                      className="absolute top-5 right-5 text-[2.5rem] font-black leading-none select-none text-slate-100 group-hover:text-primary/15 transition-colors duration-300"
-                      style={{ fontVariationSettings: "'wght' 900, 'wdth' 125" }}
-                    >
-                      0{index + 1}
-                    </span>
-
-                    <div className="flex items-start gap-4 pr-12">
-                      {/* Icon */}
-                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 text-primary group-hover:bg-primary/20 transition-colors duration-300">
-                        {renderIcon(service.icon)}
+                    <div className="flex items-start gap-5">
+                      {/* Service image */}
+                      <div className="w-24 h-16 rounded-xl overflow-hidden flex-shrink-0 relative">
+                        <Image
+                          src={service.image}
+                          alt={service.name}
+                          fill
+                          sizes="96px"
+                          className="object-cover"
+                        />
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center justify-between mb-2">
                           <h3
-                            className="text-base font-bold transition-colors duration-300 group-hover:text-primary"
-                            style={{ color: "var(--color-dark)" }}
+                            className="transition-colors duration-300 group-hover:text-primary"
+                            style={{
+                              color: "var(--color-dark)",
+                              fontFamily: "'Cormorant Garamond', serif",
+                              fontWeight: 800,
+                              fontStyle: "italic",
+                              fontSize: "1.4rem",
+                            }}
                           >
                             {service.name}
                           </h3>
                           <ArrowUpRight className="w-4 h-4 text-slate-300 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 flex-shrink-0" />
                         </div>
-                        <p className="text-slate-400 text-sm leading-relaxed">
+                        <p className="text-slate-500 text-base leading-relaxed">
                           {service.description}
                         </p>
                       </div>

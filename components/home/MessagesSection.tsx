@@ -184,20 +184,14 @@ function MessageCard({
           animate={isInView ? { opacity: 1, x: 0 } : {}}
           transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 200, damping: 30, mass: 1, delay: 0.15 }}
         >
-          <div className="flex items-start gap-4">
-            <span
-              className="text-6xl md:text-7xl font-bold select-none leading-none"
-              style={{
-                color: isDarkText ? "rgba(15,23,42,0.1)" : "rgba(255,255,255,0.15)",
-                transition: textTransition,
-              }}
-            >
-              {number}
-            </span>
-            <div className="pt-2">
+          <div className="flex items-start">
+            <div>
               <h3
-                className="text-xl sm:text-2xl lg:text-3xl font-bold mb-3"
+                className="text-2xl sm:text-3xl lg:text-4xl mb-3"
                 style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontWeight: 700,
+                  fontStyle: "italic",
                   color: isDarkText ? "#0f172a" : "#ffffff",
                   transition: textTransition,
                 }}
