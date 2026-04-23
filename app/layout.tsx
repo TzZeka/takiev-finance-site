@@ -1,14 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond } from "next/font/google";
-import "./globals.css";
-
-const cormorantGaramond = Cormorant_Garamond({
-  subsets: ["latin", "cyrillic"],
-  weight: ["600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-cormorant",
-  display: "swap",
-});
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { QuickPanel } from "@/components/layout/QuickPanel";
@@ -21,6 +12,15 @@ import { NavDirectionProvider } from "@/components/providers/NavDirectionProvide
 import { QuickPanelProvider } from "@/components/layout/QuickPanelContext";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
+import "./globals.css";
+
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ["latin", "cyrillic"],
+  weight: ["600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-cormorant",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   width: "device-width",
