@@ -163,15 +163,16 @@ const fOuter = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.22, delayChildren: 0.1 } },
 };
+const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number];
 const fItem = {
   hidden: { opacity: 0, y: 36 },
-  visible: { opacity: 1, y: 0, transition: { duration: 1.0, ease: [0.22, 1, 0.36, 1] } },
+  visible: { opacity: 1, y: 0, transition: { duration: 1.0, ease: EASE } },
 };
 const fCols = {
   hidden: { opacity: 0, y: 36 },
   visible: {
     opacity: 1, y: 0,
-    transition: { duration: 1.0, ease: [0.22, 1, 0.36, 1], staggerChildren: 0.18, delayChildren: 0.25 },
+    transition: { duration: 1.0, ease: EASE, staggerChildren: 0.18, delayChildren: 0.25 },
   },
 };
 
