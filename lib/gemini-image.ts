@@ -38,14 +38,18 @@ Analyze the following article title and choose the most relevant business object
 export async function generateBlogBanner(
   title: string,
   _excerpt: string,
-  _tags: string[]
+  _tags: string[],
+  extraPrompt?: string
 ): Promise<{ data: Buffer; mimeType: string }> {
   const apiKey = process.env.GOOGLE_AI_API_KEY;
   if (!apiKey) throw new Error("GOOGLE_AI_API_KEY not configured");
 
   const ai = new GoogleGenAI({ apiKey });
 
-  const prompt = MASTER_PROMPT.replace("[INSERT_ARTICLE_TITLE]", title);
+  let prompt = MASTER_PROMPT.replace("[INSERT_ARTICLE_TITLE]", title);
+  if (extraPrompt?.trim()) {
+    prompt += `\n\nAdditional style instructions from editor: ${extraPrompt.trim()}`;
+  }
 
   const response = await ai.models.generateImages({
     model: "imagen-3.0-generate-002",

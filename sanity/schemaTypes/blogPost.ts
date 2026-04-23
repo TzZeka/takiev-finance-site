@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { GenerateImageInput } from "../components/GenerateImageInput";
 
 export default defineType({
   name: "blogPost",
@@ -39,6 +40,9 @@ export default defineType({
       type: "image",
       options: {
         hotspot: true,
+      },
+      components: {
+        input: GenerateImageInput,
       },
       fields: [
         {
