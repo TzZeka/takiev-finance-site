@@ -12,6 +12,8 @@ import { TaxConsultationTab } from "@/components/services/tabs/TaxConsultationTa
 import { LegalServicesTab } from "@/components/services/tabs/LegalServicesTab";
 import { CompanyRegistrationTab } from "@/components/services/tabs/CompanyRegistrationTab";
 import { getServiceBySlug } from "@/lib/services-config";
+import { faqData } from "@/lib/faq-data";
+import { FAQAccordion } from "@/components/services/FAQAccordion";
 
 const serviceBanners: Record<string, string> = {
   schetovodstvo: "/firm-logo/uslugi/счетоводни-услуги.png",
@@ -142,6 +144,9 @@ export function ServicePageClient({ slug }: ServicePageClientProps) {
           transition={CONTENT_TRANSITION}
         >
           <ServiceComponent onContact={handleContact} />
+          {(faqData[service.id]?.length ?? 0) > 0 && (
+            <FAQAccordion items={faqData[service.id]} />
+          )}
         </motion.div>
       </div>
 

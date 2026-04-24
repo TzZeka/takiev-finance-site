@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getServiceBySlug, getAllServiceSlugs } from "@/lib/services-config";
+import { faqData } from "@/lib/faq-data";
 import type { Metadata } from "next";
 import { ServicePageClient } from "./ServicePageClient";
 
@@ -44,5 +45,27 @@ export default async function ServicePage({ params }: ServicePageProps) {
     notFound();
   }
 
-  return <ServicePageClient slug={slug} />;
+  const faqs = faqData[service.id] ?? [];
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ServicePageClient slug={slug} />
+    </>
+  );
 }

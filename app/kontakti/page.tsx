@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { ContactBanner } from "./ContactBanner";
 import { ContactSection } from "./ContactSection";
 
 export const metadata: Metadata = {
@@ -34,38 +33,9 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="relative min-h-screen">
-      {/* Background */}
-      <Image
-        src="/firm-logo/contact-photos/контакти-фон.png"
-        alt=""
-        fill
-        className="object-cover fixed"
-        priority
-      />
-      <div className="fixed inset-0 bg-slate-950/45" />
-
-      <div className="relative z-10">
-        {/* ── HERO ── */}
-        <section className="pt-28 sm:pt-32 md:pt-40 lg:pt-48 pb-20 md:pb-28 text-white text-center">
-          <div className="container mx-auto px-4 md:px-6 lg:px-8">
-            <div className="flex justify-center mb-6">
-              <Breadcrumbs />
-            </div>
-            <p className="text-primary font-medium tracking-widest uppercase text-sm mb-4">
-              Свържете се с нас
-            </p>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight">
-              Контакти
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl text-white/70 leading-relaxed max-w-2xl mx-auto font-light">
-              Ще се радваме да обсъдим как можем да помогнем на вашия бизнес
-            </p>
-          </div>
-        </section>
-
-        <ContactSection />
-      </div>
+    <div className="min-h-screen pb-[120px] lg:pb-0" style={{ backgroundColor: "#0d1f1c" }}>
+      <ContactBanner />
+      <ContactSection />
     </div>
   );
 }

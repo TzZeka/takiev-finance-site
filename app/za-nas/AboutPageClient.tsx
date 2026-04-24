@@ -187,6 +187,14 @@ const globalTeamMembers = [
         bio: "Роса Пантева е студент в УНСС, специалност Счетоводство. Завършила е ЕГ Акад. Л. Стоянов в гр. Благоевград. Има интереси към света на финансите и притежава мотивация за професионално развитие.",
         isLeader: false,
     },
+    {
+        name: "Юли Аспарухов",
+        role: "Оперативен счетоводител",
+        education: "Студент в УНСС, специалност Счетоводство",
+        image: "/firm-logo/team/Yuli.png",
+        bio: "Юли Аспарухов е студент в УНСС, специалност Счетоводство. Има 5 години опит като счетоводител. Средното си образование завършва в ПГИ – Перник. Интересите му са насочени към данъчното законодателство, външния одит, данъчното планиране и подобряването на ефективността на финансовите процеси.",
+        isLeader: false,
+    },
 ];
 
 const values = [
@@ -885,16 +893,13 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                 </div>
             </section >
 
-            {/* ===== VALUES ===== */}
-            < section className="relative py-24 sm:py-32 z-10" >
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-                    <div className="absolute inset-x-0 inset-y-0 bg-dark-muted rounded-[3rem] border border-white/5 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] -z-10" />
-                    <div className="py-16">
-                        <SectionTitle title="Нашите ценности" subtitle="Принципите, които направляват всяко наше действие и създават доверие" />
-                        <ValuesSection />
-                    </div>
+            {/* ===== TEAM ACCORDION ===== */}
+            <section className="relative py-24 sm:py-32 z-10 clip-slant bg-dark-muted section-inset border-y border-white/5">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <SectionTitle title="Нашият екип" subtitle="Експерти с богат опит и безкомпромисен стандарт на работа" />
+                    <TeamSection teamMembers={displayMembers} />
                 </div>
-            </section >
+            </section>
 
             {/* ===== EXPERTISE BENTO ===== */}
             < section className="relative py-24 sm:py-32 z-10 clip-slant-reverse bg-dark-muted section-inset border-y border-white/5 mt-40" >
@@ -944,13 +949,16 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
                 </div>
             </section>
 
-            {/* ===== TEAM ACCORDION ===== */}
-            <section className="relative py-24 sm:py-32 z-10 clip-slant bg-dark-muted section-inset border-y border-white/5 mt-40">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <SectionTitle title="Нашият екип" subtitle="Експерти с богат опит и безкомпромисен стандарт на работа" />
-                    <TeamSection teamMembers={displayMembers} />
+            {/* ===== VALUES ===== */}
+            < section className="relative py-24 sm:py-32 z-10 mt-40" >
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+                    <div className="absolute inset-x-0 inset-y-0 bg-dark-muted rounded-[3rem] border border-white/5 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] -z-10" />
+                    <div className="py-16">
+                        <SectionTitle title="Нашите ценности" subtitle="Принципите, които направляват всяко наше действие и създават доверие" />
+                        <ValuesSection />
+                    </div>
                 </div>
-            </section>
+            </section >
 
             {/* ===== PARTNERS SECTION ===== */}
             <section className="relative py-24 sm:py-32 z-10 overflow-hidden mt-40">

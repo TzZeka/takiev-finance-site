@@ -18,6 +18,8 @@ import {
   CheckCircle,
   ArrowRight,
 } from "lucide-react";
+import { FAQAccordion } from "@/components/services/FAQAccordion";
+import { faqData } from "@/lib/faq-data";
 
 // ── PaperPlane icon ────────────────────────────────────────────────────────────
 function PaperPlaneIcon({ className }: { className?: string }) {
@@ -245,7 +247,7 @@ export function ContactSection() {
   return (
     <section
       ref={sectionRef}
-      className="container mx-auto px-4 md:px-6 lg:px-8 pb-12 md:pb-20"
+      className="w-full px-3 sm:px-4 md:px-6 lg:px-8 pb-12 md:pb-20"
     >
       <motion.div
         variants={containerVariants}
@@ -614,6 +616,11 @@ export function ContactSection() {
             title="Takiev Finance Location"
           />
         </div>
+
+        {/* ── BLOCK 3: FAQ ── */}
+        <motion.div variants={itemVariants}>
+          <FAQAccordion items={faqData.kontakti} />
+        </motion.div>
       </motion.div>
     </section>
   );
