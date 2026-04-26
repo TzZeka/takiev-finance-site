@@ -15,6 +15,7 @@ import teamMember from './teamMember'
 import contactSubmission from './contactSubmission'
 import news from './news'
 import newsArticle from './newsArticle'
+import standard from './standard'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -37,5 +38,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     contactSubmission,
     news,
     newsArticle,
+    standard,
   ],
 }

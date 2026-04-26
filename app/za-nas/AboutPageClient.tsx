@@ -563,6 +563,7 @@ const socialLinks = [
     { href: "https://www.tiktok.com/@n.takiev", label: "TikTok", icon: TikTokIcon },
 ];
 
+
 export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDisplay[] }) {
     const displayMembers = teamMembers && teamMembers.length > 0 ? teamMembers : globalTeamMembers;
 
@@ -576,6 +577,7 @@ export function AboutPageClient({ teamMembers }: { teamMembers?: TeamMemberDispl
         window.addEventListener("resize", check);
         return () => window.removeEventListener("resize", check);
     }, []);
+
 
     const { scrollYProgress } = useScroll({
         target: heroImgRef,

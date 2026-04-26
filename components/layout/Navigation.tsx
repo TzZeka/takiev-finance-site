@@ -24,6 +24,7 @@ const navItems = [
 
 const blogItems = [
   { href: "/novini", label: "Новини" },
+  { href: "/msfo",   label: "Международни стандарти" },
 ];
 
 const DROPDOWN_ID = "services-dropdown-menu";

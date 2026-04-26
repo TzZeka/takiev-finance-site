@@ -10,6 +10,17 @@ import type {
   TeamMember,
 } from "@/types";
 
+export interface Standard {
+  _id: string;
+  title: string;
+  category: "mcc" | "msfo" | "interpretation";
+  description: string | null;
+  orderNumber: number;
+  lastUpdated: string | null;
+  fileUrl: string | null;
+  fileName: string | null;
+}
+
 // Services
 export async function getAllServices(): Promise<Service[]> {
   return client.fetch(
@@ -474,6 +485,22 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
       image,
       bio,
       order
+    }`
+  );
+}
+
+// International Standards (МСС / МСФО / Разяснения)
+export async function getStandards(): Promise<Standard[]> {
+  return client.fetch(
+    `*[_type == "standard"] | order(orderNumber asc) {
+      _id,
+      title,
+      category,
+      description,
+      orderNumber,
+      lastUpdated,
+      "fileUrl": file.asset->url,
+      "fileName": file.asset->originalFilename
     }`
   );
 }
