@@ -54,7 +54,7 @@ export function MsfoBanner() {
         }
       >
         <Image
-          src="/firm-logo/banners/blog-hero.png"
+          src="/firm-logo/banners/banner-msfo.png"
           alt="Международни счетоводни стандарти - Takiev Finance"
           fill
           priority
@@ -76,7 +76,8 @@ export function MsfoBanner() {
         <div className="max-w-2xl mx-auto text-center">
           <div className="block bg-white/[0.015] backdrop-blur-xl rounded-t-[1.5rem] md:rounded-t-[2.5rem] px-8 py-7 md:px-14 md:py-10 border border-white/[0.04] shadow-[0_8px_40px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.03)]">
             <h1
-              className="text-5xl md:text-6xl lg:text-[5rem] font-bold text-white mb-4 tracking-tight"
+              className="font-bold text-white mb-4 tracking-tight leading-[1.08]"
+              style={{ fontSize: "clamp(1.75rem, 5vw, 4rem)" }}
             >
               Международни стандарти
             </h1>

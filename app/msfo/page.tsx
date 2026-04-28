@@ -42,10 +42,7 @@ export default async function MsfoPage() {
   const standards = await getStandards();
 
   return (
-    <div
-      className="min-h-screen pb-[120px] lg:pb-0"
-      style={{ backgroundColor: "#0d1f1c" }}
-    >
+    <div className="min-h-screen bg-white pb-[120px] lg:pb-0">
       <MsfoBanner />
       <MsfoPageClient standards={standards} />
     </div>

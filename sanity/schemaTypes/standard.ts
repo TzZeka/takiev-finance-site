@@ -19,7 +19,7 @@ export default defineType({
         list: [
           { title: "МСС (IAS)", value: "mcc" },
           { title: "МСФО (IFRS)", value: "msfo" },
-          { title: "Разяснения", value: "interpretation" },
+          { title: "Разяснения на КРМСФО", value: "interpretation" },
         ],
         layout: "radio",
       },
@@ -28,8 +28,50 @@ export default defineType({
     defineField({
       name: "description",
       title: "Описание",
-      type: "text",
-      rows: 4,
+      type: "array",
+      of: [
+        {
+          type: "block",
+          styles: [
+            { title: "Нормален текст",       value: "normal" },
+            { title: "Заглавие 2",           value: "h2" },
+            { title: "Заглавие 3",           value: "h3" },
+            { title: "Заглавие 4",           value: "h4" },
+            { title: "Цитат",               value: "blockquote" },
+            { title: "← Вляво",            value: "textLeft" },
+            { title: "↔ Двустранно",        value: "textJustify" },
+            { title: "→ Вдясно",            value: "textRight" },
+            { title: "↕ Центрирано",        value: "textCenter" },
+          ],
+          lists: [
+            { title: "Списък с точки",  value: "bullet" },
+            { title: "Номериран списък", value: "number" },
+          ],
+          marks: {
+            decorators: [
+              { title: "Удебелен",   value: "strong" },
+              { title: "Курсив",     value: "em" },
+              { title: "Подчертан",  value: "underline" },
+              { title: "Зачертан",   value: "strike-through" },
+              { title: "Код",        value: "code" },
+            ],
+            annotations: [
+              {
+                name: "link",
+                type: "object",
+                title: "Връзка",
+                fields: [
+                  {
+                    name: "href",
+                    type: "url",
+                    title: "URL",
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
     }),
     defineField({
       name: "file",

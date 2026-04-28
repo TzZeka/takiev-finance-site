@@ -21,7 +21,7 @@ interface NewsTabsProps {
 export function NewsTabs({ tabs, active, onChange }: NewsTabsProps) {
   return (
     <div
-      className="flex items-center gap-1 p-1 rounded-xl border overflow-x-auto scrollbar-hide"
+      className="flex items-center gap-1 p-1 rounded-full border overflow-x-auto scrollbar-hide"
       style={{ background: "rgba(64,81,78,0.05)", borderColor: "rgba(64,81,78,0.1)" }}
       role="tablist"
     >
@@ -34,14 +34,14 @@ export function NewsTabs({ tabs, active, onChange }: NewsTabsProps) {
             aria-selected={isActive}
             onClick={() => onChange(tab.id)}
             className={cn(
-              "relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0"
+              "relative flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0"
             )}
             style={{ color: isActive ? "var(--color-dark)" : "var(--color-surface-raised)" }}
           >
             {isActive && (
               <motion.span
                 layoutId="activeNewsTab"
-                className="absolute inset-0 rounded-lg bg-white shadow-sm"
+                className="absolute inset-0 rounded-full bg-white shadow-sm"
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
             )}

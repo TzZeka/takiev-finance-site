@@ -10,7 +10,9 @@ import {
   Home,
   Briefcase,
   MessageSquare,
-  UserCircle
+  UserCircle,
+  BookOpen,
+  FolderOpen,
 } from 'lucide-react'
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
@@ -122,4 +124,44 @@ export const structure: StructureResolver = (S) =>
 
       // Individual Services (legacy, can be hidden or kept for individual service pages)
       S.documentTypeListItem('service').title('Индивидуални услуги (страници)').icon(Briefcase),
+
+      S.divider(),
+
+      // International Standards — folder structure by category
+      S.listItem()
+        .title('Международни стандарти')
+        .icon(BookOpen)
+        .child(
+          S.list()
+            .title('Международни стандарти')
+            .items([
+              S.listItem()
+                .title('МСС (IAS)')
+                .icon(FolderOpen)
+                .child(
+                  S.documentList()
+                    .title('МСС (IAS) — Международни счетоводни стандарти')
+                    .filter('_type == "standard" && category == "mcc"')
+                    .defaultOrdering([{ field: 'orderNumber', direction: 'asc' }])
+                ),
+              S.listItem()
+                .title('МСФО (IFRS)')
+                .icon(FolderOpen)
+                .child(
+                  S.documentList()
+                    .title('МСФО (IFRS) — Международни стандарти за финансово отчитане')
+                    .filter('_type == "standard" && category == "msfo"')
+                    .defaultOrdering([{ field: 'orderNumber', direction: 'asc' }])
+                ),
+              S.listItem()
+                .title('Разяснения на КРМСФО')
+                .icon(FolderOpen)
+                .child(
+                  S.documentList()
+                    .title('Разяснения на КРМСФО')
+                    .filter('_type == "standard" && category == "interpretation"')
+                    .defaultOrdering([{ field: 'orderNumber', direction: 'asc' }])
+                ),
+            ])
+        ),
     ])

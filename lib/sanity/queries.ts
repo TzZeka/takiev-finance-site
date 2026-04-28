@@ -1,4 +1,5 @@
 import { client } from "./client";
+import type { PortableTextBlock } from "@portabletext/types";
 import type {
   Service,
   BlogPost,
@@ -14,7 +15,7 @@ export interface Standard {
   _id: string;
   title: string;
   category: "mcc" | "msfo" | "interpretation";
-  description: string | null;
+  description: PortableTextBlock[] | null;
   orderNumber: number;
   lastUpdated: string | null;
   fileUrl: string | null;
